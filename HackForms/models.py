@@ -14,3 +14,5 @@ class Project(models.Model):
     zip_file = models.CharField(max_length=5000,null=False)
     data = models.CharField(max_length=5000,unique=True,null=False)
     csv_file = models.CharField(max_length=100,null=False)
+    def __str__(self):
+        return  self.project_name
