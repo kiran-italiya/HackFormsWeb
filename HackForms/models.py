@@ -10,9 +10,9 @@ from django.db import models
 
 class Project(models.Model):
     project_name = models.CharField(max_length=100, unique=True,primary_key=True)
-    empty_form = models.CharField(max_length=5000,null=False)
-    zip_file = models.CharField(max_length=5000,null=False)
-    data = models.CharField(max_length=5000,unique=True,null=False)
-    csv_file = models.CharField(max_length=100,null=False)
+    empty_form = models.FilePathField(null=True)
+    zip_file = models.FilePathField(null=True)
+    data = models.FilePathField(null=True)
+    csv_file = models.FilePathField(null=True)
     def __str__(self):
         return  self.project_name
