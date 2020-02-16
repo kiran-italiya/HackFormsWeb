@@ -12,7 +12,6 @@ class NewProjectForm(forms.ModelForm):
     )
     empty_form = forms.FileField()
     zip_file = forms.FileField()
-
     class Meta:
         model = Project
         fields = ['project_name','empty_form','zip_file']

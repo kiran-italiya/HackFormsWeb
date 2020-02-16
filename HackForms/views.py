@@ -39,16 +39,21 @@ def upload(request):
     if request.method=='POST':
         empty_form = request.FILES['empty_form']
         zip_file = request.FILES['zip_file']
-        fs = FileSystemStorage()
-        fs.save(empty_form.name,empty_form)
+        project_name = request.POST.get('project_name')
+
         try:
-            os.mkdir(os.path.join(settings.MEDIA_ROOT, 'data'))
+            os.mkdir(os.path.join(settings.MEDIA_ROOT, os.path.join(project_name,'/data')))
+
         except:pass
+        #
         with ZipFile(zip_file) as zip_file:
             names = zip_file.namelist()
-            zip_file.extractall(os.path.join(settings.MEDIA_ROOT,'data'),names)
-    return render(request,'home.html')
-    def get_queryset(self):
-        self.project = get_object_or_404(Project, pk=self.kwargs.get('pk'))
-        queryset = self.project
-        return queryset
+            zip_file.extractall(os.path.join(settings.MEDIA_ROOT,project_name+'/data'),names)
+        fs = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT,project_name))
+        fs.save(empty_form.name, empty_form)
+    return render(request,'home.html',{'project_name':project_name})
+
+def get_queryset(self):
+    self.project = get_object_or_404(Project, pk=self.kwargs.get('pk'))
+    queryset = self.project
+    return queryset
