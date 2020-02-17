@@ -25,11 +25,8 @@
 
         <div class="container">
             {% for project in projects %}
-                <tr>
-                    <td><a href="{% url 'projects' project.pk %}">{{ project.name }}</a></td>
-                </tr>
+                <a href="{% url 'projects' project.project_name %}">{{ project.project_name }}</a><br><br>
             {% endfor %}
-
         </div>
 
 

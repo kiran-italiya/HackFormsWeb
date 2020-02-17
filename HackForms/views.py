@@ -1,7 +1,7 @@
 from builtins import zip
 from zipfile import ZipFile
 import os
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 # from django.views.generic import TemplateView
 from django.core.files.storage import FileSystemStorage
 from HackFormsWeb import settings
@@ -64,12 +64,16 @@ def upload(request):
         # name = fs.save(empty_form.name, empty_form)
         # context['empty_form']=fs.url(name)
             form.save()
-
-            return render(request, 'home.html', {'context': context})
+            projects = Project.objects.all()
+            return redirect(home)
         else:
             form = NewProjectForm()
-        return render(request, 'new_project.html', {
-            'form': form
-        })
+        return render(request, 'new_project.html', {'form': form})
+    else:
+        form = NewProjectForm()
+    return render(request, 'new_project.html', {'form': form})
 
-    # return render(request,'home.html',{'project_name':project_name})
+
+def open_project(request,pk):
+    project = get_object_or_404(Project, pk=pk)
+    return render(request,'project.html',{'project':project})
