@@ -9,12 +9,26 @@
         {% endblock %}
     </title>
 </head>
-<body>
 
     {% block content %}
+        {{ project_name }}
+        <div class="navbar ">
+            <div class="title-black float-left" >
+                <h3>Projects</h3>
+            </div>
+            <div class="mb-4 float-right" >
+                <a href="{% url 'new_project' %}" class="btn btn-primary">New Project</a>
+            </div>
+        </div>
 
+        <div class="container">
+            {% for project in projects %}
+                <tr>
+                    <td><a href="{% url 'projects' project.pk %}">{{ project.name }}</a></td>
+                </tr>
+            {% endfor %}
 
-
+        </div>
 
 
     {% endblock %}

@@ -25,6 +25,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('',views.home, name='home'),
+
+    path('', views.home, name='home'),
+    path('new_project/', views.new_project, name='new_project'),
+    path('project/<str:pk>', views.new_project, name='projects'),
+    path('new_project/upload/',views.upload,name='upload'),
     path('admin/', admin.site.urls),
 ]
 
