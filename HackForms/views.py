@@ -44,23 +44,28 @@ def upload(request):
     if request.method=='POST':
         form = NewProjectForm(request.POST, request.FILES)
         context={}
-        empty_form = request.FILES['empty_form']
-        zip_file = request.FILES['zip_file']
-        project_name = request.POST.get('project_name')
-        context['project_name']=project_name
-        try:
-            os.mkdir(os.path.join(settings.MEDIA_ROOT, os.path.join(project_name,'/data')))
-
-        except:pass
-        #
-        with ZipFile(zip_file) as zip_file:
-            names = zip_file.namelist()
-            zip_file.extractall(os.path.join(settings.MEDIA_ROOT,project_name+'/data'),names)
-        fs = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT,project_name))
-        fs.save(empty_form.name, empty_form)
         if form.is_valid():
+            # form.save(commit=False)
+            # context['empty_form']=empty_form
+            empty_form = request.FILES['empty_form']
+            zip_file = request.FILES['zip_file']
+            project_name = request.POST.get('project_name')
+            context['project_name']=project_name
+            try:
+                os.mkdir(os.path.join(settings.MEDIA_ROOT, os.path.join(project_name,'/data')))
+            except:pass
+
+            form.empty_form = os.path.join(settings.MEDIA_URL,project_name,empty_form.name).replace('\\','/')
+            print(form.empty_form)
+            with ZipFile(zip_file) as zip_file:
+                names = zip_file.namelist()
+                zip_file.extractall(os.path.join(settings.MEDIA_ROOT,project_name+'/data'),names)
+        # fs = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT,project_name))
+        # name = fs.save(empty_form.name, empty_form)
+        # context['empty_form']=fs.url(name)
             form.save()
-            return render(request,'home.html',{'project_name':project_name})
+
+            return render(request, 'home.html', {'context': context})
         else:
             form = NewProjectForm()
         return render(request, 'new_project.html', {
