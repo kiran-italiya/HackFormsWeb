@@ -3,13 +3,12 @@ import numpy as np
 import csv
 import json
 import math
-
+import cv2,imutils
 
 height = 730
-width = 600
+width = 1000
 
 fields = []
-
 
 pd.set_option('mode.chained_assignment',None)
 
@@ -27,15 +26,20 @@ def generateDf(filename):
 
 # df = generateDf('exported_json.json')
 # df = pd.read_csv("data.csv")
-df = pd.read_csv("visit-feedback.csv")
+# df = pd.read_csv("visit-feedback2.csv")
+df = pd.read_csv("data20.csv")
+
+img = cv2.imread('test20.jpg')
+img = imutils.resize(img, width=1000)
+for row in df.itertuples():
+    cv2.rectangle(img, (row[1],row[2]),(row[1]+row[4],row[2]+row[3]),(0,0,255),2)
+cv2.imwrite('temp.jpg',img)
 
 # print("DFFFF:\n",df)
 
 
 # structure = -1   # 0: horizontal (Fields are beside labels)  1: vertical  -1: not set
 # i = 0; j=0
-
-
 # def isFieldInRight(i,j):
 #     if(labelsdf['left'][i]+labelsdf['width'][i] <= fieldsdf['left'][j]):
 #         if(fieldsdf['top'][j]+fieldsdf['height'][j] >= labelsdf['top'][i]+labelsdf['height'][i] and fieldsdf['top'][j] <= labelsdf['top'][i]+labelsdf['height'][i]):
@@ -87,13 +91,13 @@ df = pd.read_csv("visit-feedback.csv")
 
 df = df.sort_values(by=['top']) #.reset_index(drop=True)
 df['group'] = df['group'].astype(object)
-print("Original:\n ",df)
+# print("Original:\n ",df)
 
 
 min_field_height = df['height'].min()
-print(min_field_height)
 max_field_height = df['height'].max()
-print(max_field_height)
+avg_field_height = df['height'].mean()
+
 
 def assign_from_last(curr_df,parent_group,df):
     in_strip_elements=curr_df.shape[0]
@@ -203,6 +207,7 @@ def assign_from_last(curr_df,parent_group,df):
 element=-1
 parent_group=None
 # print(df.shape[0])
+UNREACHABLE= -1000
 
 newDf=pd.DataFrame(columns=df.columns)
 
@@ -210,16 +215,37 @@ while(element < df.shape[0]-1):
     element+=1;labels=0;fields=0;checkboxes=0;radios=0
     in_strip_elements=0
     topy=0;bottomy=0
-    ERROR = (max_field_height - df.iloc[element].height )/2
+
+    local_min_top = 0
+    local_max_bottom = 0
+    # first_top=df.iloc[element].top
+    # first_height=df.iloc[element].height
+
+    ERROR = min((max_field_height - df.iloc[element].height )/2, 0.25*df.iloc[element].height)
     topy=df.iloc[element].top - ERROR
     bottomy=df.iloc[element].height+df.iloc[element].top + ERROR
-
-    print('top:',topy,'bottom:',bottomy,"\n")
 
     curr_df = df[(df.top>=topy) & (df.top+df.height<=bottomy)].copy()
     curr_df=curr_df.sort_values(by='left') # .reset_index(drop=True)
 
-    print(curr_df,"\n")
+    print("\nOld ERROR: ",ERROR)
+    #
+    # for i in range(curr_df.shape[0]):
+    #     local_min_top = min(local_min_top, curr_df.iloc[i].height)
+    #     local_max_bottom = max(local_max_bottom, curr_df.iloc[i].height + curr_df.iloc[i].top)
+    #
+    # ERROR = (local_max_bottom - local_min_top - df.iloc[element].height) / 2  # (max_field_height - df.iloc[element].height )/2
+    #
+    # print("New ERROR: ",ERROR)
+    #
+    # topy = df.iloc[element].top - ERROR
+    # bottomy = df.iloc[element].height + df.iloc[element].top + ERROR
+    #
+    # curr_df = df[(df.top >= topy) & (df.top + df.height <= bottomy)].copy()
+    # curr_df = curr_df.sort_values(by='left')  # .reset_index(drop=True)
+
+    print("topy:",topy," bottomy:",bottomy)
+    print("\n curr_df::\n ",curr_df)
 
     for i in range(curr_df.shape[0]):
         element+=1
@@ -234,6 +260,7 @@ while(element < df.shape[0]-1):
             radios += 1
     element-=1
 
+
     if in_strip_elements==1:
         if curr_df.iloc[0].type=='label':
             parent_group=curr_df.index[0]
@@ -243,15 +270,38 @@ while(element < df.shape[0]-1):
             if parent_group is not None:
                 df.at[curr_df.index[0],'group']=parent_group
             else:
-                print("parent_group is missing")
-                #Error
+                print("parent_group is missing so assigning useless")
+                df.at[curr_df.index[0], 'group'] = UNREACHABLE
 
-    if (labels>0 and ( fields>0 or checkboxes>0 or radios>0)):
+        if curr_df.iloc[0].type == 'checkbox' or curr_df.iloc[0].type == 'radio':
+            print("single checkbox/radio is useless, so assigning useless")
+            df.at[curr_df.index[0], 'group'] = UNREACHABLE
+
+
+    if (labels>0 and ( fields>0 or checkboxes>0)):    # or radios>0)):
         curr_df=assign_from_last(curr_df,parent_group,df)
 
+    if(radios>0):
+        if (labels>0 and labels==radios+1) or (labels==radios and parent_group is not None):    #perfect result
+            curr_df=assign_from_last(curr_df,parent_group,df)
+
+        else:
+            if parent_group is not None:
+                i=1
+                for index,row in curr_df.loc[curr_df['type'] == 'radio'].iterrows():
+                    row['group'] = [parent_group,i*-1]
+                    i+=1
+
+            else:
+                i = 1
+                for index,row in curr_df.loc[curr_df['type'] == 'radio'].iterrows():
+                    row['group'] = ['useless', i*-1]
+                    i += 1
 
 
-print('new DF:\n',df[df.type!='label'])
+
+# print('new DF:\n', df)   #df[df.type!='label'])
+df.to_csv('res.csv')
 
 mappingDict={}
 def create_dict_from_df(dfx):
