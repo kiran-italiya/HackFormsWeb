@@ -221,15 +221,15 @@ while(element < df.shape[0]-1):
     # first_top=df.iloc[element].top
     # first_height=df.iloc[element].height
 
-    ERROR = min((max_field_height - df.iloc[element].height )/2, 0.25*df.iloc[element].height)
+    ERROR = (max_field_height - df.iloc[element].height )/2 #, 0.25*df.iloc[element].height)
     topy=df.iloc[element].top - ERROR
     bottomy=df.iloc[element].height+df.iloc[element].top + ERROR
 
     curr_df = df[(df.top>=topy) & (df.top+df.height<=bottomy)].copy()
     curr_df=curr_df.sort_values(by='left') # .reset_index(drop=True)
 
-    print("\nOld ERROR: ",ERROR)
-    #
+    # print("\nOld ERROR: ",ERROR)
+    # #
     # for i in range(curr_df.shape[0]):
     #     local_min_top = min(local_min_top, curr_df.iloc[i].height)
     #     local_max_bottom = max(local_max_bottom, curr_df.iloc[i].height + curr_df.iloc[i].top)
@@ -286,16 +286,22 @@ while(element < df.shape[0]-1):
             curr_df=assign_from_last(curr_df,parent_group,df)
 
         else:
-            if parent_group is not None:
-                i=1
-                for index,row in curr_df.loc[curr_df['type'] == 'radio'].iterrows():
-                    row['group'] = [parent_group,i*-1]
-                    i+=1
+            if labels==0 and parent_group is not None:
+                i = 1
+                for index, row in curr_df.loc[curr_df['type'] == 'radio'].iterrows():
+                    df.at[index,'group'] = [parent_group, i * -1]
+                    i += 1
+            elif labels==1:
+                parent_group = curr_df.index[0]
+                i = 1
+                for index, row in curr_df.loc[curr_df['type'] == 'radio'].iterrows():
+                    df.at[index, 'group'] = [parent_group, i * -1]
+                    i += 1
 
             else:
                 i = 1
                 for index,row in curr_df.loc[curr_df['type'] == 'radio'].iterrows():
-                    row['group'] = ['useless', i*-1]
+                    df.at[index, 'group'] = ['useless', i * -1]
                     i += 1
 
 
@@ -329,3 +335,4 @@ def create_dict_from_df(dfx):
             else:
                 mappingDict.update(tmpDict)
 create_dict_from_df(df)
+print(mappingDict)
