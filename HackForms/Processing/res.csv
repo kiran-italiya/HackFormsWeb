@@ -1,57 +1,57 @@
 ,left,top,height,width,type,value,group
 0,663,142,52,269,field,,39
-39,580,153,35,54,label,Date,0
+39,580,153,35,54,label,Date,NaN
 1,158,224,60,771,field,,40
-40,79,237,35,66,label,Name:,0
+40,79,237,35,66,label,Name:,NaN
 2,229,302,53,268,field,,41
 3,581,302,53,349,field,,42
-42,507,312,35,64,label,Email:,0
-41,79,314,35,140,label,Enrollmentnc,0
-43,77,381,35,293,label,Whatdidyoulikeverymuch?,0
+42,507,312,35,64,label,Email:,NaN
+41,79,314,35,140,label,Enrollmentnc,NaN
+43,77,381,35,293,label,Whatdidyoulikeverymuch?,NaN
 34,640,430,36,55,checkbox,,"[43, 46]"
 35,80,431,35,56,checkbox,,"[43, 44]"
-46,711,431,35,223,label,Attitudeofemployees,0
-45,440,434,35,151,label,Administration,0
-44,152,434,35,132,label,Environment,0
+46,711,431,35,223,label,Attitudeofemployees,NaN
+45,440,434,35,151,label,Administration,NaN
+44,152,434,35,132,label,Environment,NaN
 36,360,434,35,57,checkbox,,"[43, 45]"
 37,80,485,36,56,checkbox,,"[43, 47]"
 38,360,485,36,57,checkbox,,"[43, 48]"
-48,437,487,35,219,label,TalentandInnovation,0
-47,152,488,35,141,label,Infrastructure,0
+48,437,487,35,219,label,TalentandInnovation,NaN
+47,152,488,35,141,label,Infrastructure,NaN
 29,905,573,27,27,radio,,"[49, -5]"
 33,588,573,27,27,radio,,"[49, -1]"
 32,673,573,26,26,radio,,"[49, -2]"
 31,751,573,27,27,radio,,"[49, -3]"
 30,828,573,26,26,radio,,"[49, -4]"
-49,74,575,35,342,label,Ratesupportivenessofemployees.,0
+49,74,575,35,342,label,Ratesupportivenessofemployees.,NaN
 28,583,639,27,27,radio,,"[50, -1]"
 27,668,639,26,26,radio,,"[50, -2]"
 25,823,639,26,26,radio,,"[50, -4]"
 24,900,639,26,26,radio,,"[50, -5]"
 26,746,639,26,26,radio,,"[50, -3]"
-50,70,640,35,444,label,Ratetheimpatofprojectscompanyisdoing.,0
+50,70,640,35,444,label,Ratetheimpatofprojectscompanyisdoing.,NaN
 23,583,711,27,27,radio,,"[51, -1]"
 22,668,711,27,27,radio,,"[51, -2]"
 21,746,711,27,27,radio,,"[51, -3]"
 20,823,711,27,27,radio,,"[51, -4]"
 19,900,711,27,27,radio,,"[51, -5]"
-51,70,713,35,381,label,Ratetheoverallexperienceofthevisit.,0
+51,70,713,35,381,label,Ratetheoverallexperienceofthevisit.,NaN
 14,900,787,27,27,radio,,"[52, -5]"
 16,746,787,26,26,radio,,"[52, -3]"
 17,668,787,26,26,radio,,"[52, -2]"
 18,583,787,26,26,radio,,"[52, -1]"
 15,823,787,26,26,radio,,"[52, -4]"
-52,70,788,35,341,label,Ratequalityofprovidedresources.,0
-53,70,853,35,663,label,Howmuchlikelydoyourecommendthecompanyfortheirservices?,0
+52,70,788,35,341,label,Ratequalityofprovidedresources.,NaN
+53,70,853,35,663,label,Howmuchlikelydoyourecommendthecompanyfortheirservices?,NaN
 13,583,914,26,26,radio,,"[53, -1]"
 11,746,914,26,26,radio,,"[53, -3]"
 10,823,914,26,26,radio,,"[53, -4]"
 9,901,914,26,26,radio,,"[53, -5]"
 12,669,914,26,26,radio,,"[53, -2]"
-54,77,970,35,285,label,Anvconstructivesuggestions,0
+54,77,970,35,285,label,Anvconstructivesuggestions,NaN
 4,60,1010,60,870,field,,54
 5,62,1066,60,829,field,,54
 6,61,1124,60,868,field,,54
 7,60,1184,60,865,field,,54
-55,756,1257,19,100,label,SionHere,0
+55,756,1257,19,100,label,SionHere,NaN
 8,722,1297,72,201,field,,55

@@ -4,6 +4,7 @@ import csv
 import json
 import math
 import cv2,imutils
+import pytesseract
 
 height = 730
 width = 1000
@@ -28,8 +29,9 @@ def generateDf(filename):
 # df = pd.read_csv("data.csv")
 # df = pd.read_csv("visit-feedback2.csv")
 df = pd.read_csv("data20.csv")
+df['group']='NaN'
 
-img = cv2.imread('test20.jpg')
+img = cv2.imread('filled2.jpg')
 img = imutils.resize(img, width=1000)
 for row in df.itertuples():
     cv2.rectangle(img, (row[1],row[2]),(row[1]+row[4],row[2]+row[3]),(0,0,255),2)
@@ -244,8 +246,8 @@ while(element < df.shape[0]-1):
     # curr_df = df[(df.top >= topy) & (df.top + df.height <= bottomy)].copy()
     # curr_df = curr_df.sort_values(by='left')  # .reset_index(drop=True)
 
-    print("topy:",topy," bottomy:",bottomy)
-    print("\n curr_df::\n ",curr_df)
+    # print("topy:",topy," bottomy:",bottomy)
+    # print("\n curr_df::\n ",curr_df)
 
     for i in range(curr_df.shape[0]):
         element+=1
@@ -334,5 +336,35 @@ def create_dict_from_df(dfx):
                 mappingDict[nxt].update(tmpDict[nxt])
             else:
                 mappingDict.update(tmpDict)
-create_dict_from_df(df)
-print(mappingDict)
+# create_dict_from_df(df)
+# print(mappingDict)
+
+
+def perform_OCR():
+
+    fieldsDf = df[df.type=='field']
+    fieldsDf = fieldsDf.sort_values(by=['top','left'])
+
+    for i,row in fieldsDf.iterrows():
+        t = row['top']
+        l = row['left']
+        h = row['height']
+        w = row['width']
+
+        # crop the photo and submit to tesseract
+        img = cv2.imread('filled2 .jpg')
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = img.astype('uint8')
+        img = imutils.resize(img, width=1000)
+        cropped_img = img[t:t+h,l:l+w]
+        cropped_img = cv2.medianBlur(cropped_img,3)
+        cv2.imshow('cropped img',cropped_img)
+        cv2.waitKey(0)
+
+        threshed= cv2.adaptiveThreshold(cropped_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+        cv2.imshow('thresholded img',threshed)
+        cv2.waitKey(0)
+        result = pytesseract.image_to_string(cropped_img,config='--psm 4')
+        print(result)
+
+perform_OCR()
