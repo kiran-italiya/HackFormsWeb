@@ -6,7 +6,6 @@ import csv
 import pandas as pd
 import copy
 
-
 def contour(image):
 	img=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 	_, threshold = cv2.threshold(img, 200, 255, cv2.THRESH_BINARY)

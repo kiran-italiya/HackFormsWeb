@@ -10,7 +10,7 @@ from HackFormsWeb import settings
 #     def __str__(self):
 #         return  self.project_name
 def user_directory_path(instance, filename):
-    return '{0}/{1}/{2}'.format(settings.MEDIA_ROOT,instance.project_name,filename)
+    return '/{1}/{2}'.format(instance.project_name,filename)
 class Project(models.Model):
     project_name = models.CharField(max_length=100, unique=True,primary_key=True)
     empty_form = models.FileField(upload_to=user_directory_path)
