@@ -28,10 +28,10 @@ def generateDf(filename):
 # df = generateDf('exported_json.json')
 # df = pd.read_csv("data.csv")
 # df = pd.read_csv("visit-feedback2.csv")
-df = pd.read_csv("data20.csv")
+df = pd.read_csv("data21.csv")
 df['group']='NaN'
 
-img = cv2.imread('filled2.jpg')
+img = cv2.imread('test21.jpg')
 img = imutils.resize(img, width=1000)
 for row in df.itertuples():
     cv2.rectangle(img, (row[1],row[2]),(row[1]+row[4],row[2]+row[3]),(0,0,255),2)
@@ -99,6 +99,8 @@ df['group'] = df['group'].astype(object)
 min_field_height = df['height'].min()
 max_field_height = df['height'].max()
 avg_field_height = df['height'].mean()
+
+
 
 
 def assign_from_last(curr_df,parent_group,df):
@@ -206,6 +208,146 @@ def assign_from_last(curr_df,parent_group,df):
     return curr_df
 
 
+
+
+def assign_with_missing(curr_df,parent_group,df,labels,fields):
+    in_strip_elements=curr_df.shape[0]
+
+    label_At_left = True
+
+    if in_strip_elements%2 == 1:          # yet to test
+
+        if curr_df.iloc[-1].type == 'field':
+            label_At_left = True
+        elif curr_df.iloc[-1].type == 'label':
+            label_At_left = False
+        else:
+            print("unrecoverable missing fields")
+
+        if label_At_left:
+            if curr_df.iloc[0].type=='field'  and labels+fields>2:
+                for index, row in curr_df.iloc[1:].iterrows():
+                    if row.type == 'label':
+                        prevIndexValue = index
+                    if row.type == 'field':
+                        if parent_group is not None:
+                            df.at[index, 'group'] = [parent_group, prevIndexValue]
+                            prevIndexValue = ['useless', UNREACHABLE]
+                        else:
+                            df.at[index, 'group'] = prevIndexValue
+                            prevIndexValue = ['useless',UNREACHABLE]
+
+
+            if curr_df.iloc[0].type == 'label':
+                prevIndexValue = curr_df.index[0]
+                for index, row in curr_df.iloc[1:].iterrows():
+                    if row.type == 'label':
+                        prevIndexValue = index
+                    if row.type == 'field':
+                        if parent_group is not None:
+                            df.at[index, 'group'] = [parent_group, prevIndexValue]
+                            prevIndexValue = ['useless', UNREACHABLE]
+                        else:
+                            df.at[index, 'group'] = prevIndexValue
+                            prevIndexValue = ['useless', UNREACHABLE]
+
+
+        else:     # labels_at_right
+            if curr_df.iloc[0].type == 'field' and labels + fields > 2:
+                prevIndex = curr_df.index[0]
+                for index, row in curr_df.iloc[1:].iterrows():
+                    if row.type == 'label':
+                        if parent_group is not None:
+                            df.at[prevIndex, 'group'] = [parent_group, index]
+                        else:
+                            df.at[prevIndex, 'group'] = index
+                    if row.type == 'field':
+                        prevIndex = index
+
+            if curr_df.iloc[0].type == 'label':
+                print("i don't think this will happen anytime")
+                # if curr_df.iloc[0].type == 'field' and labels + fields > 2:
+                #     prevIndex = curr_df.index[0]
+                #     for index, row in curr_df.iloc[1:].iterrows():
+                #         if row.type == 'label':
+                #             if parent_group is not None:
+                #                 df.at[prevIndex, 'group'] = [parent_group, index]
+                #             else:
+                #                 df.at[prevIndex, 'group'] = index
+                #         if row.type == 'field':
+                #             prevIndex = index
+
+
+
+    else:  # elements are in even number
+
+        if curr_df.iloc[-1].type == 'field':
+            label_At_left = True
+        elif curr_df.iloc[-1].type == 'label':
+            label_At_left = False
+        else:
+            print("unrecoverable missing fields")
+
+        if label_At_left:
+            if curr_df.iloc[0].type == 'field' and labels + fields > 2:
+                for index, row in curr_df.iloc[1:].iterrows():
+                    if row.type == 'label':
+                        prevIndexValue = index
+                    if row.type == 'field':
+                        if parent_group is not None:
+                            df.at[index, 'group'] = [parent_group, prevIndexValue]
+                            prevIndexValue = ['useless', UNREACHABLE]
+                        else:
+                            df.at[index, 'group'] = prevIndexValue
+                            prevIndexValue = ['useless', UNREACHABLE]
+
+            if curr_df.iloc[0].type == 'label':
+                prevIndexValue = curr_df.index[0]
+                for index, row in curr_df.iloc[1:].iterrows():
+                    if row.type == 'label':
+                        prevIndexValue = index
+                    if row.type == 'field':
+                        if parent_group is not None:
+                            df.at[index, 'group'] = [parent_group, prevIndexValue]
+                            prevIndexValue = ['useless', UNREACHABLE]
+                        else:
+                            df.at[index, 'group'] = prevIndexValue
+                            prevIndexValue = ['useless', UNREACHABLE]
+
+
+        else:  # labels_at_right
+            if curr_df.iloc[0].type == 'field' and labels + fields > 2:
+                prevIndex = curr_df.index[0]
+                for index, row in curr_df.iloc[1:].iterrows():
+                    if row.type == 'label':
+                        if parent_group is not None:
+                            df.at[prevIndex, 'group'] = [parent_group, index]
+                        else:
+                            df.at[prevIndex, 'group'] = index
+                    if row.type == 'field':
+                        prevIndex = index
+
+            if curr_df.iloc[0].type == 'label':
+                print("i don't think this will happen anytime")
+                # if curr_df.iloc[0].type == 'field' and labels + fields > 2:
+                #     prevIndex = curr_df.index[0]
+                #     for index, row in curr_df.iloc[1:].iterrows():
+                #         if row.type == 'label':
+                #             if parent_group is not None:
+                #                 df.at[prevIndex, 'group'] = [parent_group, index]
+                #             else:
+                #                 df.at[prevIndex, 'group'] = index
+                #         if row.type == 'field':
+                #             prevIndex = index
+
+
+
+    return curr_df
+
+
+
+
+
 element=-1
 parent_group=None
 # print(df.shape[0])
@@ -220,6 +362,7 @@ while(element < df.shape[0]-1):
 
     local_min_top = 0
     local_max_bottom = 0
+
     # first_top=df.iloc[element].top
     # first_height=df.iloc[element].height
 
@@ -280,8 +423,23 @@ while(element < df.shape[0]-1):
             df.at[curr_df.index[0], 'group'] = UNREACHABLE
 
 
-    if (labels>0 and ( fields>0 or checkboxes>0)):    # or radios>0)):
-        curr_df=assign_from_last(curr_df,parent_group,df)
+    if labels>0 and fields>0:
+        if checkboxes>0 or radios>0:
+            print("Form is inappropriate")
+        else:
+            if labels == fields or labels == fields + 1:
+                parent_group=None
+                curr_df = assign_from_last(curr_df, parent_group, df)
+            else:
+                parent_group = None
+                curr_df = assign_with_missing(curr_df, parent_group, df,labels,fields)
+
+
+    if labels > 0 and checkboxes > 0:
+        if fields>0 or radios>0:
+            print("Form is inappropriate")
+        else:
+            curr_df = assign_from_last(curr_df, parent_group, df)
 
     if(radios>0):
         if (labels>0 and labels==radios+1) or (labels==radios and parent_group is not None):    #perfect result
@@ -352,7 +510,7 @@ def perform_OCR():
         w = row['width']
 
         # crop the photo and submit to tesseract
-        img = cv2.imread('filled2 .jpg')
+        img = cv2.imread('filled2.jpg')
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         img = img.astype('uint8')
         img = imutils.resize(img, width=1000)

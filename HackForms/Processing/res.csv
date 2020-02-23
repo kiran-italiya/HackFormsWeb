@@ -1,57 +1,56 @@
 ,left,top,height,width,type,value,group
-0,663,142,52,269,field,,39
-39,580,153,35,54,label,Date,NaN
-1,158,224,60,771,field,,40
-40,79,237,35,66,label,Name:,NaN
-2,229,302,53,268,field,,41
-3,581,302,53,349,field,,42
-42,507,312,35,64,label,Email:,NaN
-41,79,314,35,140,label,Enrollmentnc,NaN
-43,77,381,35,293,label,Whatdidyoulikeverymuch?,NaN
-34,640,430,36,55,checkbox,,"[43, 46]"
-35,80,431,35,56,checkbox,,"[43, 44]"
-46,711,431,35,223,label,Attitudeofemployees,NaN
-45,440,434,35,151,label,Administration,NaN
-44,152,434,35,132,label,Environment,NaN
-36,360,434,35,57,checkbox,,"[43, 45]"
-37,80,485,36,56,checkbox,,"[43, 47]"
-38,360,485,36,57,checkbox,,"[43, 48]"
-48,437,487,35,219,label,TalentandInnovation,NaN
-47,152,488,35,141,label,Infrastructure,NaN
-29,905,573,27,27,radio,,"[49, -5]"
-33,588,573,27,27,radio,,"[49, -1]"
-32,673,573,26,26,radio,,"[49, -2]"
-31,751,573,27,27,radio,,"[49, -3]"
-30,828,573,26,26,radio,,"[49, -4]"
-49,74,575,35,342,label,Ratesupportivenessofemployees.,NaN
-28,583,639,27,27,radio,,"[50, -1]"
-27,668,639,26,26,radio,,"[50, -2]"
-25,823,639,26,26,radio,,"[50, -4]"
-24,900,639,26,26,radio,,"[50, -5]"
-26,746,639,26,26,radio,,"[50, -3]"
-50,70,640,35,444,label,Ratetheimpatofprojectscompanyisdoing.,NaN
-23,583,711,27,27,radio,,"[51, -1]"
-22,668,711,27,27,radio,,"[51, -2]"
-21,746,711,27,27,radio,,"[51, -3]"
-20,823,711,27,27,radio,,"[51, -4]"
-19,900,711,27,27,radio,,"[51, -5]"
-51,70,713,35,381,label,Ratetheoverallexperienceofthevisit.,NaN
-14,900,787,27,27,radio,,"[52, -5]"
-16,746,787,26,26,radio,,"[52, -3]"
-17,668,787,26,26,radio,,"[52, -2]"
-18,583,787,26,26,radio,,"[52, -1]"
-15,823,787,26,26,radio,,"[52, -4]"
-52,70,788,35,341,label,Ratequalityofprovidedresources.,NaN
-53,70,853,35,663,label,Howmuchlikelydoyourecommendthecompanyfortheirservices?,NaN
-13,583,914,26,26,radio,,"[53, -1]"
-11,746,914,26,26,radio,,"[53, -3]"
-10,823,914,26,26,radio,,"[53, -4]"
-9,901,914,26,26,radio,,"[53, -5]"
-12,669,914,26,26,radio,,"[53, -2]"
-54,77,970,35,285,label,Anvconstructivesuggestions,NaN
-4,60,1010,60,870,field,,54
-5,62,1066,60,829,field,,54
-6,61,1124,60,868,field,,54
-7,60,1184,60,865,field,,54
-55,756,1257,19,100,label,SionHere,NaN
-8,722,1297,72,201,field,,55
+0,664,141,52,268,field,,39
+39,581,153,35,53,label,Date,NaN
+1,158,225,58,771,field,,40
+40,80,237,35,64,label,Name,NaN
+2,230,300,55,267,field,,41
+3,581,302,54,348,field,,"['useless', -1000]"
+41,80,314,35,140,label,Enrollmentnc,NaN
+42,78,380,35,292,label,Whatdidyoulikeverymuch?,NaN
+34,75,425,45,67,checkbox,,"[42, 43]"
+35,639,429,37,57,checkbox,,"[42, 45]"
+45,712,431,35,222,label,Attitudeofemployees,NaN
+36,360,432,37,57,checkbox,,"[42, 44]"
+44,440,433,35,151,label,Administration,NaN
+43,152,433,35,132,label,Environment,NaN
+37,75,479,45,67,checkbox,,"[42, 46]"
+38,360,483,37,57,checkbox,,"[42, 47]"
+47,438,486,35,217,label,TalentandInnovation,NaN
+46,152,488,35,141,label,Infrastructure,NaN
+29,906,573,26,26,radio,,"[48, -5]"
+33,588,573,26,26,radio,,"[48, -1]"
+32,674,573,26,26,radio,,"[48, -2]"
+31,751,573,26,26,radio,,"[48, -3]"
+30,829,573,26,26,radio,,"[48, -4]"
+48,75,574,35,341,label,Ratesupportivenessofemployees.,NaN
+28,583,638,26,26,radio,,"[49, -1]"
+26,746,638,26,26,radio,,"[49, -3]"
+27,668,638,26,26,radio,,"[49, -2]"
+24,901,638,26,26,radio,,"[49, -5]"
+25,823,638,26,26,radio,,"[49, -4]"
+49,70,639,35,444,label,Ratetheimpactofprojectscompanytsdoing.,NaN
+23,583,711,26,26,radio,,"[50, -1]"
+22,668,711,26,26,radio,,"[50, -2]"
+21,746,711,26,26,radio,,"[50, -3]"
+20,823,711,26,26,radio,,"[50, -4]"
+19,901,711,26,26,radio,,"[50, -5]"
+50,70,712,35,380,label,Ratetheoverallexperienceofthevisit.,NaN
+14,901,786,26,26,radio,,"[51, -5]"
+15,824,786,26,26,radio,,"[51, -4]"
+17,669,786,26,26,radio,,"[51, -2]"
+18,583,786,26,26,radio,,"[51, -1]"
+16,747,786,26,26,radio,,"[51, -3]"
+51,70,788,35,341,label,Ratequalityofprovidedresources.,NaN
+52,70,852,35,663,label,Howmuchlikelydoyourecommendthecompanyfortheirservices?,NaN
+13,583,914,26,26,radio,,"[52, -1]"
+11,746,914,26,26,radio,,"[52, -3]"
+10,823,914,26,26,radio,,"[52, -4]"
+9,901,914,26,26,radio,,"[52, -5]"
+12,668,914,26,26,radio,,"[52, -2]"
+53,77,969,35,286,label,Anycanctrictivesrecectians,NaN
+4,63,1009,60,870,field,,53
+5,63,1067,60,870,field,,53
+6,63,1126,60,870,field,,53
+7,63,1181,60,870,field,,53
+54,756,1250,15,100,label,CianWare,NaN
+8,723,1290,71,200,field,,54
