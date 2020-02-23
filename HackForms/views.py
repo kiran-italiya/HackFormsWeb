@@ -55,8 +55,8 @@ def upload(request):
                 os.mkdir(os.path.join(settings.MEDIA_ROOT, os.path.join(project_name,'/data')))
             except:pass
 
-            form.empty_form = os.path.join(settings.MEDIA_URL,project_name,empty_form.name).replace('\\','/')
-            print(form.empty_form)
+            # form.empty_form = os.path.join(settings.MEDIA_URL,project_name,empty_form.name).replace('\\','/')
+            # print(form.empty_form)
             with ZipFile(zip_file) as zip_file:
                 names = zip_file.namelist()
                 zip_file.extractall(os.path.join(settings.MEDIA_ROOT,project_name+'/data'),names)

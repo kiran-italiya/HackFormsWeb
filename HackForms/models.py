@@ -10,12 +10,11 @@ from HackFormsWeb import settings
 #     def __str__(self):
 #         return  self.project_name
 def user_directory_path(instance, filename):
-    return '/{1}/{2}'.format(instance.project_name,filename)
+    return '{0}/{1}'.format(instance.project_name,filename)
 class Project(models.Model):
     project_name = models.CharField(max_length=100, unique=True,primary_key=True)
     empty_form = models.FileField(upload_to=user_directory_path)
-    zip_file = models.FileField(upload_to=settings.MEDIA_ROOT)
-    data = models.FileField(upload_to=settings.MEDIA_ROOT)
+    zip_file = models.FileField(upload_to=user_directory_path)
     csv_file = models.FileField(upload_to=settings.MEDIA_ROOT)
     def __str__(self):
         return  self.project_name
