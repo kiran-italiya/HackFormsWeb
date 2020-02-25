@@ -49,7 +49,7 @@ def detect_rectangles(image):
 	for cnt in contours:
 
 		approx = cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt, True), True)
-		if len(approx) == 4 and cv2.contourArea(cnt)>100:
+		if len(approx) == 4 and cv2.contourArea(cnt)>50:
 			'''if 2000+co > cv2.contourArea(cnt) > co:         
 				continue
 				co=cv2.contourArea(cnt)'''# try changing the value in place of 2000 to get outer rectangles

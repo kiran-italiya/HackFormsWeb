@@ -1,9 +1,11 @@
-from detection import *
-import hackForm
-import extraction
+import detection 
+#import hackForm
+#import extraction
 import cv2
 import pytesseract
-import imutils
+import imutils,copy,csv
+import pandas as pd
+import numpy as np
 
 img = cv2.imread("Test1.jpg")
 print("test.png")
@@ -27,22 +29,24 @@ gray = cv2.dilate(gray, None)
 
 #"""Label Detection and Processing"""
 
-cnt = contour(img1)
+cnt = detection.contour(img1)
 
 #    """RECTANGLE DETECTION"""
 
-rectangle_image,rec_coordinate=detect_rectangles(img)
-df_box = eliminate_duplicate_box(rec_coordinate,diff)
+rectangle_image,rec_coordinate=detection.detect_rectangles(img)
+df_box = detection.eliminate_duplicate_box(rec_coordinate,diff)
 
 #"""Line detection and processing"""    
-line = linesp(img)
-df = line_processing(line,diff)
-
-
+line = detection.linesp(img)
+df = detection.line_processing(line,diff)
+img2 = img.copy()
+for row in df.itertuples():
+	cv2.rectangle(img2, (row[1],row[2]),(row[3],row[4]),(0,0,255),1)
+cv2.imwrite("lines.jpg",img2)
 #"""Duplicate BOX/LINE ELIMINATION"""   
-df,df_box = eliminate_duplicate_entry(df,df_box)
+df,df_box = detection.eliminate_duplicate_entry(df,df_box)
 #    """CHECKBOX DETECTION"""
-df_box, checkbox = get_checkbox(df_box)
+df_box, checkbox = detection.get_checkbox(df_box)
 
 #    """FORM BOX """
 start = df_box.iloc[0]
@@ -67,7 +71,7 @@ df_box['Y1'] = df_box['Y1'] - 5
 df_box['X2'] = df_box['X2'] + 10
 field_box = df_box.values.tolist()
 
-circles = findCircle(cnt, img1)
+circles = detection.findCircle(cnt, img1)
 
 cv2.imwrite("img.png",img1)
 with open('data.csv', 'w', newline='') as file:
@@ -81,7 +85,8 @@ pad = 10
 df = pd.read_csv('data.csv')
 
 for row in df.itertuples():
-	threshold[row[2]-pad:row[2]+row[3]+pad,row[1]-pad:row[1]+pad+row[4]] = np.ones((row[3]+(2*pad),row[4]+(2*pad)))*255
+    x,y = threshold[row[2]-pad:row[2]+row[3]+pad,row[1]-pad:row[1]+pad+row[4]].shape
+    threshold[row[2]-pad:row[2]+row[3]+pad,row[1]-pad:row[1]+pad+row[4]] = np.ones((x,y))*255
 
 
 
@@ -89,10 +94,10 @@ for row in df.itertuples():
 cv2.imshow("img",threshold)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-text = pytesseract.image_to_boxes(threshold, config= '--psm 1')
+text = pytesseract.image_to_boxes(threshold, lang = 'eng',config= '--psm 4')
 data = text.split('\n')
 height= 25
-df = generate_label_box(data,height)
+df = detection.generate_label_box(data,height)
 
 y,x = threshold.shape
 df['Y1'] = y - 25 - df['Y1']
@@ -105,10 +110,10 @@ with open('data.csv', 'a', newline='') as file:
 	writer = csv.writer(file)
 	writer.writerows(label_box)
 
-df_box= pd.read_csv('data.csv')
-df_box['top'] = df_box['top']-start[1]
-df_box['left'] = df_box['left']-start[0]
-img1 = img1[start[1]:start[3],start[0]:start[2]]
+df_box= pd.read_csv('data.csv',     encoding = "ISO-8859-1")
+#df_box['top'] = df_box['top']-start[1]
+#df_box['left'] = df_box['left']-start[0]
+#img1 = img1[start[1]:start[3],start[0]:start[2]]
 for row in df_box.itertuples():
 	cv2.rectangle(img1, (row[1],row[2]),(row[1]+row[4],row[2]+row[3]),(0,0,255),1)
 cv2.imshow("Display", img1)

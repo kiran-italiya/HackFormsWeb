@@ -28,7 +28,7 @@ def generateDf(filename):
 # df = generateDf('exported_json.json')
 # df = pd.read_csv("data.csv")
 # df = pd.read_csv("visit-feedback2.csv")
-df = pd.read_csv("data.csv")
+df = pd.read_csv("data.csv", encoding = "ISO-8859-1")
 df['group']='NaN'
 
 img = cv2.imread('Test1.jpg')
