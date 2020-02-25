@@ -9,7 +9,7 @@ import copy
 def contour(image):
 	img=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 	_, threshold = cv2.threshold(img, 200, 255, cv2.THRESH_BINARY)
-	contours,_=cv2.findContours(threshold,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+	_,contours,_=cv2.findContours(threshold,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
 	return contours
 
 def findCircle(cnts,img1):
@@ -43,7 +43,7 @@ def detect_rectangles(image):
 
 	img=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 	_, threshold = cv2.threshold(img, 240, 255, cv2.THRESH_BINARY)
-	contours,_=cv2.findContours(threshold,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+	_,contours,_=cv2.findContours(threshold,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
 	coordinate=[]
 	for cnt in contours:
 
