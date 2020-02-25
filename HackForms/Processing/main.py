@@ -1,17 +1,20 @@
 import detection 
-#import hackForm
-#import extraction
+import hackForm
+import extraction
 import cv2
 import pytesseract
 import imutils,copy,csv
 import pandas as pd
 import numpy as np
+import math
 
-img = cv2.imread("Test1.jpg")
-print("test.png")
+img = cv2.imread("kiran.jpg")
 width = 1000
 height = 40
 diff = 30
+
+datacsv='data.csv'
+
 img = imutils.resize(img, width=width)
 img3 = img.copy()
 img1 = img.copy()
@@ -35,13 +38,13 @@ cnt = detection.contour(img1)
 
 rectangle_image,rec_coordinate=detection.detect_rectangles(img)
 df_box = detection.eliminate_duplicate_box(rec_coordinate,diff)
-
+cv2.imwrite("boxes.jpg",rectangle_image)
 #"""Line detection and processing"""    
 line = detection.linesp(img)
-df = detection.line_processing(line,diff)
+df = detection.line_processing(line,diff, height)
 img2 = img.copy()
 for row in df.itertuples():
-	cv2.rectangle(img2, (row[1],row[2]),(row[3],row[4]),(0,0,255),1)
+	cv2.rectangle(img2, (row[1],row[2]-40),(row[3],row[4]),(0,0,255),1)
 cv2.imwrite("lines.jpg",img2)
 #"""Duplicate BOX/LINE ELIMINATION"""   
 df,df_box = detection.eliminate_duplicate_entry(df,df_box)
@@ -54,7 +57,7 @@ print(start)
 #    """CONVERSION TO H,W FROM X2,Y2"""
 df['Y1'] = df['Y1'] - height
 df['Y2'] = df['Y2'] + 10
-df_box = df_box.drop(df_box.index[0])
+# df_box = df_box.drop(df_box.index[0])
 df_box = df_box.append(df)
 df_box = df_box.sort_values(by= ['Y1','X1']).reset_index(drop=True)
 df_box['Type'] = 'field'
@@ -74,7 +77,7 @@ field_box = df_box.values.tolist()
 circles = detection.findCircle(cnt, img1)
 
 cv2.imwrite("img.png",img1)
-with open('data.csv', 'w', newline='') as file:
+with open(datacsv, 'w', newline='') as file:
 	writer = csv.writer(file)
 	writer.writerow(["left", "top", "height", "width", "type", "value", "group"])
 	writer.writerows(field_box)
@@ -82,11 +85,12 @@ with open('data.csv', 'w', newline='') as file:
 	writer.writerows(checkbox)
 
 pad = 10
-df = pd.read_csv('data.csv')
-
+df = pd.read_csv(datacsv)
+x,y = threshold[0:start[1]-30,:].shape
+threshold[0:start[1]-30,:] = np.ones((x,y))*255
 for row in df.itertuples():
-    x,y = threshold[row[2]-pad:row[2]+row[3]+pad,row[1]-pad:row[1]+pad+row[4]].shape
-    threshold[row[2]-pad:row[2]+row[3]+pad,row[1]-pad:row[1]+pad+row[4]] = np.ones((x,y))*255
+	x,y = threshold[row[2]-pad:row[2]+row[3]+pad,row[1]-pad:row[1]+pad+row[4]].shape
+	threshold[row[2]-pad:row[2]+row[3]+pad,row[1]-pad:row[1]+pad+row[4]] = np.ones((x,y))*255
 
 
 
@@ -106,17 +110,35 @@ df['X2'] = df['X2'] + 10
 df['Y2'] = df['Y2'] + 10
 label_box = df.values.tolist()
 
-with open('data.csv', 'a', newline='') as file:
+with open(datacsv, 'a', newline='') as file:
 	writer = csv.writer(file)
-	writer.writerows(label_box)
+	writer.writerows(label_box) 
 
-df_box= pd.read_csv('data.csv',     encoding = "ISO-8859-1")
+df_box= pd.read_csv(datacsv,     encoding = "ISO-8859-1")
 #df_box['top'] = df_box['top']-start[1]
 #df_box['left'] = df_box['left']-start[0]
 #img1 = img1[start[1]:start[3],start[0]:start[2]]
-for row in df_box.itertuples():
-	cv2.rectangle(img1, (row[1],row[2]),(row[1]+row[4],row[2]+row[3]),(0,0,255),1)
 cv2.imshow("Display", img1)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 cv2.imwrite("result.jpg", img1)
+
+
+df = hackForm.hackForm(datacsv)
+
+
+img = cv2.imread("kiran2.png")
+img = imutils.resize(img, width = 1000)
+label = []
+for _,row in df.iterrows():
+	if row['type'] == 'label' and row['group'] == 'NaN':
+		label.append(row['value'])
+dummy = [np.nan]*len(label)
+print(dummy)
+df_final = pd.DataFrame([dummy],columns =label)
+print(df_final)
+df_final = extraction.radio_identification(img,df,df_final)
+print(df_final)
+df_final = extraction.checkbox_identification(img,df,df_final)
+print(df_final)
+df_final.to_csv('final.csv')
