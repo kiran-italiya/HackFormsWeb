@@ -28,10 +28,10 @@ def generateDf(filename):
 # df = generateDf('exported_json.json')
 # df = pd.read_csv("data.csv")
 # df = pd.read_csv("visit-feedback2.csv")
-df = pd.read_csv("data21.csv")
+df = pd.read_csv("data.csv", encoding = "ISO-8859-1")
 df['group']='NaN'
 
-img = cv2.imread('test21.jpg')
+img = cv2.imread('Test1.jpg')
 img = imutils.resize(img, width=1000)
 for row in df.itertuples():
     cv2.rectangle(img, (row[1],row[2]),(row[1]+row[4],row[2]+row[3]),(0,0,255),2)
@@ -525,4 +525,4 @@ def perform_OCR():
         result = pytesseract.image_to_string(cropped_img,config='--psm 4')
         print(result)
 
-perform_OCR()
+#perform_OCR()              """"#Main operation""""
