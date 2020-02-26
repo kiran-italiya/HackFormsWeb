@@ -249,9 +249,6 @@ def generate_label_box(data,height):
 	text = []
 	label_box = []
 	value = ""
-
-
-
 	for j in range(len(data)):
 		text.append(data[j].split(" "))
 	data = ""

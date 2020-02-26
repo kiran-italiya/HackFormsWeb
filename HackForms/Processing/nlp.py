@@ -2,8 +2,8 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 import nltk
-import regex as re
-
+# import regex as re
+import re
 # nltk.download('vader_lexicon')
 # nltk.download('stopwords')
 # nltk.download('punkt')
