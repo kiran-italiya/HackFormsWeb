@@ -32,7 +32,7 @@ def radio_identification(img,df,df_final):
                         else:
                             print(df.loc[df_temp.iloc[0]['no']]['value'])
                             df_final.at[0,df.loc[group]['value']]=df.loc[df_temp.iloc[0]['no']]['value']
-    
+
                     except Exception as e:
                         print(e)
                     df_temp = pd.DataFrame(columns = ['sum','no','group'])
@@ -96,7 +96,7 @@ def checkbox_identification(img,df,df_final):
                     cv2.imshow("crop",threshold[y+int(0.25*h):y+h-int(0.25*h),x+int(0.25*w):x+w-int(0.25*w)])
                     cv2.waitKey(0)
                     cv2.destroyAllWindows()
-        
+
                 else:
                     print("same")
                     x,y,h,w = int(row['left']),int(row['top']),int(row['height']),int(row['width'])
