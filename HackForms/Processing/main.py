@@ -191,3 +191,10 @@ class ProcessForm:
 
 
 ProcessForm.processForm('k1.jpg',os.getcwd()+"/data")
+
+def data_analytics(database):
+	x=''
+	for file,file_data in database.values():
+		y=''
+
+	return x
