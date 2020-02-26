@@ -16,6 +16,7 @@ diff = 30
 datacsv='data.csv'
 
 img = imutils.resize(img, width=width)
+h,w = img.shape[:2]
 img3 = img.copy()
 img1 = img.copy()
 img2 = img.copy()
@@ -57,7 +58,7 @@ print(start)
 #    """CONVERSION TO H,W FROM X2,Y2"""
 df['Y1'] = df['Y1'] - height
 df['Y2'] = df['Y2'] + 10
-# df_box = df_box.drop(df_box.index[0])
+
 df_box = df_box.append(df)
 df_box = df_box.sort_values(by= ['Y1','X1']).reset_index(drop=True)
 df_box['Type'] = 'field'
@@ -72,6 +73,14 @@ df_box['Y2'] = abs(temp2-temp1)
 df_box['X2'] = abs(temp4-temp3)
 df_box['Y1'] = df_box['Y1'] - 5
 df_box['X2'] = df_box['X2'] + 10
+
+#"""ADJUSTING COORDINATES TO BOUNDING BOX"""
+if (start[3]-start[1])>h/2:
+	print("VERY AUSPICIOUS CASE ENCOUNTERED")
+	df_box = df_box.drop(df_box.index[0])
+	df_box['Y1'] = df_box['Y1'] - start[1]
+	df_box['X1'] = df_box['X1'] - start[0]
+
 field_box = df_box.values.tolist()
 
 circles = detection.findCircle(cnt, img1)
@@ -108,6 +117,10 @@ df['Y1'] = y - 25 - df['Y1']
 df['X1'] = df['X1'] - 5
 df['X2'] = df['X2'] + 10
 df['Y2'] = df['Y2'] + 10
+if (start[3]-start[1])>h/2:
+	df['Y1'] = df['Y1'] - start[1]
+	df['X1'] = df['X1'] - start[0]
+
 label_box = df.values.tolist()
 
 with open(datacsv, 'a', newline='') as file:
@@ -115,20 +128,28 @@ with open(datacsv, 'a', newline='') as file:
 	writer.writerows(label_box) 
 
 df_box= pd.read_csv(datacsv,     encoding = "ISO-8859-1")
-#df_box['top'] = df_box['top']-start[1]
-#df_box['left'] = df_box['left']-start[0]
-#img1 = img1[start[1]:start[3],start[0]:start[2]]
-cv2.imshow("Display", img1)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-cv2.imwrite("result.jpg", img1)
+
+# cv2.imshow("Display", img1)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+# cv2.imwrite("result.jpg", img1)
 
 
 df = hackForm.hackForm(datacsv)
-
-
+#"""INSERT LOOP FOR PROCESSING IMAGES IN BULK"""
 img = cv2.imread("kiran2.png")
 img = imutils.resize(img, width = 1000)
+rectangle_image,rec_coordinate=detection.detect_rectangles(img)
+df_box = detection.eliminate_duplicate_box(rec_coordinate,diff)
+df_box = df_box.sort_values(by= ['Y1','X1']).reset_index(drop=True)
+dst_img = df_box.iloc[0]
+h_dst,w_dst = img.shape[:2]
+if (start[3]-start[1])>h/2 and (dst_img[3]-dst_img[1])>h_dst/2:
+	img = extraction.transformation(img,start,dst_img)
+	img = img[start[1]:start[3],start[0]:start[2]]
+	cv2.imshow("testcrop",img)
+	cv2.waitKey(0)
+	cv2.destroyAllWindows()
 label = []
 for _,row in df.iterrows():
 	if row['type'] == 'label' and row['group'] == 'NaN':
