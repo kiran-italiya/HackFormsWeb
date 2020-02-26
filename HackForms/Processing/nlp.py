@@ -2,7 +2,6 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 import nltk
-# import regex as re
 import re
 # nltk.download('vader_lexicon')
 # nltk.download('stopwords')
@@ -38,13 +37,14 @@ is EXCELLENT!",
 "the twin towers collapsed today",
 "However, Mr. Carter solemnly argues, his client carried out the kidnapping \
 under orders and in the ''least offensive way possible.''"
+
  ]
 sid = SentimentIntensityAnalyzer()
 stop_words = set(stopwords.words('english'))
 stop_words.update(['mrs.','ms.','mr.','``','.', ',', '"',"''", "'", '?', '!', ':', ';', '(', ')', '[', ']', '{', '}'])
 for sentence in tricky_sentences:
     print(sentence+'\n')
-    sentence = re.sub('[^a-zA-Z]', ' ', sentence) # punctuations removal
+    sentence = re.sub('[^a-zA-Z]', ' ', sentence) # removal of punctuations
     # text = re.sub("&lt;/?.*?&gt;", " &lt;&gt; ", text) # tags removal
     sentence = re.sub("(\\d|\\W)+", " ", sentence) #removal of special chars and digits
 
