@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import pytesseract
-import imutils 
+import imutils
 import csv
 import pandas as pd
 import copy
@@ -40,23 +40,22 @@ def linesp(img):
 	lines = cv2.HoughLinesP(canny, 1, np.pi/180, 80,None, 50, 1)
 	return lines
 def detect_rectangles(image):
-
-	img=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
-	_, threshold = cv2.threshold(img, 240, 255, cv2.THRESH_BINARY)
-	_,contours,_=cv2.findContours(threshold,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-	coordinate=[]
-	for cnt in contours:
-
-		approx = cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt, True), True)
-		if len(approx) == 4 and cv2.contourArea(cnt)>50:
-			'''if 2000+co > cv2.contourArea(cnt) > co:         
-				continue
-				co=cv2.contourArea(cnt)'''# try changing the value in place of 2000 to get outer rectangles
-			coordinate.append((approx[0][0],approx[2][0]))
-	for i in range(len(coordinate)):
-		cv2.circle(img,tuple(coordinate[i][0]),5,(0,255,0),5)
-		cv2.circle(img,tuple(coordinate[i][1]),5,(0,255,0),5)
-	return img,coordinate
+    img=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+    _, threshold = cv2.threshold(img, 240, 255, cv2.THRESH_BINARY)
+    contours,_=cv2.findContours(threshold,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+    coordinate=[]
+    for cnt in contours:
+        approx = cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt, True), True)
+        if len(approx) == 4 and cv2.contourArea(cnt)>50:
+#			'''if 2000+co > cv2.contourArea(cnt) > co:
+#				continue
+#				co=cv2.contourArea(cnt)'''# try changing the value in place of 2000 to get outer rectangles
+            coordinate.append((approx[0][0],approx[2][0]))
+    for i in range(len(coordinate)):
+        cv2.rectangle(img,tuple(coordinate[i][0]),tuple(coordinate[i][1]),(0,0,255),1)
+        cv2.circle(img,tuple(coordinate[i][0]),5,(0,255,0),5)
+        cv2.circle(img,tuple(coordinate[i][1]),5,(0,255,0),5)
+    return img,coordinate
 def eliminate_duplicate_box(rec_coordinate,diff):
 	coordinates = []
 	for x,y in rec_coordinate:
@@ -92,7 +91,7 @@ def eliminate_duplicate_box(rec_coordinate,diff):
 			pass
 	df_box = df_box.sort_values(by= ['Y1','X1']).reset_index(drop=True)
 	return df_box
-def line_processing(line,diff):
+def line_processing(line,diff, height):
 	horiz_lines = []
 	if line is not None:
 		for j in range(0, len(line)):

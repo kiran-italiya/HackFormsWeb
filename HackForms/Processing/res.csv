@@ -1,84 +1,56 @@
 ,left,top,height,width,type,value,group
-66,477,86,35,156,label,FeedbackForm,NaN
-0,703,99,60,231,field,,66
-1,756,136,60,68,field,,NaN
-2,827,136,60,104,field,,NaN
-3,709,139,60,204,field,,NaN
-58,927,143,42,218,checkbox,,-1000
-4,450,176,60,357,field,,66
-5,412,216,60,437,field,,NaN
-59,924,216,39,662,checkbox,,"[66, 67]"
-6,363,219,60,389,field,,NaN
-67,183,224,35,64,label,Name:,NaN
-7,784,279,60,50,field,,NaN
-8,316,282,48,237,field,,68
-9,632,286,42,298,field,,69
-69,561,289,35,59,label,Email:,NaN
-68,184,292,35,127,label,Enrollmentno,NaN
-60,928,322,51,294,checkbox,,-1000
-70,182,351,35,259,label,Whatdidyoulikeverymuch?,NaN
-73,742,393,35,197,label,Attitudeofemployees,NaN
-61,678,395,33,52,checkbox,,"[71, 73]"
-72,502,395,35,135,label,Administration,NaN
-62,432,398,33,51,checkbox,,"[71, 72]"
-71,180,404,35,184,label,(]Environment,NaN
-63,184,443,34,51,checkbox,,"[70, 74]"
-64,432,443,33,51,checkbox,,"[70, 75]"
-75,500,443,35,193,label,TalentandInnovation,NaN
-74,247,445,35,125,label,Infrastructure,NaN
-76,180,521,35,302,label,Ratesupportivenessofemployees.,NaN
-57,915,522,23,23,radio,,"[76, -5]"
-53,847,522,23,23,radio,,"[76, -4]"
-56,634,523,23,23,radio,,"[76, -1]"
-55,710,523,23,23,radio,,"[76, -2]"
-54,779,523,23,23,radio,,"[76, -3]"
-77,175,579,35,394,label,Ratetheimpactofprojectscompanyisdoing.,NaN
-52,842,580,23,23,radio,,"[77, -4]"
-51,911,580,23,23,radio,,"[77, -5]"
-48,775,581,23,23,radio,,"[77, -3]"
-49,706,581,23,23,radio,,"[77, -2]"
-50,630,581,23,23,radio,,"[77, -1]"
-78,176,643,35,337,label,Ratetheoverallexperienceofthevisit.,NaN
-43,911,644,23,23,radio,,"[78, -5]"
-44,843,645,23,23,radio,,"[78, -4]"
-47,630,645,23,23,radio,,"[78, -1]"
-46,706,645,23,23,radio,,"[78, -2]"
-45,775,645,23,23,radio,,"[78, -3]"
-79,176,710,35,302,label,Ratequalityofprovidedresources.,NaN
-41,911,711,22,22,radio,,"[79, -5]"
-42,843,711,23,23,radio,,"[79, -4]"
-40,630,712,23,23,radio,,"[79, -1]"
-39,706,712,23,23,radio,,"[79, -2]"
-38,775,712,23,23,radio,,"[79, -3]"
-80,176,767,35,587,label,Howmuchlikelydoyourecommendthecompanyfortheirservices?,NaN
-37,843,823,23,23,radio,,"[80, -4]"
-36,911,823,23,23,radio,,"[80, -5]"
-35,630,824,23,23,radio,,"[80, -1]"
-34,706,824,23,23,radio,,"[80, -2]"
-33,775,824,23,23,radio,,"[80, -3]"
-81,182,871,35,254,label,Anyconstructivecugeestions,NaN
-10,767,903,60,169,field,,NaN
-11,509,904,60,235,field,,NaN
-12,767,905,60,168,field,,NaN
-14,509,906,60,235,field,,NaN
-13,169,906,60,159,field,,NaN
-15,329,907,60,179,field,,NaN
-16,169,908,60,159,field,,NaN
-17,725,952,60,180,field,,NaN
-18,508,953,60,85,field,,NaN
-19,268,954,60,239,field,,NaN
-20,509,955,60,178,field,,NaN
-21,272,956,60,235,field,,NaN
-22,169,957,60,82,field,,NaN
-23,746,1001,60,191,field,,NaN
-24,567,1002,60,178,field,,NaN
-25,302,1003,60,234,field,,NaN
-26,170,1006,60,131,field,,NaN
-27,766,1056,60,167,field,,NaN
-28,480,1057,60,284,field,,NaN
-29,264,1058,60,215,field,,NaN
-30,480,1059,60,285,field,,NaN
-31,195,1060,60,284,field,,NaN
-82,783,1130,24,89,label,SignHere,NaN
-65,925,1162,63,167,checkbox,,NaN
-32,758,1165,58,167,field,,NaN
+0,616,110,43,234,field,,40
+40,534,116,35,50,label,Date,NaN
+1,156,182,60,468,field,,42
+41,75,199,35,66,label,Name:,NaN
+2,483,252,60,382,field,,NaN
+3,156,253,60,239,field,,NaN
+42,76,263,35,70,label,Phone:,NaN
+43,410,265,35,63,label,Email:,NaN
+44,77,339,35,459,label,Ratethequalityofeventfrommanagementaspet.,NaN
+13,577,381,34,34,radio,,"['useless', -23]"
+12,515,381,34,34,radio,,"['useless', -21]"
+14,633,381,34,34,radio,,"['useless', -25]"
+10,404,381,34,34,radio,,"['useless', -15]"
+9,351,381,34,34,radio,,"['useless', -13]"
+8,188,381,34,34,radio,,"['useless', -3]"
+7,128,381,34,34,radio,,"['useless', -1]"
+11,460,381,34,34,radio,,"['useless', -17]"
+15,241,382,34,34,radio,,"['useless', -7]"
+16,296,383,34,34,radio,,"['useless', -9]"
+18,192,385,26,26,radio,,"['useless', -5]"
+19,354,385,26,26,radio,,"['useless', -14]"
+21,519,385,26,26,radio,,"['useless', -22]"
+22,580,385,26,26,radio,,"['useless', -24]"
+23,637,385,26,26,radio,,"['useless', -26]"
+17,132,385,26,26,radio,,"['useless', -2]"
+20,464,385,26,26,radio,,"['useless', -18]"
+24,245,386,26,26,radio,,"['useless', -8]"
+25,408,386,26,26,radio,,"['useless', -16]"
+26,300,387,26,26,radio,,"['useless', -10]"
+45,77,488,35,374,label,Ratecontentbyhowmuchusefulforyou.,NaN
+27,699,527,34,34,radio,,"['useless', -27]"
+28,503,528,34,34,radio,,"['useless', -19]"
+46,86,528,35,88,label,Notatall,NaN
+29,190,529,34,34,radio,,"['useless', -4]"
+30,346,529,34,34,radio,,"['useless', -11]"
+49,561,530,35,128,label,Itwaspertect,NaN
+47,235,530,35,100,label,Somewhat,NaN
+31,703,531,27,27,radio,,"['useless', -28]"
+48,393,531,35,103,label,Verymuch,NaN
+32,507,532,26,26,radio,,"['useless', -20]"
+33,194,533,26,26,radio,,"['useless', -6]"
+34,350,533,26,26,radio,,"['useless', -12]"
+50,75,640,35,258,label,Thingsthatcanbeimproved,NaN
+35,80,697,34,52,checkbox,,NaN
+36,254,699,33,53,checkbox,,NaN
+52,325,700,35,81,label,Speaker,NaN
+51,135,706,35,77,label,Venue,NaN
+54,323,768,24,126,label,Management,NaN
+37,80,768,33,52,checkbox,,NaN
+38,255,769,33,52,checkbox,,NaN
+53,146,771,35,69,label,Timing,NaN
+4,85,845,60,718,field,,NaN
+39,800,885,349,713,checkbox,,NaN
+5,86,1181,60,716,field,,NaN
+6,505,1214,60,416,field,,NaN
