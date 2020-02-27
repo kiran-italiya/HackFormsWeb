@@ -13,6 +13,10 @@
             <div class="title-black float-left" >
                 <h3>{{ project.project_name }}</h3>
             </div>
+            <div class="title-black float-right" >
+{#                <h5><a href="{% url 'download' project.project_name 'data.csv' %}" download >CSV File</a></h5>#}
+                <a href="{{ project.csv_file.url}}" target="_blank">Download </a>
+            </div>
         </div>
 
     {% endblock %}
