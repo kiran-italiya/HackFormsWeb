@@ -38,11 +38,11 @@ def eliminate_duplicate_circle(circles,diff,img):
     df_circle = pd.DataFrame(circles, columns=['X1', 'Y1', 'R1', 'R2',"type", "value", "group"])
     df_circle = df_circle.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
     index_curr, x, y, r = 0, 0, 0, 0
-    for row in df_circle.itertuples():
-        index_v = row[0]
-        print(row[1], row[0])
-        if abs(x-row[1])<diff and abs(y- row[2])<diff:
-            df_circle = df_circle.drop(row[0])
+    for index_r,row in df_circle.iterrows():
+        index_v = index_r
+        print(row['X1'], index_r)
+        if abs(x-row['X1'])<diff and abs(y- row['Y1'])<diff:
+            df_circle = df_circle.drop(index_r)
             while (index_v in df_circle.index and abs(y - df_circle.loc[index_v][1]) < 10):
                 if index_v in df_circle.index:
                     if abs(x - df_circle.loc[index_v][0]) < diff and abs(y - df_circle.loc[index_v][1]) < diff:
@@ -54,10 +54,10 @@ def eliminate_duplicate_circle(circles,diff,img):
                         pass
                     index_v += 1
         try:
-            index_curr = row[0]
-            x = df_circle.loc[row[0]][0]
-            y = df_circle.loc[row[0]][1]
-            r = df_circle.loc[row[0]][2]
+            index_curr = index_r
+            x = df_circle.loc[index_r][0]
+            y = df_circle.loc[index_r][1]
+            r = df_circle.loc[index_r][2]
         except:
             pass
     df_circle = df_circle.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
@@ -104,35 +104,44 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
     index_curr, x1, y1, x2, y2 = 0, 0, 0, 0, 0
     for i,row in df_box.iterrows():
         index_v = i
-        print('before  ',row
-              )
+        # print('before  ',row
+        #       )
         if row['X1']<row['X2']:
             if row['Y1']<row['Y2']:
                 print('No changes  ')
                 pass
             elif row['Y1']>row['Y2']:
                 temp = copy.deepcopy(row['Y1'])
-                # df_box.at(row[0row[2]=row[4]
-                row['Y1'] = row['Y2']
-                row['Y2']=temp
+                # row['Y1'] = row['Y2']
+                df_box.at[i,'Y1'] = copy.deepcopy(row['Y2'])
+                # row['Y2']=temp
+                df_box.at[i, 'Y2'] = temp
             else:
                 print("unforeseen Condition")
         elif row['X1']>row['X2']:
             if row['Y1']<row['Y2']:
                 temp = copy.deepcopy(row['X2'])
-                row['X2'] = row['X1']
-                row['X1'] = temp
+                row['X2'] = copy.deepcopy(row['X1'])
+                df_box.at[i,'X2']= copy.deepcopy(row['X1'])
+                print('x1 > x2 y1 < y2 row \n',row)
+                print('x1 > x2 y1 < y2 df \n',df_box.loc[i])
+                # row['X1'] = temp
+                df_box.at[i, 'X1'] = temp
             elif row['Y1']>row['Y2']:
                 temp = copy.deepcopy(row['X2'])
-                row['X2'] = row['X1']
-                row['X1'] = temp
+                # row['X2'] = row['X1']
+                # row['X1'] = temp
+                df_box.at[i, 'X2'] = copy.deepcopy(row['X1'])
+                df_box.at[i, 'X2'] = temp
                 temp = copy.deepcopy(row['Y2'])
-                row['Y2'] = row['Y1']
-                row['Y1'] = temp
+                # row['Y2'] = row['Y1']
+                df_box.at[i, 'Y2'] = copy.deepcopy(row['Y1'])
+                df_box.at[i, 'X2'] = temp
                 print('double trouble  ')
             else:
                 print("unforeseen Condition")
-        print('after   ', row)
+        # print('after   ', row)
+        print('\n==========after df ==============\n',df_box)
         print(row['X1'], i)
         if (row['X1'] < 10 and row['Y1'] < 10) or (row['X1']>w and row['Y1']<10):
             df_box = df_box.drop(i)
@@ -152,10 +161,10 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
             print(e)
         try:
             index_curr = i
-            x1 = df_box.loc[i][0]
-            y1 = df_box.loc[i][1]
-            x2 = df_box.loc[i][2]
-            y2 = df_box.loc[i][3]
+            x1 = copy.deepcopy(df_box.loc[i][0])
+            y1 = copy.deepcopy(df_box.loc[i][1])
+            x2 = copy.deepcopy(df_box.loc[i][2])
+            y2 = copy.deepcopy(df_box.loc[i][3])
         except:
             pass
     df_box = df_box.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
@@ -177,10 +186,22 @@ def line_processing(line, diff, height):
     index_curr = 0
 
     #    """DUPLICATE LINES ELIMINATION"""
-    for row in df.itertuples():
-        index_v = row[0]
+
+    for index_r,row in df.iterrows():
+        index_v = index_r
+        # print('Before line\n',row)
+        if row['X1']<row['X2']:
+            print('line is perfect')
+            pass
+        elif row['X1']>row['X2']:
+            temp = copy.deepcopy(row['X2'])
+            row['X2'] = row['X1']
+            row['X1'] = temp
+        else:
+            print('Aisa nahi ho sakta ')
+        # print('After line\n', row)
         try:
-            while (index_v in df.index and abs(y1 - df.loc[index_v][1]) < 10):
+            while index_v in df.index and abs(y1 - df.loc[index_v][1]) < 10:
                 if index_v in df.index:
                     if abs(x1 - df.loc[index_v][0]) < diff and abs(y1 - df.loc[index_v][1]) < diff and abs(
                                     x2 - df.loc[index_v][2]) < diff and abs(y2 - df.loc[index_v][3]) < diff:
@@ -228,19 +249,19 @@ def line_processing(line, diff, height):
         except Exception as e:
             print(e)
         try:
-            index_curr = row[0]
-            x1 = df.loc[row[0]][0]
-            y1 = df.loc[row[0]][1]
-            x2 = df.loc[row[0]][2]
-            y2 = df.loc[row[0]][3]
+            index_curr = index_r
+            x1 = df.loc[index_r][0]
+            y1 = df.loc[index_r][1]
+            x2 = df.loc[index_r][2]
+            y2 = df.loc[index_r][3]
             field_box.append([x1, y1 - height, x2, y2, "Field", np.nan, 0])
         except:
             pass
 
         #    """REMOVAL OF REMAINING DUPLICATE LINES"""
     df = df.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
-    for row in df.itertuples():
-        index_v = row[0]
+    for index_r,row in df.iterrows():
+        index_v = index_r
 
         try:
             while (index_v in df.index and abs(y1 - df.loc[index_v][1]) < 10):
@@ -291,11 +312,11 @@ def line_processing(line, diff, height):
         except Exception as e:
             print(e)
         try:
-            index_curr = row[0]
-            x1 = df.loc[row[0]][0]
-            y1 = df.loc[row[0]][1]
-            x2 = df.loc[row[0]][2]
-            y2 = df.loc[row[0]][3]
+            index_curr = index_r
+            x1 = df.loc[index_r][0]
+            y1 = df.loc[index_r][1]
+            x2 = df.loc[index_r][2]
+            y2 = df.loc[index_r][3]
             field_box.append([x1, y1 - height, x2, y2, "Field", np.nan, 0])
         except:
             pass
@@ -304,17 +325,17 @@ def line_processing(line, diff, height):
 
 def eliminate_duplicate_entry(df, df_box):
     diff = 30
-    for row in df_box.itertuples():
-        for rows in df.itertuples():
-            if row[0] in df_box.index and rows[0] in df.index:
-                if abs(row[1] - rows[1]) < diff and abs(row[2] - rows[2]) < diff:
-                    df = df.drop(rows[0])
-                elif abs(row[3] - rows[3]) < diff and abs(row[4] - rows[4]) < diff:
-                    df = df.drop(rows[0])
-                elif abs(row[3] - rows[3]) < diff and abs(row[2] - rows[2]) < diff:
-                    df = df.drop(rows[0])
-                elif abs(row[1] - rows[1]) < diff and abs(row[4] - rows[4]) < diff:
-                    df = df.drop(rows[0])
+    for ii,row in df_box.iterrows():
+        for index_r,rows in df.iterrows():
+            if ii in df_box.index and index_r in df.index:
+                if abs(rows['X1'] - row['X1']) < diff and abs(rows['Y1'] - row['Y1']) < diff:
+                    df = df.drop(index_r)
+                elif abs(rows['X2'] - row['X2']) < diff and abs(rows['Y2'] - row['Y2']) < diff:
+                    df = df.drop(index_r)
+                elif abs(rows['X2'] - row['X2']) < diff and abs(rows['Y1'] - row['Y1']) < diff:
+                    df = df.drop(index_r)
+                elif abs(rows['X1'] - row['X1']) < diff and abs(rows['Y2'] - row['Y2']) < diff:
+                    df = df.drop(index_r)
                 else:
                     pass
     return df, df_box
@@ -322,12 +343,12 @@ def eliminate_duplicate_entry(df, df_box):
 
 def get_checkbox(df_box):
     checkbox = []
-    for row in df_box.itertuples():
-        w = abs(row[3] - row[1])
+    for index_r,row in df_box.iterrows():
+        w = abs(row['X2'] - row['X1'])
         if w < 80:
             checkbox.append(
-                [row[1] - 5, row[2] - 5, abs(row[4] - row[2]) + 10, abs(row[3] - row[1] + 10), "checkbox", np.nan, 0])
-            df_box = df_box.drop(row[0])
+                [row['X1'] - 5, row['Y1'] - 5, abs(row['Y2'] - row['Y1']) + 10, abs(row['X2'] - row['X1'] + 10), "checkbox", np.nan, 0])
+            df_box = df_box.drop(index_r)
     return df_box, checkbox
 
 
@@ -420,10 +441,10 @@ def eliminate_duplicate_box_eight(rec_coordinate, diff,img):
     df_box = pd.DataFrame(rec_coordinate, columns=['X1', 'Y1', 'X2', 'Y2', 'X3', 'Y3', 'X4', 'Y4'])
     df_box = df_box.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
     index_curr, x1, y1, x2, y2 = 0, 0, 0, 0, 0
-    for row in df_box.itertuples():
-        index_v = row[0]
-        if (row[1] < 10 and row[2] < 10) or (row[1]>w and row[2]<10):
-            df_box = df_box.drop(row[0])
+    for index_r,row in df_box.iterrows():
+        index_v = index_r
+        if (row['X1'] < 10 and row['Y1'] < 10) or (row['X1']>w and row['Y1']<10):
+            df_box = df_box.drop(index_r)
         try:
             while (index_v in df_box.index and abs(y1 - df_box.loc[index_v][1]) < 10):
                 if index_v in df_box.index:
@@ -439,11 +460,11 @@ def eliminate_duplicate_box_eight(rec_coordinate, diff,img):
         except Exception as e:
             print(e)
         try:
-            index_curr = row[0]
-            x1 = df_box.loc[row[0]][0]
-            y1 = df_box.loc[row[0]][1]
-            x2 = df_box.loc[row[0]][2]
-            y2 = df_box.loc[row[0]][3]
+            index_curr = index_r
+            x1 = df_box.loc[index_r][0]
+            y1 = df_box.loc[index_r][1]
+            x2 = df_box.loc[index_r][2]
+            y2 = df_box.loc[index_r][3]
         except:
             pass
     df_box = df_box.sort_values(by=['Y1', 'X1']).reset_index(drop=True)

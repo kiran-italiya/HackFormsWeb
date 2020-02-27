@@ -1,59 +1,22 @@
 ,left,top,height,width,type,value,group
-0,610,84,47,256,field,,41
-41,521,89,35,53,label,Nate,NaN
-1,102,124,60,765,field,,-1000
-2,869,164,61,771,field,,42
-3,100,172,60,767,field,,NaN
-42,20,178,35,52,label,Name,NaN
-4,176,245,46,256,field,,43
-5,527,250,42,337,field,,44
-44,447,253,35,55,label,Email,NaN
-43,20,255,35,131,label,Enrollmentno,NaN
-45,18,321,35,281,label,Whatdidyoulikeverymuch,NaN
-37,580,370,36,56,checkbox,,48
-36,21,370,37,56,checkbox,,46
-48,652,371,35,223,label,Attitudeofemployees,NaN
-47,380,373,35,151,label,Administration,NaN
-38,301,373,36,56,checkbox,,47
-46,92,374,35,132,label,Environment,NaN
-40,301,424,36,56,checkbox,,50
-39,21,424,37,56,checkbox,,49
-50,377,427,35,219,label,TalentandInnovation,NaN
-49,92,429,35,140,label,nfrastructure,NaN
-14,769,513,26,26,radio,,"[51, -4]"
-11,528,513,26,26,radio,,"[51, -1]"
-12,614,513,26,26,radio,,"[51, -2]"
-13,692,513,26,26,radio,,"[51, -3]"
-15,847,513,26,26,radio,,"[51, -5]"
-51,15,515,35,335,label,Ratesuppotivenessofemployees,NaN
-18,842,578,26,26,radio,,"[52, -5]"
-17,764,578,26,26,radio,,"[52, -4]"
-16,687,578,26,26,radio,,"[52, -3]"
-20,609,579,26,26,radio,,"[52, -2]"
-19,524,579,27,27,radio,,"[52, -1]"
-52,10,580,35,439,label,Ratetheimpactofprojectscompanyisdoing,NaN
-25,841,651,26,26,radio,,"[53, -5]"
-24,764,651,26,26,radio,,"[53, -4]"
-23,687,651,26,26,radio,,"[53, -3]"
-22,609,651,26,26,radio,,"[53, -2]"
-21,524,651,27,27,radio,,"[53, -1]"
-53,10,653,35,367,label,Ratetheoverallexprienceofthevisit,NaN
-26,764,726,26,26,radio,,"[54, -4]"
-28,609,727,26,26,radio,,"[54, -2]"
-30,842,727,26,26,radio,,"[54, -5]"
-29,687,727,26,26,radio,,"[54, -3]"
-27,524,727,26,26,radio,,"[54, -1]"
-54,10,729,35,336,label,Ratequalityofprovidedresources,NaN
-55,10,793,35,653,label,Howmuchlikelydoyourecommendthecompanyfortheirservices,NaN
-34,764,854,26,26,radio,,"[55, -4]"
-33,687,854,26,26,radio,,"[55, -3]"
-32,609,854,26,26,radio,,"[55, -2]"
-31,524,854,27,27,radio,,"[55, -1]"
-35,841,854,26,26,radio,,"[55, -5]"
-56,17,918,35,287,label,Anyconstructivesuggestions,NaN
-6,177,949,60,697,field,,56
-7,47,1007,60,827,field,,56
-8,41,1066,60,833,field,,56
-9,86,1122,60,730,field,,56
-57,697,1197,22,100,label,SignHere,NaN
-10,669,1234,64,189,field,,57
+7,303,15,17,17,radio,,"['useless', -1]"
+8,438,15,17,17,radio,,"['useless', -2]"
+0,543,79,42,227,field,,NaN
+11,464,84,35,48,label,Date,NaN
+1,101,157,46,509,field,,NaN
+12,20,166,35,58,label,Name,NaN
+2,96,220,48,232,field,,NaN
+3,407,221,47,327,field,,NaN
+4,101,223,42,221,field,,NaN
+5,413,223,41,316,field,,NaN
+13,21,228,35,62,label,Phone,NaN
+14,344,229,35,55,label,Email,NaN
+15,18,303,35,391,label,Wereyousatisfiedwiththecustomerservice,NaN
+18,288,356,35,35,label,So,NaN
+17,184,356,35,33,label,No,NaN
+19,288,356,35,100,label,mewhat,NaN
+10,231,358,29,38,checkbox,,NaN
+9,26,358,29,39,checkbox,,NaN
+16,70,365,41,88,label,YesoO,NaN
+20,19,411,23,100,label,Comments,NaN
+6,29,456,397,747,field,,NaN

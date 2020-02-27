@@ -57,23 +57,32 @@ class ProcessForm:
         cnt = detection.contour(img)
 
         rectangle_image, rec_coordinate = detection.detect_rectangles(img)
+
         df_box = detection.eliminate_duplicate_box(rec_coordinate, self.diff, img)
-        print(df_box)
+        # print(df_box)
         cv2.imwrite("boxes.jpg", rectangle_image)
 
         # """Line detection and processing"""
 
         line = detection.linesp(img)
         df = detection.line_processing(line, self.diff, self.height)
+        print('lines  ==>\n',df)
         img2 = img.copy()
         for row in df.itertuples():
             cv2.rectangle(img2, (row[1], row[2] - 40), (row[3], row[4]), (0, 0, 255), 1)
         cv2.imwrite("lines.jpg", img2)
         # """Duplicate BOX/LINE ELIMINATION"""
+
         df, df_box = detection.eliminate_duplicate_entry(df, df_box)
+        img1 = img.copy()
+        for i,row in df.iterrows():
+            cv2.rectangle(img1, (row['X1'],row['Y1']),(row['X2'],row['Y2']), (0,255,0),2)
+        cv2.imwrite("boxes.jpg",img1)
+        print('eliminate duplicate entry ==\n',df)
         #    """CHECKBOX DETECTION"""
         df_box, checkbox = detection.get_checkbox(df_box)
-        print("XXx", df_box)
+        # print('get checkbox  ==\n', df_box)
+        # print("XXx", df_box)
         #    """FORM BOX """
         # start = df_box.iloc[0]
         # print(start)
@@ -116,11 +125,12 @@ class ProcessForm:
 
         pad = 10
         df = pd.read_csv(self.datacsv)
-        print(df)
+        # print(df)
         # if (start[3]-start[1])>h/2:
         # 	threshold = threshold[start[1]:start[3],start[0]:start[2]]
-        x, y = threshold[0:df.iloc[0]['top'] - 30, :].shape[:2]
-        threshold[0:df.iloc[0]['top'] - 30, :] = np.ones((x, y)) * 255
+        x, y = threshold[0:df.iloc[0]['top'] - 10, :].shape[:2]
+        # print("=-=-===--==-=-=-=-=-=-=-=-=-=++",df.iloc[0]['top'])
+        threshold[0:df.iloc[0]['top'] - 10, :] = np.ones((x, y)) * 255
         for row in df.itertuples():
             x, y = threshold[row[2] - pad:row[2] + row[3] + pad, row[1] - pad:row[1] + pad + row[4]].shape
             threshold[row[2] - pad:row[2] + row[3] + pad, row[1] - pad:row[1] + pad + row[4]] = np.ones((x, y)) * 255
@@ -168,13 +178,13 @@ class ProcessForm:
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         dummy = [0] * len(df_final.columns)
-        print('dummy=',dummy)
+        # print('dummy=',dummy)
         # df_final = df_final.append()
         df_final.loc[len(df_final)] = dummy
-        print('final   ', df_final)
+        # print('final   ', df_final)
         df_final = extraction.radio_identification(img, df, df_final)
         df_final = extraction.checkbox_identification(img, df, df_final)
-        print('final   ',df_final)
+        # print('final   ',df_final)
         df_final.to_csv('final.csv')
 
         dict = hackForm.data_dict(df, df_final)
@@ -187,21 +197,21 @@ class ProcessForm:
         label.clear()
         for _, row in df.iterrows():
             if row['type'] == 'label' and row['group'] == 'NaN':
-                print("This is a label ",row['value'])
+                # print("This is a label ",row['value'])
                 label.append(row['value'])
 
         df_final = pd.DataFrame(columns=label)
-        print(df_final)
+        # print(df_final)
         for file in os.listdir(path):
             if file.endswith(".jpg"):
                 tmp_df = df
                 df_final, dict = self.process_filled_form(df=tmp_df, img_name=path + "/" + file, df_final=df_final)
             self.database[file] = dict
-        print(df_final)
+        # print(df_final)
 
 
 pf = ProcessForm()
-pf.processForm('img_real.jpg', os.path.join(os.getcwd(), "data"))
+pf.processForm('k1.jpg', os.path.join(os.getcwd(), "data"))
 
 
 def data_analytics(database):
