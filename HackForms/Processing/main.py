@@ -192,7 +192,8 @@ class ProcessForm:
         df_final = extraction.perform_OCR(img, df, df_final, length-1)
         df_final.to_csv('final.csv')
 
-        # dict = hackForm.data_dict(df, df_final)
+        dict = hackForm.data_dict(df, df_final, length-1)
+        print("dict:",dict)
         return df_final  # , dict
 
     def processForm(self, img, path):
@@ -245,7 +246,7 @@ class ProcessForm:
                            {'Anucanetructiveenasactinne': 'foof sdu not greal faciliifes were lakling entuciaim'}],
                 "checkboxes": [
                     {
-                        "Attitudeofemployees": {"Attitudeofemployees": 't', "Environment": 't', "Administration": 't',
+                        "whatdidyoulikeverymuch": {"Attitudeofemployees": 't', "Environment": 't', "Administration": 't',
                                                 "TalentandInnovation": 't', "Infrastructure": 't'}
                     }
                 ],
@@ -300,5 +301,5 @@ class ProcessForm:
 
 
 pf = ProcessForm()
-pf.processForm('k1.jpg', os.path.join(os.getcwd(), "data/k1"))
+pf.processForm('k4.jpg', os.path.join(os.getcwd(), "data/k4"))
 # pf.generate_analytics()

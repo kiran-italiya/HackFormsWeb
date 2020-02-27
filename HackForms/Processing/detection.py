@@ -7,7 +7,7 @@ import copy
 def contour(image):
     img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     _, threshold = cv2.threshold(img, 200, 255, cv2.THRESH_BINARY)
-    contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    _,contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     return contours
 
 
@@ -75,7 +75,7 @@ def detect_rectangles(image):
     img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # _, threshold = cv2.threshold(img, 215, 255, cv2.THRESH_BINARY)
     threshold = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 2)
-    contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    _,contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     coordinate = []
     for cnt in contours:
         approx = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
@@ -106,17 +106,13 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
     index_curr, x1, y1, x2, y2 = 0, 0, 0, 0, 0
     for i,row in df_box.iterrows():
         index_v = i
-        # print('before  ',row
-        #       )
+
         if row['X1']<row['X2']:
             if row['Y1']<row['Y2']:
-                print('No changes  ')
                 pass
             elif row['Y1']>row['Y2']:
                 temp = copy.deepcopy(row['Y1'])
-                # row['Y1'] = row['Y2']
                 df_box.at[i,'Y1'] = copy.deepcopy(row['Y2'])
-                # row['Y2']=temp
                 df_box.at[i, 'Y2'] = temp
             else:
                 print("unforeseen Condition")
@@ -125,9 +121,6 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
                 temp = copy.deepcopy(row['X2'])
                 row['X2'] = copy.deepcopy(row['X1'])
                 df_box.at[i,'X2']= copy.deepcopy(row['X1'])
-                print('x1 > x2 y1 < y2 row \n',row)
-                print('x1 > x2 y1 < y2 df \n',df_box.loc[i])
-                # row['X1'] = temp
                 df_box.at[i, 'X1'] = temp
             elif row['Y1']>row['Y2']:
                 temp = copy.deepcopy(row['X2'])
@@ -139,12 +132,9 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
                 # row['Y2'] = row['Y1']
                 df_box.at[i, 'Y2'] = copy.deepcopy(row['Y1'])
                 df_box.at[i, 'X2'] = temp
-                print('double trouble  ')
             else:
                 print("unforeseen Condition")
-        # print('after   ', row)
-        print('\n==========after df ==============\n',df_box)
-        print(row['X1'], i)
+
         if row['X1'] < 10 and row['Y1'] < 10:         # or (row['X1']>w and row['Y1']<10)
             df_box = df_box.drop(i)
         try:
@@ -193,7 +183,6 @@ def line_processing(line, diff, height):
         index_v = index_r
         # print('Before line\n',row)
         if row['X1']<row['X2']:
-            print('line is perfect')
             pass
         elif row['X1']>row['X2']:
             temp = copy.deepcopy(row['X2'])
@@ -402,8 +391,6 @@ def reformation(img, rec_coordinate):
     df = df.sort_values(by=['Y1','X1']).reset_index(drop=True)
     start = df.iloc[0]
     img1 = img.copy()
-    # print('iasuhdhiasu=-=-----------',df)
-    print('+++++++++++++++++++++++iasuhdhiasu=-=-----------', start)
 
     # cv2.circle(img1, (start['X1'], start['Y1']), 2, (0, 0, 255), 2)
     # cv2.circle(img1, (start['X2'], start['Y2']), 2, (0, 0, 255), 2)
@@ -414,7 +401,6 @@ def reformation(img, rec_coordinate):
     df_vertical = pd.DataFrame(vertical, columns = ['X','Y'])
     df_vertical = df_vertical.sort_values(by= ['X','Y']).reset_index(drop=True)
     vertical = df_vertical.values.tolist()
-    print("LOOK AT THIS#############",vertical)
     # if abs(vertical[0][1]-vertical[2][1])<15
     if vertical[0][1] > vertical[1][1]:
         y = abs(vertical[1][1] - vertical[0][1])
@@ -443,7 +429,7 @@ def detect_rectangles_eight(image):
     threshold = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 2)
     cv2.imshow("thr",threshold)
     cv2.waitKey(0)
-    contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    _,contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     coordinate = []
     for cnt in contours:
         approx = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
@@ -474,7 +460,6 @@ def eliminate_duplicate_box_eight(rec_coordinate, diff,img):
         index_v = index_r
         if row['X1']<row['X3']:
             if row['Y1']<row['Y3']:
-                print('No changes  ')
                 pass
             elif row['Y1']>row['Y3']:
                 temp = copy.deepcopy(row['Y1'])
@@ -489,21 +474,15 @@ def eliminate_duplicate_box_eight(rec_coordinate, diff,img):
                 temp = copy.deepcopy(row['X3'])
                 row['X3'] = copy.deepcopy(row['X1'])
                 df_box.at[index_r,'X3']= copy.deepcopy(row['X1'])
-                print('x1 > x2 y1 < y2 row \n',row)
-                print('x1 > x2 y1 < y2 df \n',df_box.loc[index_r])
-                # row['X1'] = temp
                 df_box.at[index_r, 'X1'] = temp
             elif row['Y1']>row['Y3']:
                 temp = copy.deepcopy(row['X3'])
-                # row['X2'] = row['X1']
-                # row['X1'] = temp
                 df_box.at[index_r, 'X3'] = copy.deepcopy(row['X1'])
                 df_box.at[index_r, 'X3'] = temp
                 temp = copy.deepcopy(row['Y3'])
                 # row['Y2'] = row['Y1']
                 df_box.at[index_r, 'Y3'] = copy.deepcopy(row['Y1'])
                 df_box.at[index_r, 'X3'] = temp
-                print('double trouble  ')
             else:
                 print("unforeseen Condition")
         if (row['X1'] < 10 and row['Y1'] < 10):  #(row['X1']>w and row['Y1']<10
@@ -544,9 +523,7 @@ def reformation_filled_form(img, rec_coordinate, aspect):
     df = df.sort_values(by=['Y1','X1']).reset_index(drop=True)
     start = df.iloc[0]
     img1 = img.copy()
-    # print('iasuhdhiasu=-=-----------',df)
-    print('+++++++++++++++++++++++iasuhdhiasu=-=-----------', start)
-    #
+
     # cv2.circle(img1, (start['X1'], start['Y1']), 2, (0, 0, 255), 2)
     # cv2.circle(img1, (start['X2'], start['Y2']), 2, (0, 0, 255), 2)
     # cv2.circle(img1, (start['X3'], start['Y3']), 2, (0, 0, 255), 2)
@@ -556,7 +533,6 @@ def reformation_filled_form(img, rec_coordinate, aspect):
     df_vertical = pd.DataFrame(vertical, columns = ['X','Y'])
     df_vertical = df_vertical.sort_values(by= ['X','Y']).reset_index(drop=True)
     vertical = df_vertical.values.tolist()
-    print("LOOK AT THIS#############",vertical)
     # if abs(vertical[0][1]-vertical[2][1])<15
     if vertical[0][1] > vertical[1][1]:
         y = abs(vertical[1][1]-vertical[0][1])
