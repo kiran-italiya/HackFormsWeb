@@ -1,22 +1,22 @@
 ,left,top,height,width,type,value,group
-7,303,15,17,17,radio,,"['useless', -1]"
-8,438,15,17,17,radio,,"['useless', -2]"
-0,543,79,42,227,field,,NaN
-11,464,84,35,48,label,Date,NaN
-1,101,157,46,509,field,,NaN
-12,20,166,35,58,label,Name,NaN
-2,96,220,48,232,field,,NaN
-3,407,221,47,327,field,,NaN
-4,101,223,42,221,field,,NaN
-5,413,223,41,316,field,,NaN
-13,21,228,35,62,label,Phone,NaN
-14,344,229,35,55,label,Email,NaN
-15,18,303,35,391,label,Wereyousatisfiedwiththecustomerservice,NaN
-18,288,356,35,35,label,So,NaN
-17,184,356,35,33,label,No,NaN
-19,288,356,35,100,label,mewhat,NaN
-10,231,358,29,38,checkbox,,NaN
-9,26,358,29,39,checkbox,,NaN
-16,70,365,41,88,label,YesoO,NaN
-20,19,411,23,100,label,Comments,NaN
-6,29,456,397,747,field,,NaN
+8,544,42,20,20,radio,,"['useless', -2]"
+7,384,42,20,20,radio,,"['useless', -1]"
+0,668,120,49,271,field,,NaN
+20,575,129,26,56,label,Date,NaN
+1,144,211,55,605,field,,NaN
+12,49,224,35,68,label,Name,NaN
+2,143,290,46,265,field,,NaN
+3,513,291,47,377,field,,NaN
+13,50,297,35,72,label,Phone,NaN
+14,434,300,35,63,label,Email,NaN
+15,47,386,35,462,label,Wereyousatisfiedwiththecustomerservice,NaN
+10,177,448,34,45,checkbox,,NaN
+9,56,448,33,45,checkbox,,NaN
+11,298,448,34,45,checkbox,,NaN
+17,243,450,35,38,label,No,NaN
+18,367,450,35,117,label,Somewhat,NaN
+16,119,456,35,44,label,Yes,NaN
+19,48,515,35,117,label,Comments,NaN
+4,57,565,469,889,field,,NaN
+5,88,984,60,534,field,,NaN
+6,85,1027,60,829,field,,NaN

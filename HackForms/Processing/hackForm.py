@@ -214,10 +214,10 @@ def assign_with_missing(curr_df,parent_group,df,labels,fields):
                     if row.type == 'field':
                         if parent_group is not None:
                             df.at[index, 'group'] = [parent_group, prevIndexValue]
-                            prevIndexValue = ['useless', UNREACHABLE]
+                            prevIndexValue = 'NaN'  # ['useless', UNREACHABLE]
                         else:
                             df.at[index, 'group'] = prevIndexValue
-                            prevIndexValue = ['useless',UNREACHABLE]
+                            prevIndexValue =  'NaN'          # ['useless',UNREACHABLE]
 
 
             if curr_df.iloc[0].type == 'label':
@@ -228,10 +228,10 @@ def assign_with_missing(curr_df,parent_group,df,labels,fields):
                     if row.type == 'field':
                         if parent_group is not None:
                             df.at[index, 'group'] = [parent_group, prevIndexValue]
-                            prevIndexValue = ['useless', UNREACHABLE]
+                            prevIndexValue = 'NaN'          # ['useless',UNREACHABLE]
                         else:
                             df.at[index, 'group'] = prevIndexValue
-                            prevIndexValue = ['useless', UNREACHABLE]
+                            prevIndexValue = 'NaN'          # ['useless',UNREACHABLE]
 
 
         else:     # labels_at_right
@@ -278,10 +278,10 @@ def assign_with_missing(curr_df,parent_group,df,labels,fields):
                     if row.type == 'field':
                         if parent_group is not None:
                             df.at[index, 'group'] = [parent_group, prevIndexValue]
-                            prevIndexValue = ['useless', UNREACHABLE]
+                            prevIndexValue = 'NaN' # ['useless', UNREACHABLE]
                         else:
                             df.at[index, 'group'] = prevIndexValue
-                            prevIndexValue = ['useless', UNREACHABLE]
+                            prevIndexValue = "NaN" # ['useless', UNREACHABLE]
 
             if curr_df.iloc[0].type == 'label':
                 prevIndexValue = curr_df.index[0]
@@ -291,10 +291,10 @@ def assign_with_missing(curr_df,parent_group,df,labels,fields):
                     if row.type == 'field':
                         if parent_group is not None:
                             df.at[index, 'group'] = [parent_group, prevIndexValue]
-                            prevIndexValue = ['useless', UNREACHABLE]
+                            prevIndexValue = "NaN" # ['useless', UNREACHABLE]
                         else:
                             df.at[index, 'group'] = prevIndexValue
-                            prevIndexValue = ['useless', UNREACHABLE]
+                            prevIndexValue = "NaN" # ['useless', UNREACHABLE]
 
 
         else:  # labels_at_right
@@ -510,9 +510,6 @@ def data_dict(df, final_df):
 
     tmp = []
     for i, row in df[df.type == 'field'].iterrows():
-        # print("PP:",df.loc[row.group].value)        #TODO solve indexing error
-        # print("rotlo \n",final_df[df.loc[row.group].value][-1],row.value)
-        # print(df.loc[row.group].value)
         tmp.append([str(final_df[df.loc[row.group].value][-1]), str(row.value)])
     dict['fields'] = tmp
 
@@ -538,6 +535,8 @@ def perform_OCR(df):
     fieldsDf = df[df.type=='field']
     fieldsDf = fieldsDf.sort_values(by=['top','left'])
 
+    print("fieldsDf:::",fieldsDf)
+
     for i,row in fieldsDf.iterrows():
         t = row['top']
         l = row['left']
@@ -558,6 +557,6 @@ def perform_OCR(df):
         cv2.imshow('thresholded img',threshed)
         cv2.waitKey(0)
         result = pytesseract.image_to_string(cropped_img,config='--psm 4')
-        print(result)
+        print("from tess::: ",result)
 
 #perform_OCR()              """"#Main operation""""
