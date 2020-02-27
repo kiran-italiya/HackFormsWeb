@@ -510,22 +510,24 @@ def data_dict(df, final_df):
 
     tmp = []
     for i, row in df[df.type == 'field'].iterrows():
-        print("PP:",df.loc[row.group].value)        #TODO solve indexing error
-        tmp.append([final_df[df.loc[row.group].value][-1].value, row.value])
+        # print("PP:",df.loc[row.group].value)        #TODO solve indexing error
+        # print("rotlo \n",final_df[df.loc[row.group].value][-1],row.value)
+        # print(df.loc[row.group].value)
+        tmp.append([str(final_df[df.loc[row.group].value][-1]), str(row.value)])
     dict['fields'] = tmp
 
     tmp = []
     for i, row in df[df.type == 'checkbox'].iterrows():
         try:
             tmp.append([df.loc[list(row.group)[0]].value, df.loc[list(row.group)[1]].value,
-                        final_df[df.loc[list(row.group)[1]].value][-1].value])
+                        final_df[df.loc[list(row.group)[1]].value][-1]])
         except Exception as e:
             print(e)
     dict['checkboxes'] = tmp
 
     tmp = []
     for i, row in df[df.type == 'radio'].iterrows():
-        tmp.append([list(df[df.loc[row.group]].value)[0], final_df[list(df[df.loc[row.group]].value)[0]][-1].value])
+        tmp.append([list(df[df.loc[row.group]].value)[0], final_df[list(df[df.loc[row.group]])[0]][-1].value])
     dict['radios'] = tmp
 
     return dict

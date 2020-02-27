@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
 import pandas as pd
+import imutils
+import pytesseract
 
 def radio_identification(img, df, df_final):
     group = None
@@ -65,6 +67,7 @@ def checkbox_identification(img, df, df_final):
     for i, row in df[df.type == 'checkbox'].iterrows():
         #        if abs(y-row[0][2])<diff:
         if row['group'] != 'NaN' or row['group'] != -1000:
+            print(" rotloo xxx ",row['group'])
             print("XXX:", list(row['group']))
             curr_group = list(row['group'])  # literal_eval(row['group'])
         else:
@@ -81,9 +84,9 @@ def checkbox_identification(img, df, df_final):
                             if rows['sum'] > max:
                                 print("xYFVYVYGBYGBYF", max)
                                 print("here: ", df.loc[group]['value'])
-                                df_final.at[-1, df.loc[rows['no']]['value']] = 1
+                                df_final.at[-1, df.loc[rows['no']]['value']] = 't'
                             else:
-                                df_final.at[-1, df.loc[rows['no']]['value']] = 0
+                                df_final.at[-1, df.loc[rows['no']]['value']] = 'f'
                     except Exception as e:
                         print(e)
                     df_temp = pd.DataFrame(columns=['sum', 'no', 'group'])
@@ -118,14 +121,12 @@ def checkbox_identification(img, df, df_final):
             if rows['sum'] > max:
                 print("xYFVYVYGBYGBYF", max)
                 print("here: ", df.loc[group]['value'])
-                df_final.at[-1, df.loc[rows['no']]['value']] = 1
+                df_final.at[-1, df.loc[rows['no']]['value']] = 't'
             else:
-                df_final.at[-1, df.loc[rows['no']]['value']] = 0
+                df_final.at[-1, df.loc[rows['no']]['value']] = 'f'
     except Exception as e:
         print(e)
     return df_final
-
-
 def transformation(img, src_img, dst_img):
     rows, cols = img.shape[:2]
     src_points = np.float32(
@@ -135,7 +136,7 @@ def transformation(img, src_img, dst_img):
     affine_matrix = cv2.getAffineTransform(src_points, dst_points)
     img_output = cv2.warpAffine(img, affine_matrix, (cols, rows))
     # img_output = img_output[dst_img[0][1]:dst_img[2][1],dst_img[0][0]:dst_img[1][0]]
-    img_output = img_output[dst_img[2][1]:dst_img[0][1], dst_img[0][0]:dst_img[1][0]]
+    img_output = img_output[dst_img[2][1]+20:dst_img[0][1]-20, dst_img[0][0]+20:dst_img[1][0]-20]
     cv2.imshow('Input', img)
     cv2.waitKey(0)
     cv2.imshow('Output', img_output)

@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import pandas as pd
 import extraction
+import copy
 
 def contour(image):
     img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -97,14 +98,44 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
     coordinates = []
     for x, y in rec_coordinate:
         coordinates.append([x[0], x[1], y[0], y[1]])
+
     df_box = pd.DataFrame(coordinates, columns=['X1', 'Y1', 'X2', 'Y2'])
     df_box = df_box.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
     index_curr, x1, y1, x2, y2 = 0, 0, 0, 0, 0
-    for row in df_box.itertuples():
-        index_v = row[0]
-        print(row[1], row[0])
-        if (row[1] < 10 and row[2] < 10) or (row[1]>w and row[2]<10):
-            df_box = df_box.drop(row[0])
+    for i,row in df_box.iterrows():
+        index_v = i
+        print('before  ',row
+              )
+        if row['X1']<row['X2']:
+            if row['Y1']<row['Y2']:
+                print('No changes  ')
+                pass
+            elif row['Y1']>row['Y2']:
+                temp = copy.deepcopy(row['Y1'])
+                # df_box.at(row[0row[2]=row[4]
+                row['Y1'] = row['Y2']
+                row['Y2']=temp
+            else:
+                print("unforeseen Condition")
+        elif row['X1']>row['X2']:
+            if row['Y1']<row['Y2']:
+                temp = copy.deepcopy(row['X2'])
+                row['X2'] = row['X1']
+                row['X1'] = temp
+            elif row['Y1']>row['Y2']:
+                temp = copy.deepcopy(row['X2'])
+                row['X2'] = row['X1']
+                row['X1'] = temp
+                temp = copy.deepcopy(row['Y2'])
+                row['Y2'] = row['Y1']
+                row['Y1'] = temp
+                print('double trouble  ')
+            else:
+                print("unforeseen Condition")
+        print('after   ', row)
+        print(row['X1'], i)
+        if (row['X1'] < 10 and row['Y1'] < 10) or (row['X1']>w and row['Y1']<10):
+            df_box = df_box.drop(i)
         try:
             while (index_v in df_box.index and abs(y1 - df_box.loc[index_v][1]) < 10):
                 if index_v in df_box.index:
@@ -120,11 +151,11 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
         except Exception as e:
             print(e)
         try:
-            index_curr = row[0]
-            x1 = df_box.loc[row[0]][0]
-            y1 = df_box.loc[row[0]][1]
-            x2 = df_box.loc[row[0]][2]
-            y2 = df_box.loc[row[0]][3]
+            index_curr = i
+            x1 = df_box.loc[i][0]
+            y1 = df_box.loc[i][1]
+            x2 = df_box.loc[i][2]
+            y2 = df_box.loc[i][3]
         except:
             pass
     df_box = df_box.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
