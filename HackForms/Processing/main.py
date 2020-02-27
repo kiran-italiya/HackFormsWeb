@@ -94,7 +94,7 @@ class ProcessForm:
         # print(start)
         #    """CONVERSION TO H,W FROM X2,Y2"""
         df['Y1'] = df['Y1'] - self.height
-        df['Y2'] = df['Y2']
+        df['Y2'] = df['Y2'] + 5
 
         df_box = df_box.append(df)
         df_box = df_box.sort_values(by=['Y1', 'X1']).reset_index(drop=True)

@@ -22,7 +22,7 @@ def findCircle(cnts, img1):
             ((x, y), radius) = cv2.minEnclosingCircle(c)
             c_area = cv2.contourArea(c)
             c_area = c_area / ((3.14) * radius * radius)
-            if radius > 8:
+            if radius > 10:
                 if radius < 50:
                     if c_area > 0.8:
                         circles.append(
@@ -37,29 +37,29 @@ def findCircle(cnts, img1):
 def eliminate_duplicate_circle(circles,diff,img):
     df_circle = pd.DataFrame(circles, columns=['X1', 'Y1', 'R1', 'R2',"type", "value", "group"])
     df_circle = df_circle.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
+    print(df_circle)
     index_curr, x, y, r = 0, 0, 0, 0
     for index_r,row in df_circle.iterrows():
         index_v = index_r
         print(row['X1'], index_r)
         if abs(x-row['X1'])<diff and abs(y- row['Y1'])<diff:
             df_circle = df_circle.drop(index_r)
-            while (index_v in df_circle.index and abs(y - df_circle.loc[index_v][1]) < 10):
-                if index_v in df_circle.index:
-                    if abs(x - df_circle.loc[index_v][0]) < diff and abs(y - df_circle.loc[index_v][1]) < diff:
-                        if x - df_circle.loc[index_v][0] > 0:
-                            df_circle = df_circle.drop(index_v)
-                        else:
-                            df_circle = df_circle.drop(index_curr)
-                    else:
-                        pass
-                    index_v += 1
+        while index_v in df_circle.index and abs(y - df_circle.loc[index_v][1]) < 10:
+            if abs(x - df_circle.loc[index_v][0]) < diff and abs(y - df_circle.loc[index_v][1]) < diff:
+                if x - df_circle.loc[index_v][0] > 0:
+                    df_circle = df_circle.drop(index_v)
+                else:
+                    df_circle = df_circle.drop(index_curr)
+            else:
+                pass
+            index_v += 1
         try:
             index_curr = index_r
             x = df_circle.loc[index_r][0]
             y = df_circle.loc[index_r][1]
             r = df_circle.loc[index_r][2]
         except:
-            pass
+            print("Exception occured")
     df_circle = df_circle.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
     return df_circle
 
@@ -94,9 +94,7 @@ def detect_rectangles(image):
 
 
 def eliminate_duplicate_box(rec_coordinate, diff,img):
-    # h,w = img.shape[:2]
-    # w = 0.9*w
-    # h = 0.9*h
+
     coordinates = []
     for x, y in rec_coordinate:
         coordinates.append([x[0], x[1], y[0], y[1]])
@@ -121,6 +119,7 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
                 temp = copy.deepcopy(row['X2'])
                 row['X2'] = copy.deepcopy(row['X1'])
                 df_box.at[i,'X2']= copy.deepcopy(row['X1'])
+
                 df_box.at[i, 'X1'] = temp
             elif row['Y1']>row['Y2']:
                 temp = copy.deepcopy(row['X2'])
@@ -138,7 +137,7 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
         if row['X1'] < 10 and row['Y1'] < 10:         # or (row['X1']>w and row['Y1']<10)
             df_box = df_box.drop(i)
         try:
-            while (index_v in df_box.index and abs(y1 - df_box.loc[index_v][1]) < 10):
+            while abs(y1 - df_box.loc[index_v][1]) < 10:
                 if index_v in df_box.index:
                     if abs(x1 - df_box.loc[index_v][0]) < diff and abs(y1 - df_box.loc[index_v][1]) < diff and abs(
                                     x2 - df_box.loc[index_v][2]) < diff and abs(y2 - df_box.loc[index_v][3]) < diff:
@@ -192,7 +191,7 @@ def line_processing(line, diff, height):
             print('Aisa nahi ho sakta ')
         # print('After line\n', row)
         try:
-            while index_v in df.index and abs(y1 - df.loc[index_v][1]) < 10:
+            while abs(y1 - df.loc[index_v][1]) < 10:
                 if index_v in df.index:
                     if abs(x1 - df.loc[index_v][0]) < diff and abs(y1 - df.loc[index_v][1]) < diff and abs(
                                     x2 - df.loc[index_v][2]) < diff and abs(y2 - df.loc[index_v][3]) < diff:
@@ -255,7 +254,7 @@ def line_processing(line, diff, height):
         index_v = index_r
 
         try:
-            while (index_v in df.index and abs(y1 - df.loc[index_v][1]) < 10):
+            while abs(y1 - df.loc[index_v][1]) < 10:
                 if index_v in df.index:
                     if abs(x1 - df.loc[index_v][0]) < diff and abs(y1 - df.loc[index_v][1]) < diff and abs(
                                     x2 - df.loc[index_v][2]) < diff and abs(y2 - df.loc[index_v][3]) < diff:
@@ -327,6 +326,12 @@ def eliminate_duplicate_entry(df, df_box):
                     df = df.drop(index_r)
                 elif abs(rows['X1'] - row['X1']) < diff and abs(rows['Y2'] - row['Y2']) < diff:
                     df = df.drop(index_r)
+                elif rows['X1'] - row['X1'] < 10 and abs(rows['Y1'] - row['Y1'])<20 and  rows['X2']-row['X2']>-10:
+                    print('line found on top border of box')
+                    df = df.drop(index_r)
+                elif rows['X1'] - row['X1'] < 10 and abs(rows['Y2'] - row['Y2'])<20 and  rows['X2']-row['X2']>-10:
+                    print('line found on bottom border of box')
+                    df = df.drop(index_r)
                 else:
                     pass
     return df, df_box
@@ -366,19 +371,17 @@ def generate_label_box(data, height, img):
                 value += text[i][0]
             else:
                 if len(value) > 1:
-                    if abs(X2-X1)>20:
-                        h,_ = img.shape[:2]
-                        cv2.rectangle(img,(X1,h-Y1),(X2,h-Y2),(0,0,255),2)
-                        cv2.imwrite("labels.jpg",img)
-                        if (Y2 - Y1) < 25:
-                            label_box.append([X1, Y1, 25, X2 - X1, "label", value, "0"])
-                        else:
-                            label_box.append([X1, Y1, Y2 - Y1, X2 - X1, "label", value, "0"])
-                    X1, Y1 = int(text[i][1]), int(text[i][2])
-                    X2, Y2 = int(text[i][3]), int(text[i][4])
-                    value = ""
-                    value += text[i][0]
+                    # if abs(X2-X1)>10:
+                    if (Y2 - Y1) < 25:
+                        label_box.append([X1, Y1, 25, X2 - X1, "label", value, "0"])
+                    else:
+                        label_box.append([X1, Y1, Y2 - Y1, X2 - X1, "label", value, "0"])
+                X1, Y1 = int(text[i][1]), int(text[i][2])
+                X2, Y2 = int(text[i][3]), int(text[i][4])
+                value = ""
+                value += text[i][0]
     label_box.append([X1, Y1, Y2 - Y1, X2 - X1, "label", value, "0"])
+    print(data)
     df = pd.DataFrame(label_box, columns=['X1', 'Y1', 'X2', 'Y2', 'Type', 'value', 'group'])
     return df
 def reformation(img, rec_coordinate):
