@@ -46,6 +46,7 @@ def radio_identification(img, df, df_final, length):
             df_final.at[length, df.loc[group]['value']] = df.loc[df_temp.iloc[0]['no']]['value']
     except Exception as e:
         print("Exception in filled radio identification:",e)
+    print(df_final)
     return df_final
 
 
@@ -107,6 +108,7 @@ def checkbox_identification(img, df, df_final, length):
                 df_final.at[length, df.loc[rows['no']]['value']] = 'f'
     except Exception as e:
         print("Exception in filled checkbox identification", e)
+    print(df_final)
     return df_final
 def transformation(img, src_img, dst_img):
     rows, cols = img.shape[:2]
@@ -144,7 +146,7 @@ def perform_OCR(img, df, df_final, length):
 
         # crop the photo and submit to tesseract
         # img = cv2.imread(img)
-        cropped_img = img[t:t+h,l:l+w]
+        cropped_img = img[t+3:t+h-6,l+5:l+w-5]
         cropped_img = cv2.medianBlur(cropped_img,3)
         cv2.imshow('cropped img',cropped_img)
         cv2.waitKey(0)

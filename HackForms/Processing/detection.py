@@ -22,7 +22,7 @@ def findCircle(cnts, img1):
             ((x, y), radius) = cv2.minEnclosingCircle(c)
             c_area = cv2.contourArea(c)
             c_area = c_area / ((3.14) * radius * radius)
-            if radius > 8:
+            if radius > 10:
                 if radius < 50:
                     if c_area > 0.8:
                         circles.append(
@@ -37,22 +37,22 @@ def findCircle(cnts, img1):
 def eliminate_duplicate_circle(circles,diff,img):
     df_circle = pd.DataFrame(circles, columns=['X1', 'Y1', 'R1', 'R2',"type", "value", "group"])
     df_circle = df_circle.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
+    print(df_circle)
     index_curr, x, y, r = 0, 0, 0, 0
     for index_r,row in df_circle.iterrows():
         index_v = index_r
         print(row['X1'], index_r)
         if abs(x-row['X1'])<diff and abs(y- row['Y1'])<diff:
             df_circle = df_circle.drop(index_r)
-            while (index_v in df_circle.index and abs(y - df_circle.loc[index_v][1]) < 10):
-                if index_v in df_circle.index:
-                    if abs(x - df_circle.loc[index_v][0]) < diff and abs(y - df_circle.loc[index_v][1]) < diff:
-                        if x - df_circle.loc[index_v][0] > 0:
-                            df_circle = df_circle.drop(index_v)
-                        else:
-                            df_circle = df_circle.drop(index_curr)
+            while index_v in df_circle.index and abs(y - df_circle.loc[index_v][1]) < 10:
+                if abs(x - df_circle.loc[index_v][0]) < diff and abs(y - df_circle.loc[index_v][1]) < diff:
+                    if x - df_circle.loc[index_v][0] > 0:
+                        df_circle = df_circle.drop(index_v)
                     else:
-                        pass
-                    index_v += 1
+                        df_circle = df_circle.drop(index_curr)
+                else:
+                    pass
+                index_v += 1
         try:
             index_curr = index_r
             x = df_circle.loc[index_r][0]
