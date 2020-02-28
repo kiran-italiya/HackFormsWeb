@@ -35,7 +35,9 @@ class ProcessForm:
 
         rectangle_image, rec_coordinate = detection.detect_rectangles_eight(img)
         start, img, aspect = detection.reformation(img, rec_coordinate)
-        img = imutils.resize(img,width=1000)
+        img = imutils.resize(img, width = 1000)
+        print(img.shape)
+        # _,img_width = img.shape[:2]
         # rectangle_image, rec_coordinate = detection.detect_rectangles(img)
         #
         # df_box = detection.eliminate_duplicate_box(rec_coordinate, self.diff, img)
@@ -73,7 +75,8 @@ class ProcessForm:
         # """Line detection and processing"""
 
         line = detection.linesp(img)
-        df = detection.line_processing(line, self.diff, self.height)
+
+        df = detection.line_processing(line, self.diff, self.height, img)
         img2 = img.copy()
         for row in df.itertuples():
             cv2.rectangle(img2, (row[1], row[2] - 40), (row[3], row[4]), (0, 0, 255), 1)
@@ -120,7 +123,7 @@ class ProcessForm:
         field_box = df_box.values.tolist()
 
         circles = detection.findCircle(cnt, img)
-        circles = detection.eliminate_duplicate_circle(circles, self.diff, img) #TODO this
+        circles = detection.eliminate_duplicate_circle(circles, self.diff, img)
         circles = circles.values.tolist()
         with open(self.datacsv, 'w', newline='') as file:
             writer = csv.writer(file)
@@ -180,7 +183,8 @@ class ProcessForm:
         cv2.destroyAllWindows()
         rectangle_image, rec_coordinate = detection.detect_rectangles_eight(img)
         dst_img, img = detection.reformation_filled_form(img, rec_coordinate, aspect)
-        img = imutils.resize(img, width=1000)
+        img = imutils.resize(img, width=1000 )
+        print(img.shape)
         dummy = [0] * len(df_final.columns)
 
         df_final.loc[len(df_final)] = dummy
@@ -301,5 +305,5 @@ class ProcessForm:
 
 
 pf = ProcessForm()
-pf.processForm('k4.jpg', os.path.join(os.getcwd(), "data/k4"))
+pf.processForm('k2.jpg', os.path.join(os.getcwd(), "data/k2/"))
 # pf.generate_analytics()

@@ -438,6 +438,12 @@ def hackForm(csvfile):
                     parent_group = None
                     curr_df = assign_with_missing(curr_df, parent_group, df,labels,fields)
 
+        if labels==0 and fields>0 and radios==0 and checkboxes==0:
+            if parent_group is not None:
+                for index, row in curr_df.loc[curr_df['type'] == 'field'].iterrows():
+                    df.at[index, 'group'] = parent_group
+
+
 
         if labels > 0 and checkboxes > 0:
             if fields>0 or radios>0:

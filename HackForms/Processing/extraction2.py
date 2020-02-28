@@ -3,7 +3,7 @@ import cv2
 import pandas as pd
 import imutils
 import pytesseract
-import nlp2
+# import nlp2
 
 def radio_identification(img, df, df_final, length):
     group = None
@@ -47,7 +47,7 @@ def radio_identification(img, df, df_final, length):
             df_final.at[length, df.loc[group]['value']] = df.loc[df_temp.iloc[0]['no']]['value']
     except Exception as e:
         print("Exception in filled radio identification:",e)
-    # print(df_final)
+    print(df_final)
     return df_final
 
 
@@ -109,7 +109,7 @@ def checkbox_identification(img, df, df_final, length):
                 df_final.at[length, df.loc[rows['no']]['value']] = 'f'
     except Exception as e:
         print("Exception in filled checkbox identification", e)
-    # print(df_final)
+    print(df_final)
     return df_final
 def transformation(img, src_img, dst_img):
     rows, cols = img.shape[:2]
@@ -138,8 +138,8 @@ def perform_OCR(img, df, df_final, length):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img = img.astype('uint8')
     img = imutils.resize(img, width=1000)
-    result = ''
-    final_result=''
+    final_result = ''
+    group_result = ''
     for i,row in fieldsDf.iterrows():
         t = row['top']
         l = row['left']
@@ -156,26 +156,18 @@ def perform_OCR(img, df, df_final, length):
         threshed= cv2.adaptiveThreshold(cropped_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
         cv2.imshow('thresholded img',threshed)
         cv2.waitKey(0)
-        result = pytesseract.image_to_string(cropped_img,config='--psm 6')
+        result = pytesseract.image_to_string(cropped_img,config='--psm 7')
         print("from tess:",result)
         try:
-            int(row.group)
-            print(int(row.group))
-            if df.loc[int(row.group)].value == 'Date' or df.loc[int(row.group)].value == 'date' or df.loc[int(row.group)].value == 'Name' or df.loc[int(row.group)].value == 'name' or df.loc[int(row.group)].value == 'Email' or df.loc[int(row.group)].value == 'email' or df.loc[int(row.group)].value == 'Phone' or df.loc[int(row.group)].value == 'phone':
-                pass
+            if group == int(row.group):
+                group_result += ' '+ result
+                df_final.at[length, df.loc[int(row.group)].value] = group_result
             else:
-                print(' Result  ======',result,'=========Semantic value ========',nlp2.do_nlp(result))
-            df_final.at[length, df.loc[int(row.group)].value]=result
+                group_result = ''
+                group = int(row.group)
+
         except:
-            print('There\'s an exception in perform_ocr ')
-            if result.isnumeric():
-                df_final.at[length,'Unassigned'] = result
-                print('result ====',df_final.at[length,'Unassigned'] )
-            else:
-                final_result += ' ' + result
-                df_final.at[length, 'Unassigned'] = final_result
-                print('result ====', df_final.at[length, 'Unassigned'])
-    print(' final Result  ======', final_result, '=========Semantic value ========', nlp2.do_nlp(final_result))
+            final_result+=' '+ result
+            df_final.at[length,'Unassigned'] = final_result
+        print(final_result)
     return df_final
-# TODO eliminate line in middle
-# TODO grouping as well as insertion not working for k2
