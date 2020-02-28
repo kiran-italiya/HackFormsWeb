@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import pandas as pd
 import extraction
-
+import copy
 
 def contour(image):
     img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -22,7 +22,7 @@ def findCircle(cnts, img1):
             ((x, y), radius) = cv2.minEnclosingCircle(c)
             c_area = cv2.contourArea(c)
             c_area = c_area / ((3.14) * radius * radius)
-            if radius > 8:
+            if radius > 10:
                 if radius < 50:
                     if c_area > 0.8:
                         circles.append(
@@ -37,29 +37,29 @@ def findCircle(cnts, img1):
 def eliminate_duplicate_circle(circles,diff,img):
     df_circle = pd.DataFrame(circles, columns=['X1', 'Y1', 'R1', 'R2',"type", "value", "group"])
     df_circle = df_circle.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
+    print(df_circle)
     index_curr, x, y, r = 0, 0, 0, 0
-    for row in df_circle.itertuples():
-        index_v = row[0]
-        print(row[1], row[0])
-        if abs(x-row[1])<diff and abs(y- row[2])<diff:
-            df_circle = df_circle.drop(row[0])
-            while (index_v in df_circle.index and abs(y - df_circle.loc[index_v][1]) < 10):
-                if index_v in df_circle.index:
-                    if abs(x - df_circle.loc[index_v][0]) < diff and abs(y - df_circle.loc[index_v][1]) < diff:
-                        if x - df_circle.loc[index_v][0] > 0:
-                            df_circle = df_circle.drop(index_v)
-                        else:
-                            df_circle = df_circle.drop(index_curr)
-                    else:
-                        pass
-                    index_v += 1
+    for index_r,row in df_circle.iterrows():
+        index_v = index_r
+        print(row['X1'], index_r)
+        if abs(x-row['X1'])<diff and abs(y- row['Y1'])<diff:
+            df_circle = df_circle.drop(index_r)
+        while index_v in df_circle.index and abs(y - df_circle.loc[index_v][1]) < 10:
+            if abs(x - df_circle.loc[index_v][0]) < diff and abs(y - df_circle.loc[index_v][1]) < diff:
+                if x - df_circle.loc[index_v][0] > 0:
+                    df_circle = df_circle.drop(index_v)
+                else:
+                    df_circle = df_circle.drop(index_curr)
+            else:
+                pass
+            index_v += 1
         try:
-            index_curr = row[0]
-            x = df_circle.loc[row[0]][0]
-            y = df_circle.loc[row[0]][1]
-            r = df_circle.loc[row[0]][2]
+            index_curr = index_r
+            x = df_circle.loc[index_r][0]
+            y = df_circle.loc[index_r][1]
+            r = df_circle.loc[index_r][2]
         except:
-            pass
+            print("Exception occured")
     df_circle = df_circle.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
     return df_circle
 
@@ -73,12 +73,14 @@ def linesp(img):
 
 def detect_rectangles(image):
     img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    _, threshold = cv2.threshold(img, 240, 255, cv2.THRESH_BINARY)
+    # _, threshold = cv2.threshold(img, 215, 255, cv2.THRESH_BINARY)
+    threshold = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 2)
     contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     coordinate = []
     for cnt in contours:
         approx = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
         if len(approx) == 4 and cv2.contourArea(cnt) > 50:
+            # if abs(approx[0][0][0]-approx[1][0][0])<10 or abs(approx[0][0][0]-approx[3][0][0])<10:
             coordinate.append((approx[0][0], approx[2][0]))
         #			'''if 2000+co > cv2.contourArea(cnt) > co:
         #				continue
@@ -92,22 +94,52 @@ def detect_rectangles(image):
 
 
 def eliminate_duplicate_box(rec_coordinate, diff,img):
-    h,w = img.shape[:2]
-    w = 0.9*w
-    h = 0.9*h
+
     coordinates = []
     for x, y in rec_coordinate:
         coordinates.append([x[0], x[1], y[0], y[1]])
+
     df_box = pd.DataFrame(coordinates, columns=['X1', 'Y1', 'X2', 'Y2'])
     df_box = df_box.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
     index_curr, x1, y1, x2, y2 = 0, 0, 0, 0, 0
-    for row in df_box.itertuples():
-        index_v = row[0]
-        print(row[1], row[0])
-        if (row[1] < 10 and row[2] < 10) or (row[1]>w and row[2]<10):
-            df_box = df_box.drop(row[0])
+    for i,row in df_box.iterrows():
+        index_v = i
+        if row['X1']<row['X2']:
+            if row['Y1']<row['Y2']:
+                pass
+            elif row['Y1']>row['Y2']:
+                temp = copy.deepcopy(row['Y1'])
+                # row['Y1'] = row['Y2']
+                df_box.at[i,'Y1'] = copy.deepcopy(row['Y2'])
+                # row['Y2']=temp
+                df_box.at[i, 'Y2'] = temp
+            else:
+                print("unforeseen Condition")
+        elif row['X1']>row['X2']:
+            if row['Y1']<row['Y2']:
+                temp = copy.deepcopy(row['X2'])
+                row['X2'] = copy.deepcopy(row['X1'])
+                df_box.at[i,'X2']= copy.deepcopy(row['X1'])
+                # row['X1'] = temp
+                df_box.at[i, 'X1'] = temp
+            elif row['Y1']>row['Y2']:
+                temp = copy.deepcopy(row['X2'])
+                # row['X2'] = row['X1']
+                # row['X1'] = temp
+                df_box.at[i, 'X2'] = copy.deepcopy(row['X1'])
+                df_box.at[i, 'X2'] = temp
+                temp = copy.deepcopy(row['Y2'])
+                # row['Y2'] = row['Y1']
+                df_box.at[i, 'Y2'] = copy.deepcopy(row['Y1'])
+                df_box.at[i, 'X2'] = temp
+            else:
+                print("unforeseen Condition")
+        # print('after   ', row)
+
+        if row['X1'] < 10 and row['Y1'] < 10:         # or (row['X1']>w and row['Y1']<10)
+            df_box = df_box.drop(i)
         try:
-            while (index_v in df_box.index and abs(y1 - df_box.loc[index_v][1]) < 10):
+            while abs(y1 - df_box.loc[index_v][1]) < 10:
                 if index_v in df_box.index:
                     if abs(x1 - df_box.loc[index_v][0]) < diff and abs(y1 - df_box.loc[index_v][1]) < diff and abs(
                                     x2 - df_box.loc[index_v][2]) < diff and abs(y2 - df_box.loc[index_v][3]) < diff:
@@ -121,18 +153,18 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
         except Exception as e:
             print(e)
         try:
-            index_curr = row[0]
-            x1 = df_box.loc[row[0]][0]
-            y1 = df_box.loc[row[0]][1]
-            x2 = df_box.loc[row[0]][2]
-            y2 = df_box.loc[row[0]][3]
+            index_curr = i
+            x1 = copy.deepcopy(df_box.loc[i][0])
+            y1 = copy.deepcopy(df_box.loc[i][1])
+            x2 = copy.deepcopy(df_box.loc[i][2])
+            y2 = copy.deepcopy(df_box.loc[i][3])
         except:
             pass
     df_box = df_box.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
     return df_box
 
 
-def line_processing(line, diff, height):
+def line_processing(line, diff, height, img1):
     horiz_lines = []
     if line is not None:
         for j in range(0, len(line)):
@@ -145,12 +177,29 @@ def line_processing(line, diff, height):
     x1, y1, x2, y2 = 0, 0, 0, 0
     field_box = []
     index_curr = 0
+    h,w = img1.shape[:2]
+    img = img1.copy()
 
     #    """DUPLICATE LINES ELIMINATION"""
-    for row in df.itertuples():
-        index_v = row[0]
+    for index_r,row in df.iterrows():
+        index_v = index_r
+        cv2.line(img, (row['X1'],row['Y1']),(row['X2'], row['Y2']), (0,255,0),3)
+        # print('Before line\n',row)
+        if abs(h - row['Y1']) < 10:
+            df = df.drop(index_r)
+        else:
+            pass
+        if row['X1']<row['X2']:
+            pass
+        elif row['X1']>row['X2']:
+            temp = copy.deepcopy(row['X2'])
+            row['X2'] = row['X1']
+            row['X1'] = temp
+        else:
+            print('Aisa nahi ho sakta ')
+        # print('After line\n', row)
         try:
-            while (index_v in df.index and abs(y1 - df.loc[index_v][1]) < 10):
+            while abs(y1 - df.loc[index_v][1]) < 10:
                 if index_v in df.index:
                     if abs(x1 - df.loc[index_v][0]) < diff and abs(y1 - df.loc[index_v][1]) < diff and abs(
                                     x2 - df.loc[index_v][2]) < diff and abs(y2 - df.loc[index_v][3]) < diff:
@@ -198,22 +247,25 @@ def line_processing(line, diff, height):
         except Exception as e:
             print(e)
         try:
-            index_curr = row[0]
-            x1 = df.loc[row[0]][0]
-            y1 = df.loc[row[0]][1]
-            x2 = df.loc[row[0]][2]
-            y2 = df.loc[row[0]][3]
+            index_curr = index_r
+            x1 = df.loc[index_r][0]
+            y1 = df.loc[index_r][1]
+            x2 = df.loc[index_r][2]
+            y2 = df.loc[index_r][3]
             field_box.append([x1, y1 - height, x2, y2, "Field", np.nan, 0])
         except:
             pass
 
         #    """REMOVAL OF REMAINING DUPLICATE LINES"""
+    cv2.imwrite("lines.jpg", img)
+    img = img1.copy()
     df = df.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
-    for row in df.itertuples():
-        index_v = row[0]
+    for index_r,row in df.iterrows():
+        index_v = index_r
+        cv2.line(img, (row['X1'], row['Y1']), (row['X2'], row['Y2']), (0, 255, 0), 3)
 
         try:
-            while (index_v in df.index and abs(y1 - df.loc[index_v][1]) < 10):
+            while abs(y1 - df.loc[index_v][1]) < 10:
                 if index_v in df.index:
                     if abs(x1 - df.loc[index_v][0]) < diff and abs(y1 - df.loc[index_v][1]) < diff and abs(
                                     x2 - df.loc[index_v][2]) < diff and abs(y2 - df.loc[index_v][3]) < diff:
@@ -261,30 +313,41 @@ def line_processing(line, diff, height):
         except Exception as e:
             print(e)
         try:
-            index_curr = row[0]
-            x1 = df.loc[row[0]][0]
-            y1 = df.loc[row[0]][1]
-            x2 = df.loc[row[0]][2]
-            y2 = df.loc[row[0]][3]
+            index_curr = index_r
+            x1 = df.loc[index_r][0]
+            y1 = df.loc[index_r][1]
+            x2 = df.loc[index_r][2]
+            y2 = df.loc[index_r][3]
             field_box.append([x1, y1 - height, x2, y2, "Field", np.nan, 0])
         except:
             pass
+    cv2.imwrite("linesafter.jpg", img)
+    img = img1.copy()
+    for i, row in df.iterrows():
+        cv2.line(img, (row['X1'], row['Y1']), (row['X2'], row['Y2']), (0, 255, 0), 3)
+    cv2.imwrite("linesafter2.jpg", img)
     return df
 
 
 def eliminate_duplicate_entry(df, df_box):
     diff = 30
-    for row in df_box.itertuples():
-        for rows in df.itertuples():
-            if row[0] in df_box.index and rows[0] in df.index:
-                if abs(row[1] - rows[1]) < diff and abs(row[2] - rows[2]) < diff:
-                    df = df.drop(rows[0])
-                elif abs(row[3] - rows[3]) < diff and abs(row[4] - rows[4]) < diff:
-                    df = df.drop(rows[0])
-                elif abs(row[3] - rows[3]) < diff and abs(row[2] - rows[2]) < diff:
-                    df = df.drop(rows[0])
-                elif abs(row[1] - rows[1]) < diff and abs(row[4] - rows[4]) < diff:
-                    df = df.drop(rows[0])
+    for ii,row in df_box.iterrows():
+        for index_r,rows in df.iterrows():
+            if ii in df_box.index and index_r in df.index:
+                if abs(rows['X1'] - row['X1']) < diff and abs(rows['Y1'] - row['Y1']) < diff:
+                    df = df.drop(index_r)
+                elif abs(rows['X2'] - row['X2']) < diff and abs(rows['Y2'] - row['Y2']) < diff:
+                    df = df.drop(index_r)
+                elif abs(rows['X2'] - row['X2']) < diff and abs(rows['Y1'] - row['Y1']) < diff:
+                    df = df.drop(index_r)
+                elif abs(rows['X1'] - row['X1']) < diff and abs(rows['Y2'] - row['Y2']) < diff:
+                    df = df.drop(index_r)
+                elif rows['X1'] - row['X1'] < 10 and abs(rows['Y1'] - row['Y1'])<20 and  rows['X2']-row['X2']>-10:
+                    print('line found on top border of box')
+                    df = df.drop(index_r)
+                elif rows['X1'] - row['X1'] < 10 and abs(rows['Y2'] - row['Y2'])<20 and  rows['X2']-row['X2']>-10:
+                    print('line found on bottom border of box')
+                    df = df.drop(index_r)
                 else:
                     pass
     return df, df_box
@@ -292,16 +355,16 @@ def eliminate_duplicate_entry(df, df_box):
 
 def get_checkbox(df_box):
     checkbox = []
-    for row in df_box.itertuples():
-        w = abs(row[3] - row[1])
+    for index_r,row in df_box.iterrows():
+        w = abs(row['X2'] - row['X1'])
         if w < 80:
             checkbox.append(
-                [row[1] - 5, row[2] - 5, abs(row[4] - row[2]) + 10, abs(row[3] - row[1] + 10), "checkbox", np.nan, 0])
-            df_box = df_box.drop(row[0])
+                [row['X1'] - 5, row['Y1'] - 5, abs(row['Y2'] - row['Y1']) + 10, abs(row['X2'] - row['X1'] + 10), "checkbox", np.nan, 0])
+            df_box = df_box.drop(index_r)
     return df_box, checkbox
 
 
-def generate_label_box(data, height):
+def generate_label_box(data, height, img):
     text = []
     label_box = []
     value = ""
@@ -324,6 +387,7 @@ def generate_label_box(data, height):
                 value += text[i][0]
             else:
                 if len(value) > 1:
+                    # if abs(X2-X1)>10:
                     if (Y2 - Y1) < 25:
                         label_box.append([X1, Y1, 25, X2 - X1, "label", value, "0"])
                     else:
@@ -333,6 +397,7 @@ def generate_label_box(data, height):
                 value = ""
                 value += text[i][0]
     label_box.append([X1, Y1, Y2 - Y1, X2 - X1, "label", value, "0"])
+    print(data)
     df = pd.DataFrame(label_box, columns=['X1', 'Y1', 'X2', 'Y2', 'Type', 'value', 'group'])
     return df
 def reformation(img, rec_coordinate):
@@ -340,20 +405,39 @@ def reformation(img, rec_coordinate):
     for p,q,r,s in rec_coordinate:
         coordinates.append([p[0], p[1], q[0], q[1], r[0], r[1], s[0], s[1]])
     df = pd.DataFrame(coordinates,columns=['X1','Y1','X2','Y2','X3','Y3','X4','Y4'])
+
     df = eliminate_duplicate_box_eight(coordinates,30,img)
     df = df.sort_values(by=['Y1','X1']).reset_index(drop=True)
     start = df.iloc[0]
+    img1 = img.copy()
+    # print('iasuhdhiasu=-=-----------',df)
+    print('+++++++++++++++++++++++iasuhdhiasu=-=-----------', start)
+
+    # cv2.circle(img1, (start['X1'], start['Y1']), 2, (0, 0, 255), 2)
+    # cv2.circle(img1, (start['X2'], start['Y2']), 2, (0, 0, 255), 2)
+    # cv2.circle(img1, (start['X3'], start['Y3']), 2, (0, 0, 255), 2)
+    # cv2.circle(img1, (start['X4'], start['Y4']), 2, (0, 0, 255), 2)
+    cv2.imwrite("error.jpg",img1)
     vertical = [[start['X1'],start['Y1']],[start['X2'],start['Y2']],[start['X3'],start['Y3']],[start['X4'],start['Y4']]]
     df_vertical = pd.DataFrame(vertical, columns = ['X','Y'])
     df_vertical = df_vertical.sort_values(by= ['X','Y']).reset_index(drop=True)
     vertical = df_vertical.values.tolist()
-    src_img = [[vertical[0][0],vertical[0][1]],[vertical[2][0],vertical[2][1]],[vertical[1][0],vertical[1][1]]]
-    dst_img = [[vertical[0][0],vertical[0][1]],[vertical[2][0],vertical[0][1]],[vertical[0][0],vertical[1][1]]]
+    print("LOOK AT THIS#############",vertical)
+    # if abs(vertical[0][1]-vertical[2][1])<15
+    if vertical[0][1] > vertical[1][1]:
+        y = abs(vertical[1][1] - vertical[0][1])
+        x = abs(vertical[0][0] - vertical[2][0])
+        aspect = y/x
+        src_img = [[vertical[1][0], vertical[1][1]], [vertical[3][0], vertical[3][1]], [vertical[0][0], vertical[0][1]]]
+        dst_img = [[vertical[0][0], vertical[1][1]], [vertical[2][0], vertical[1][1]], [vertical[0][0], vertical[0][1]]]
+    else:
+        src_img = [[vertical[0][0], vertical[0][1]], [vertical[2][0], vertical[2][1]], [vertical[1][0], vertical[1][1]]]
+        dst_img = [[vertical[0][0], vertical[2][1]], [vertical[2][0], vertical[2][1]], [vertical[0][0], vertical[1][1]]]
     img = extraction.transformation(img, src_img,dst_img)
     cv2.imshow('transformed',img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-    return start, img
+    return start, img, aspect
     # box = [start['X1'],start['Y1'],start['X2'],start['Y2'],start['X3'],start['Y3'],start['X4'],start['Y4']]
     # h,w = img.shape[:2]
     # if abs(start['Y3']-start['Y1'])>h/2:
@@ -363,13 +447,17 @@ def reformation(img, rec_coordinate):
 
 def detect_rectangles_eight(image):
     img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    _, threshold = cv2.threshold(img, 240, 255, cv2.THRESH_BINARY)
+    # _, threshold = cv2.threshold(img, 240, 255, cv2.THRESH_BINARY)
+    threshold = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 2)
+    cv2.imshow("thr",threshold)
+    cv2.waitKey(0)
     contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     coordinate = []
     for cnt in contours:
         approx = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
         if len(approx) == 4 and cv2.contourArea(cnt) > 50:
-            coordinate.append((approx[0][0],approx[1][0],approx[2][0],approx[3][0]))
+            # if abs(approx[0][0][0] - approx[1][0][0]) < 10 or abs(approx[0][0][0] - approx[3][0][0]) < 10:
+            coordinate.append((approx[0][0], approx[1][0], approx[2][0], approx[3][0]))
         #			'''if 2000+co > cv2.contourArea(cnt) > co:
         #				continue
         #				co=cv2.contourArea(cnt)'''# try changing the value in place of 2000 to get outer rectangles
@@ -381,19 +469,53 @@ def detect_rectangles_eight(image):
     return img, coordinate
 
 def eliminate_duplicate_box_eight(rec_coordinate, diff,img):
-    h,w = img.shape[:2]
-    w = 0.9*w
-    h = 0.9*h
+    # h,w = img.shape[:2]
+    # w = 0.9*w
+    # h = 0.9*h
     coordinates = []
     for x in rec_coordinate:
         coordinates.append([x[0], x[1], x[2], x[3], x[4], x[5], x[6], x[7]])
     df_box = pd.DataFrame(rec_coordinate, columns=['X1', 'Y1', 'X2', 'Y2', 'X3', 'Y3', 'X4', 'Y4'])
     df_box = df_box.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
     index_curr, x1, y1, x2, y2 = 0, 0, 0, 0, 0
-    for row in df_box.itertuples():
-        index_v = row[0]
-        if (row[1] < 10 and row[2] < 10) or (row[1]>w and row[2]<10):
-            df_box = df_box.drop(row[0])
+    for index_r,row in df_box.iterrows():
+        index_v = index_r
+        if row['X1']<row['X3']:
+            if row['Y1']<row['Y3']:
+                print('No changes  ')
+                pass
+            elif row['Y1']>row['Y3']:
+                temp = copy.deepcopy(row['Y1'])
+                # row['Y1'] = row['Y2']
+                df_box.at[index_r,'Y1'] = copy.deepcopy(row['Y3'])
+                # row['Y2']=temp
+                df_box.at[index_r, 'Y3'] = temp
+            else:
+                print("unforeseen Condition")
+        elif row['X1']>row['X3']:
+            if row['Y1']<row['Y3']:
+                temp = copy.deepcopy(row['X3'])
+                row['X3'] = copy.deepcopy(row['X1'])
+                df_box.at[index_r,'X3']= copy.deepcopy(row['X1'])
+                print('x1 > x2 y1 < y2 row \n',row)
+                print('x1 > x2 y1 < y2 df \n',df_box.loc[index_r])
+                # row['X1'] = temp
+                df_box.at[index_r, 'X1'] = temp
+            elif row['Y1']>row['Y3']:
+                temp = copy.deepcopy(row['X3'])
+                # row['X2'] = row['X1']
+                # row['X1'] = temp
+                df_box.at[index_r, 'X3'] = copy.deepcopy(row['X1'])
+                df_box.at[index_r, 'X3'] = temp
+                temp = copy.deepcopy(row['Y3'])
+                # row['Y2'] = row['Y1']
+                df_box.at[index_r, 'Y3'] = copy.deepcopy(row['Y1'])
+                df_box.at[index_r, 'X3'] = temp
+                print('double trouble  ')
+            else:
+                print("unforeseen Condition")
+        if (row['X1'] < 10 and row['Y1'] < 10):  #(row['X1']>w and row['Y1']<10
+            df_box = df_box.drop(index_r)
         try:
             while (index_v in df_box.index and abs(y1 - df_box.loc[index_v][1]) < 10):
                 if index_v in df_box.index:
@@ -409,14 +531,51 @@ def eliminate_duplicate_box_eight(rec_coordinate, diff,img):
         except Exception as e:
             print(e)
         try:
-            index_curr = row[0]
-            x1 = df_box.loc[row[0]][0]
-            y1 = df_box.loc[row[0]][1]
-            x2 = df_box.loc[row[0]][2]
-            y2 = df_box.loc[row[0]][3]
+            index_curr = index_r
+            x1 = df_box.loc[index_r][0]
+            y1 = df_box.loc[index_r][1]
+            x2 = df_box.loc[index_r][2]
+            y2 = df_box.loc[index_r][3]
         except:
             pass
     df_box = df_box.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
     return df_box
 
 # for number in range(20,23):
+def reformation_filled_form(img, rec_coordinate, aspect):
+    coordinates = []
+    for p,q,r,s in rec_coordinate:
+        coordinates.append([p[0], p[1], q[0], q[1], r[0], r[1], s[0], s[1]])
+    df = pd.DataFrame(coordinates,columns=['X1','Y1','X2','Y2','X3','Y3','X4','Y4'])
+
+    df = eliminate_duplicate_box_eight(coordinates,30,img)
+    df = df.sort_values(by=['Y1','X1']).reset_index(drop=True)
+    start = df.iloc[0]
+    img1 = img.copy()
+    # print('iasuhdhiasu=-=-----------',df)
+    print('+++++++++++++++++++++++iasuhdhiasu=-=-----------', start)
+    #
+    # cv2.circle(img1, (start['X1'], start['Y1']), 2, (0, 0, 255), 2)
+    # cv2.circle(img1, (start['X2'], start['Y2']), 2, (0, 0, 255), 2)
+    # cv2.circle(img1, (start['X3'], start['Y3']), 2, (0, 0, 255), 2)
+    # cv2.circle(img1, (start['X4'], start['Y4']), 2, (0, 0, 255), 2)
+    cv2.imwrite("error.jpg",img1)
+    vertical = [[start['X1'],start['Y1']],[start['X2'],start['Y2']],[start['X3'],start['Y3']],[start['X4'],start['Y4']]]
+    df_vertical = pd.DataFrame(vertical, columns = ['X','Y'])
+    df_vertical = df_vertical.sort_values(by= ['X','Y']).reset_index(drop=True)
+    vertical = df_vertical.values.tolist()
+    print("LOOK AT THIS#############",vertical)
+    # if abs(vertical[0][1]-vertical[2][1])<15
+    if vertical[0][1] > vertical[1][1]:
+        y = abs(vertical[1][1]-vertical[0][1])
+        x = int(y/aspect)
+        src_img = [[vertical[1][0], vertical[1][1]], [vertical[3][0], vertical[3][1]], [vertical[0][0], vertical[0][1]]]
+        dst_img = [[vertical[0][0], vertical[1][1]], [vertical[0][0]+x, vertical[1][1]], [vertical[0][0], vertical[0][1]]]
+    else:
+        src_img = [[vertical[0][0], vertical[0][1]], [vertical[2][0], vertical[2][1]], [vertical[1][0], vertical[1][1]]]
+        dst_img = [[vertical[0][0], vertical[2][1]], [vertical[2][0], vertical[2][1]], [vertical[0][0], vertical[1][1]]]
+    img = extraction.transformation(img, src_img,dst_img)
+    cv2.imshow('transformed',img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    return start, img

@@ -214,10 +214,10 @@ def assign_with_missing(curr_df,parent_group,df,labels,fields):
                     if row.type == 'field':
                         if parent_group is not None:
                             df.at[index, 'group'] = [parent_group, prevIndexValue]
-                            prevIndexValue = ['useless', UNREACHABLE]
+                            prevIndexValue = 'NaN'  # ['useless', UNREACHABLE]
                         else:
                             df.at[index, 'group'] = prevIndexValue
-                            prevIndexValue = ['useless',UNREACHABLE]
+                            prevIndexValue =  'NaN'          # ['useless',UNREACHABLE]
 
 
             if curr_df.iloc[0].type == 'label':
@@ -228,10 +228,10 @@ def assign_with_missing(curr_df,parent_group,df,labels,fields):
                     if row.type == 'field':
                         if parent_group is not None:
                             df.at[index, 'group'] = [parent_group, prevIndexValue]
-                            prevIndexValue = ['useless', UNREACHABLE]
+                            prevIndexValue = 'NaN'          # ['useless',UNREACHABLE]
                         else:
                             df.at[index, 'group'] = prevIndexValue
-                            prevIndexValue = ['useless', UNREACHABLE]
+                            prevIndexValue = 'NaN'          # ['useless',UNREACHABLE]
 
 
         else:     # labels_at_right
@@ -278,10 +278,10 @@ def assign_with_missing(curr_df,parent_group,df,labels,fields):
                     if row.type == 'field':
                         if parent_group is not None:
                             df.at[index, 'group'] = [parent_group, prevIndexValue]
-                            prevIndexValue = ['useless', UNREACHABLE]
+                            prevIndexValue = 'NaN' # ['useless', UNREACHABLE]
                         else:
                             df.at[index, 'group'] = prevIndexValue
-                            prevIndexValue = ['useless', UNREACHABLE]
+                            prevIndexValue = "NaN" # ['useless', UNREACHABLE]
 
             if curr_df.iloc[0].type == 'label':
                 prevIndexValue = curr_df.index[0]
@@ -291,10 +291,10 @@ def assign_with_missing(curr_df,parent_group,df,labels,fields):
                     if row.type == 'field':
                         if parent_group is not None:
                             df.at[index, 'group'] = [parent_group, prevIndexValue]
-                            prevIndexValue = ['useless', UNREACHABLE]
+                            prevIndexValue = "NaN" # ['useless', UNREACHABLE]
                         else:
                             df.at[index, 'group'] = prevIndexValue
-                            prevIndexValue = ['useless', UNREACHABLE]
+                            prevIndexValue = "NaN" # ['useless', UNREACHABLE]
 
 
         else:  # labels_at_right
@@ -363,7 +363,7 @@ def hackForm(csvfile):
         topy=0;bottomy=0
 
         local_min_top = 0
-        local_max_bottom = 0
+        local_max_height = 0
 
         # first_top=df.iloc[element].top
         # first_height=df.iloc[element].height
@@ -375,24 +375,26 @@ def hackForm(csvfile):
         curr_df = df[(df.top>=topy) & (df.top+df.height<=bottomy)].copy()
         curr_df=curr_df.sort_values(by='left') # .reset_index(drop=True)
 
-        # print("\nOld ERROR: ",ERROR)
-        # #
-        # for i in range(curr_df.shape[0]):
-        #     local_min_top = min(local_min_top, curr_df.iloc[i].height)
-        #     local_max_bottom = max(local_max_bottom, curr_df.iloc[i].height + curr_df.iloc[i].top)
+        print("\nOld ERROR: ",ERROR)
         #
-        # ERROR = (local_max_bottom - local_min_top - df.iloc[element].height) / 2  # (max_field_height - df.iloc[element].height )/2
-        #
-        # print("New ERROR: ",ERROR)
-        #
-        # topy = df.iloc[element].top - ERROR
-        # bottomy = df.iloc[element].height + df.iloc[element].top + ERROR
-        #
-        # curr_df = df[(df.top >= topy) & (df.top + df.height <= bottomy)].copy()
-        # curr_df = curr_df.sort_values(by='left')  # .reset_index(drop=True)
+        for i in range(curr_df.shape[0]):
+            local_min_top = min(local_min_top, curr_df.iloc[i].top)
+            local_max_height = max(local_max_height, curr_df.iloc[i].height)
 
-        # print("topy:",topy," bottomy:",bottomy)
-        # print("\n curr_df::\n ",curr_df)
+        local_min_top = max(local_min_top,0)
+
+        ERROR = max(local_max_height - df.iloc[element].height,45/2) # (max_field_height - df.iloc[element].height )/2
+
+        print("New ERROR: ",ERROR)
+
+        topy = df.iloc[element].top - ERROR
+        bottomy = df.iloc[element].height + df.iloc[element].top + ERROR
+
+        curr_df = df[(df.top >= topy) & (df.top + df.height <= bottomy)].copy()
+        curr_df = curr_df.sort_values(by='left')  # .reset_index(drop=True)
+
+        print("topy:",topy," bottomy:",bottomy)
+        print("\n curr_df::\n ",curr_df)
 
         for i in range(curr_df.shape[0]):
             element+=1
@@ -435,6 +437,12 @@ def hackForm(csvfile):
                 else:
                     parent_group = None
                     curr_df = assign_with_missing(curr_df, parent_group, df,labels,fields)
+
+        if labels==0 and fields>0 and radios==0 and checkboxes==0:
+            if parent_group is not None:
+                for index, row in curr_df.loc[curr_df['type'] == 'field'].iterrows():
+                    df.at[index, 'group'] = parent_group
+
 
 
         if labels > 0 and checkboxes > 0:
@@ -501,31 +509,33 @@ def create_dict_from_df(dfx):
 # print(mappingDict)
 
 
-def data_dict(df, final_df):
+def data_dict(df, final_df, i):
     dict = {}
     tmp = []
-    for i, row in df[df.type == 'label'].iterrows():
+    for index, row in df[df.type == 'label'].iterrows():
         tmp.append(row.value)
     dict['labels'] = tmp
 
     tmp = []
-    for i, row in df[df.type == 'field'].iterrows():
-        print("PP:",df.loc[row.group].value)        #TODO solve indexing error
-        tmp.append([final_df[df.loc[row.group].value][-1].value, row.value])
+    for index, row in df[df.type == 'field'].iterrows():
+        if row.group!='NaN':
+            tmp.append({str(final_df[df.loc[int(row.group)].value][i]): final_df[str(final_df[df.loc[int(row.group)].value][i])][i]})
     dict['fields'] = tmp
 
     tmp = []
-    for i, row in df[df.type == 'checkbox'].iterrows():
+    for index, row in df[df.type == 'checkbox'].iterrows():
         try:
-            tmp.append([df.loc[list(row.group)[0]].value, df.loc[list(row.group)[1]].value,
-                        final_df[df.loc[list(row.group)[1]].value][-1].value])
+            tmp.append({df.loc[list(row.group)[0]].value: {df.loc[list(row.group)[1]].value: final_df[df.loc[list(row.group)[1]].value][-1]}})
         except Exception as e:
-            print(e)
+            print("Unaccepted parent for checkbox in data_dict:",e)
     dict['checkboxes'] = tmp
 
-    tmp = []
-    for i, row in df[df.type == 'radio'].iterrows():
-        tmp.append([list(df[df.loc[row.group]].value)[0], final_df[list(df[df.loc[row.group]].value)[0]][-1].value])
+    tmp = { }
+    for index, row in df[df.type == 'radio'].iterrows():
+        try:
+            tmp[df.loc[[list(row.group)][0]].value] = final_df[df.loc[df[list(df.group)][0]].value]
+        except Exception as e:
+            print("Unaccepted parent for radio in data_dict:",e)
     dict['radios'] = tmp
 
     return dict
@@ -556,6 +566,6 @@ def perform_OCR(df):
         cv2.imshow('thresholded img',threshed)
         cv2.waitKey(0)
         result = pytesseract.image_to_string(cropped_img,config='--psm 4')
-        print(result)
+        print("from tess::: ",result)
 
 #perform_OCR()              """"#Main operation""""
