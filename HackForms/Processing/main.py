@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+
 class ProcessForm:
     def __init__(self):
 
@@ -156,7 +157,7 @@ class ProcessForm:
         df = hackForm.hackForm(self.datacsv)
         return df, aspect
 
-    def process_filled_form(self, df, img_name, df_final, aspect):
+    def process_filled_form(self, df, img_name, df_final, aspect,overall_semantics):
 
         # """INSERT LOOP FOR PROCESSING IMAGES IN BULK"""
         # img = cv2.imread("kiran2.png")
@@ -183,11 +184,12 @@ class ProcessForm:
         df_final = extraction.checkbox_identification(img, df, df_final, length-1)
         # print('final   ',df_final)
 
-        df_final = extraction.perform_OCR(img, df, df_final, length-1)
+        df_final,semantic = extraction.perform_OCR(img, df, df_final, length-1)
+        overall_semantics+=semantic
         df_final.to_csv('final.csv')
 
         # dict = hackForm.data_dict(df, df_final)
-        return df_final  # , dict
+        return df_final,overall_semantics  # , dict
 
     def processForm(self, img, path):
 
@@ -201,10 +203,12 @@ class ProcessForm:
 
         df_final = pd.DataFrame(columns=label)
         # print(df_final)
+        overall_form_semantics = 0
         for file in os.listdir(path):
             if file.endswith(".jpg"):
                 tmp_df = df
-                df_final = self.process_filled_form(df=tmp_df, img_name=path + "/" + file, df_final=df_final, aspect=aspect)
+                df_final,overall_form_semantics = self.process_filled_form(df=tmp_df, img_name=path + "/" + file, df_final=df_final, aspect=aspect,overall_semantics=overall_form_semantics)
+                print('~|||||||||||The overall semantics of this type of form is ||||||||||||||',overall_form_semantics)
             # self.database[file] = dict
 
     def generate_analytics(self):
@@ -294,6 +298,5 @@ class ProcessForm:
 
 
 pf = ProcessForm()
-pf.processForm('k4.jpg'
-    , os.path.join(os.getcwd(), "data/k4/"))
+pf.processForm('k1.jpg', os.path.join(os.getcwd(), "data/k1/"))
 # pf.generate_analytics()
