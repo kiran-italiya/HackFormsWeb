@@ -137,7 +137,7 @@ def perform_OCR(img, df, df_final, length):
     fieldsDf = fieldsDf.sort_values(by=['top','left'])
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img = img.astype('uint8')
-    img = imutils.resize(img, width=1000)
+    # img = imutils.resize(img, width=1000)
     result = ''
     final_result=''
     for i,row in fieldsDf.iterrows():

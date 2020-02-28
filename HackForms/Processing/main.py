@@ -35,31 +35,13 @@ class ProcessForm:
 
         rectangle_image, rec_coordinate = detection.detect_rectangles_eight(img)
         start, img, aspect = detection.reformation(img, rec_coordinate)
-        img = imutils.resize(img, width = 1000)
-        print(img.shape)
-        # _,img_width = img.shape[:2]
-        # rectangle_image, rec_coordinate = detection.detect_rectangles(img)
-        #
-        # df_box = detection.eliminate_duplicate_box(rec_coordinate, self.diff, img)
-        # h,_ = img.shape[:2]
-        # h = 0.6*h
-        # first = df_box.loc[0]
-        # if abs(first['Y2']-first['Y1'])>h:
-        #     df_box = df_box.drop([0])
-        #     img = img[first['Y1']+15:first['Y2']-15,first['X1']+15:first['X2']-15]
-        #     cv2.imshow("seperately cropped",img)
-        #     cv2.waitKey(0)
-        #     cv2.destroyAllWindows()
+        img = imutils.resize(img, width = 800)
+        cv2.imwrite("cropped.jpg", img)
+
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         gray = cv2.medianBlur(gray, 3)
         threshold = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 2)
-
-        # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        # gray = cv2.medianBlur(gray, 3)
-        # threshold = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 2)
-
-        # """Label Detection and Processing"""
 
 
         #    """RECTANGLE DETECTION"""
@@ -85,6 +67,8 @@ class ProcessForm:
 
         df, df_box = detection.eliminate_duplicate_entry(df, df_box)
         img1 = img.copy()
+        print(df_box)
+
         for i, row in df.iterrows():
             cv2.rectangle(img1, (row['X1'], row['Y1']), (row['X2'], row['Y2']), (0, 255, 0), 2)
         cv2.imwrite("boxes.jpg", img1)
@@ -183,8 +167,13 @@ class ProcessForm:
         cv2.destroyAllWindows()
         rectangle_image, rec_coordinate = detection.detect_rectangles_eight(img)
         dst_img, img = detection.reformation_filled_form(img, rec_coordinate, aspect)
-        img = imutils.resize(img, width=1000 )
+        img = imutils.resize(img, width=800 )
+        cv2.imwrite("croppedfilled.jpg",img)
         print(img.shape)
+        img1 = img.copy()
+        # for i, row in df.iterrows():
+        #     cv2.rectangle(img1, (row['left'],row['top']),(row['left']+row['width'], row['top']+row['height']), (0,0,255),2)
+        # cv2.imwrite("boxeonimage.jpg",img1)
         dummy = [0] * len(df_final.columns)
 
         df_final.loc[len(df_final)] = dummy
@@ -193,6 +182,7 @@ class ProcessForm:
         df_final = extraction.radio_identification(img, df, df_final, length-1)
         df_final = extraction.checkbox_identification(img, df, df_final, length-1)
         # print('final   ',df_final)
+
         df_final = extraction.perform_OCR(img, df, df_final, length-1)
         df_final.to_csv('final.csv')
 
@@ -304,5 +294,6 @@ class ProcessForm:
 
 
 pf = ProcessForm()
-pf.processForm('k2.jpg', os.path.join(os.getcwd(), "data/k2/"))
+pf.processForm('k4.jpg'
+    , os.path.join(os.getcwd(), "data/k4/"))
 # pf.generate_analytics()
