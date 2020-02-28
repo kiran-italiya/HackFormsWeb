@@ -304,5 +304,5 @@ class ProcessForm:
 
 
 pf = ProcessForm()
-pf.processForm('k4.jpg', os.path.join(os.getcwd(), "data/k4/"))
+pf.processForm('k2.jpg', os.path.join(os.getcwd(), "data/k2/"))
 # pf.generate_analytics()
