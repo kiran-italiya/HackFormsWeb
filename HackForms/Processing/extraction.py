@@ -186,10 +186,17 @@ def perform_OCR(img, df, df_final, length):
                 else:
                     _,cmpd = nlp2.do_nlp(temp_group_result,cmpd)
                     print(' Result  ======',temp_group_result,'=========Semantic value ========',_)
-
-            df_final.at[length, df.loc[int(row.group)].value]=result
+            result= list(filter(bool, result.splitlines()))
+            print(result)
+            tmp_str=''
+            # [tmp_str+x for x in result]
+            for x in result:
+                tmp_str+=' '+x
+            print('tmpp string  ',tmp_str)
+            df_final.at[length, df.loc[int(row.group)].value]=tmp_str
         except Exception as e:
             print('There\'s an exception in perform_ocr \n')
+
             print(e)
 
             if result.isnumeric():

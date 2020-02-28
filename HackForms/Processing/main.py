@@ -266,37 +266,39 @@ class ProcessForm:
                     if checkbox_df is None:
                         dummy = [0] * (len(dictionary))
                         checkbox_df = pd.DataFrame([dummy], columns=dictionary.keys(), dtype=int)
+                    print("cb_df::", checkbox_df)
+                    print("dictionary:::",dictionary)
                     for parent, val in dictionary.items():
                         if val == 't':
                             checkbox_df.at[0, parent] += 1
 
-            if radio_df is None:
-                radio_df = pd.DataFrame([[0] * (len(file_dict['radios']))], columns=file_dict['radios'].keys())
-            for parent, val in file_dict['radios'].items():
-                radio_df.at[0, parent] += val
+            # if radio_df is None:
+            #     radio_df = pd.DataFrame([[0] * (len(file_dict['radios']))], columns=file_dict['radios'].keys())
+            # for parent, val in file_dict['radios'].items():
+            #     radio_df.at[0, parent] += val
 
 
-        checkbox_plt = plt.figure()
-        # ax = checkbox_plt.add_axes([0, 0, 1, 1])
-        labels = checkbox_df.columns
-        vals = checkbox_df.iloc[0]
-        plt.bar(labels, vals)
-        plt.xlabel("Categories")
-        plt.ylabel("values")
-        plt.show()
+
+        # checkbox_plt = plt.figure()
+        # labels = checkbox_df.columns
+        # vals = checkbox_df.iloc[0]
+        # plt.bar(labels, vals)
+        # plt.xlabel("Categories")
+        # plt.ylabel("values")
+        # plt.show()
         # plot chart for checkboxes chart here label= parent   x-axis=parent.keys()  y-axis=parent.values()
 
-        radio_plt = plt.figure()
-        labels = radio_df.columns
-        vals = radio_df.iloc[0]
-        plt.bar(labels, vals)
-        plt.xlabel("Categories")
-        plt.ylabel("values")
-        plt.show()
+        # radio_plt = plt.figure()
+        # labels = radio_df.columns
+        # vals = radio_df.iloc[0]
+        # plt.bar(labels, vals)
+        # plt.xlabel("Categories")
+        # plt.ylabel("values")
+        # plt.show()
 
     # plot chart for labels label=ratings x-axis=database['radios'].keys() y-axis=database['radios'].values()
 
 
 pf = ProcessForm()
-pf.processForm('k1.jpg', os.path.join(os.getcwd(), "data/k1/"))
+pf.processForm('k2.jpg' , os.path.join(os.getcwd(), "data/k4/"))
 # pf.generate_analytics()
