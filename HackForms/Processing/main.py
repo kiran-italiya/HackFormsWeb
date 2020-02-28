@@ -196,8 +196,8 @@ class ProcessForm:
         df_final = extraction.perform_OCR(img, df, df_final, length-1)
         df_final.to_csv('final.csv')
 
-        dict = hackForm.data_dict(df, df_final, length-1)
-        print("dict:",dict)
+        # dict = hackForm.data_dict(df, df_final, length-1)
+        # print("dict:",dict)
         return df_final  # , dict
 
     def processForm(self, img, path):
