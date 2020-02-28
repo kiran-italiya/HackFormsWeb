@@ -1,22 +1,41 @@
 ,left,top,height,width,type,value,group
-8,544,42,20,20,radio,,"['useless', -2]"
-7,384,42,20,20,radio,,"['useless', -1]"
-0,668,120,49,271,field,,NaN
-20,575,129,26,56,label,Date,NaN
-1,144,211,55,605,field,,NaN
-12,49,224,35,68,label,Name,NaN
-2,143,290,46,265,field,,NaN
-3,513,291,47,377,field,,NaN
-13,50,297,35,72,label,Phone,NaN
-14,434,300,35,63,label,Email,NaN
-15,47,386,35,462,label,Wereyousatisfiedwiththecustomerservice,NaN
-10,177,448,34,45,checkbox,,NaN
-9,56,448,33,45,checkbox,,NaN
-11,298,448,34,45,checkbox,,NaN
-17,243,450,35,38,label,No,NaN
-18,367,450,35,117,label,Somewhat,NaN
-16,119,456,35,44,label,Yes,NaN
-19,48,515,35,117,label,Comments,NaN
-4,57,565,469,889,field,,NaN
-5,88,984,55,534,field,,NaN
-6,85,1027,55,829,field,,NaN
+0,667,120,45,255,field,,24
+24,578,127,35,54,label,Oate,NaN
+1,236,201,55,442,field,,25
+25,81,217,35,52,label,Name,NaN
+2,522,276,55,414,field,,27
+3,166,277,55,262,field,,26
+4,295,277,55,133,field,,NaN
+26,82,286,35,66,label,Phone,NaN
+27,445,289,35,55,label,Email,NaN
+28,83,369,35,492,label,Ratethequalityofeventfrommanagementaspect,NaN
+6,208,416,29,29,radio,,"[28, -2]"
+7,385,416,29,29,radio,,"[28, -5]"
+13,690,417,29,29,radio,,"[28, -10]"
+12,629,417,29,29,radio,,"[28, -9]"
+9,442,417,29,29,radio,,"[28, -6]"
+8,142,417,29,29,radio,,"[28, -1]"
+10,503,417,29,29,radio,,"[28, -7]"
+11,563,417,29,29,radio,,"[28, -8]"
+14,265,418,29,29,radio,,"[28, -3]"
+15,326,419,29,29,radio,,"[28, -4]"
+29,83,531,35,400,label,Ratecontentbyhowmuchusefulforyou,NaN
+30,93,574,35,94,label,Notatall,NaN
+16,762,575,29,29,radio,,"[29, 33]"
+33,608,576,35,138,label,Itwasperfect,NaN
+19,550,577,29,29,radio,,"[29, 32]"
+18,380,577,29,29,radio,,"[29, 31]"
+17,209,577,29,29,radio,,"[29, 30]"
+32,426,581,35,112,label,Verymuch,NaN
+31,242,587,36,124,label,Somewhat,NaN
+34,81,695,35,280,label,Thingsthatcanbeimproved,NaN
+20,86,756,36,57,checkbox,,"[34, 35]"
+21,275,757,36,57,checkbox,,"[34, 36]"
+35,157,758,35,72,label,Venue,NaN
+36,353,761,35,86,label,Speaker,NaN
+22,86,833,36,57,checkbox,,"[34, 37]"
+23,275,833,36,57,checkbox,,"[34, 38]"
+38,350,834,35,136,label,Management,NaN
+37,144,846,35,87,label,Timing,NaN
+39,80,904,35,173,label,MoreComments,NaN
+5,92,965,368,775,field,,39

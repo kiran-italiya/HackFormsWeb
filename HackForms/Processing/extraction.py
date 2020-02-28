@@ -137,7 +137,8 @@ def perform_OCR(img, df, df_final, length):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img = img.astype('uint8')
     img = imutils.resize(img, width=1000)
-    result = ''
+    final_result = ''
+    group_result = ''
     for i,row in fieldsDf.iterrows():
         t = row['top']
         l = row['left']
@@ -154,13 +155,18 @@ def perform_OCR(img, df, df_final, length):
         threshed= cv2.adaptiveThreshold(cropped_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
         cv2.imshow('thresholded img',threshed)
         cv2.waitKey(0)
-        result = pytesseract.image_to_string(cropped_img,config='--psm 4')
+        result = pytesseract.image_to_string(cropped_img,config='--psm 7')
         print("from tess:",result)
         try:
-            int(row.group)
-            print(int(row.group))
-            df_final.at[length, df.loc[int(row.group)].value]=result
+            if group == int(row.group):
+                group_result += ' '+ result
+                df_final.at[length, df.loc[int(row.group)].value] = group_result
+            else:
+                group_result = ''
+                group = int(row.group)
+
         except:
-            result+=' '+ result
-            df_final.at[length,'Unassigned'] = result
+            final_result+=' '+ result
+            df_final.at[length,'Unassigned'] = final_result
+        print(final_result)
     return df_final

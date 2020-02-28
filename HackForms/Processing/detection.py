@@ -164,7 +164,7 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
     return df_box
 
 
-def line_processing(line, diff, height):
+def line_processing(line, diff, height, img1):
     horiz_lines = []
     if line is not None:
         for j in range(0, len(line)):
@@ -177,12 +177,18 @@ def line_processing(line, diff, height):
     x1, y1, x2, y2 = 0, 0, 0, 0
     field_box = []
     index_curr = 0
+    h,w = img1.shape[:2]
+    img = img1.copy()
 
     #    """DUPLICATE LINES ELIMINATION"""
-
     for index_r,row in df.iterrows():
         index_v = index_r
+        cv2.line(img, (row['X1'],row['Y1']),(row['X2'], row['Y2']), (0,255,0),3)
         # print('Before line\n',row)
+        if abs(h - row['Y1']) < 10:
+            df = df.drop(index_r)
+        else:
+            pass
         if row['X1']<row['X2']:
             pass
         elif row['X1']>row['X2']:
@@ -251,9 +257,12 @@ def line_processing(line, diff, height):
             pass
 
         #    """REMOVAL OF REMAINING DUPLICATE LINES"""
+    cv2.imwrite("lines.jpg", img)
+    img = img1.copy()
     df = df.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
     for index_r,row in df.iterrows():
         index_v = index_r
+        cv2.line(img, (row['X1'], row['Y1']), (row['X2'], row['Y2']), (0, 255, 0), 3)
 
         try:
             while abs(y1 - df.loc[index_v][1]) < 10:
@@ -312,6 +321,11 @@ def line_processing(line, diff, height):
             field_box.append([x1, y1 - height, x2, y2, "Field", np.nan, 0])
         except:
             pass
+    cv2.imwrite("linesafter.jpg", img)
+    img = img1.copy()
+    for i, row in df.iterrows():
+        cv2.line(img, (row['X1'], row['Y1']), (row['X2'], row['Y2']), (0, 255, 0), 3)
+    cv2.imwrite("linesafter2.jpg", img)
     return df
 
 
