@@ -1,13 +1,18 @@
-import detection
-import hackForm
-import extraction
+# from . import *
+
+
+import HackForms.Processing.extraction as extraction
+import HackForms.Processing.detection as detection
+import HackForms.Processing.hackForm as hackForm
+# import extraction
+# import detection
+
 import cv2, os
 import pytesseract
 import imutils, copy, csv
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
 
 class ProcessForm:
     def __init__(self):
@@ -24,12 +29,11 @@ class ProcessForm:
 
     def process_empty_form(self, img_name):
         img = cv2.imread(img_name)
+
         img = imutils.resize(img, width=self.width)
         cv2.imshow("crop", img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-
-
 
         # """Label Detection and Processing"""
 
@@ -154,9 +158,13 @@ class ProcessForm:
             writer = csv.writer(file)
             writer.writerows(label_box)
         df = hackForm.hackForm(self.datacsv)
+        img_new = img.copy()
+        for _,row in df.iterrows():
+            cv2.rectangle(img_new, (row['left'], row['top']), (row['left'] + row['width'], row['top'] + row['height']),(0, 0, 255), 2)
+        cv2.imwrite('image_lines.jpg',img_new)
         return df, aspect
 
-    def process_filled_form(self, df, img_name, df_final, aspect):
+    def process_filled_form(self, df, img_name, df_final, aspect,overall_semantics,ix):
 
         # """INSERT LOOP FOR PROCESSING IMAGES IN BULK"""
         # img = cv2.imread("kiran2.png")
@@ -172,7 +180,7 @@ class ProcessForm:
         print(img.shape)
         img1 = img.copy()
         # for i, row in df.iterrows():
-        #     cv2.rectangle(img1, (row['left'],row['top']),(row['left']+row['width'], row['top']+row['height']), (0,0,255),2)
+        #     cv2.rectangle(img1, (row['```left'],row['top']),(row['left']+row['width'], row['top']+row['height']), (0,0,255),2)
         # cv2.imwrite("boxeonimage.jpg",img1)
         dummy = [0] * len(df_final.columns)
 
@@ -183,14 +191,14 @@ class ProcessForm:
         df_final = extraction.checkbox_identification(img, df, df_final, length-1)
         # print('final   ',df_final)
 
-        df_final = extraction.perform_OCR(img, df, df_final, length-1)
-        df_final.to_csv('final.csv')
+        df_final,semantic = extraction.perform_OCR(img, df, df_final, length-1)
+        overall_semantics+=semantic
+        df_final.to_csv('final'+str(i)+'.csv')
 
         # dict = hackForm.data_dict(df, df_final)
-        return df_final  # , dict
+        return df_final,overall_semantics  # , dict
 
-    def processForm(self, img, path):
-
+    def processForm(self, img, path,i):
         df, aspect = self.process_empty_form(img_name=img)
         label = []
         label.clear()
@@ -201,11 +209,14 @@ class ProcessForm:
 
         df_final = pd.DataFrame(columns=label)
         # print(df_final)
+        overall_form_semantics = 0
         for file in os.listdir(path):
             if file.endswith(".jpg"):
                 tmp_df = df
-                df_final = self.process_filled_form(df=tmp_df, img_name=path + "/" + file, df_final=df_final, aspect=aspect)
+                df_final,overall_form_semantics = self.process_filled_form(df=tmp_df, img_name=path + "/" + file, df_final=df_final, aspect=aspect,overall_semantics=overall_form_semantics,ix=i)
+                print('~|||||||||||The overall semantics of this type of form is ||||||||||||||',overall_form_semantics)
             # self.database[file] = dict
+        return df_final
 
     def generate_analytics(self):
         database = {
@@ -262,38 +273,64 @@ class ProcessForm:
                     if checkbox_df is None:
                         dummy = [0] * (len(dictionary))
                         checkbox_df = pd.DataFrame([dummy], columns=dictionary.keys(), dtype=int)
+                    print("cb_df::", checkbox_df)
+                    print("dictionary:::",dictionary)
                     for parent, val in dictionary.items():
                         if val == 't':
                             checkbox_df.at[0, parent] += 1
 
-            if radio_df is None:
-                radio_df = pd.DataFrame([[0] * (len(file_dict['radios']))], columns=file_dict['radios'].keys())
-            for parent, val in file_dict['radios'].items():
-                radio_df.at[0, parent] += val
+            # if radio_df is None:
+            #     radio_df = pd.DataFrame([[0] * (len(file_dict['radios']))], columns=file_dict['radios'].keys())
+            # for parent, val in file_dict['radios'].items():
+            #     radio_df.at[0, parent] += val
 
 
-        checkbox_plt = plt.figure()
-        # ax = checkbox_plt.add_axes([0, 0, 1, 1])
-        labels = checkbox_df.columns
-        vals = checkbox_df.iloc[0]
-        plt.bar(labels, vals)
-        plt.xlabel("Categories")
-        plt.ylabel("values")
-        plt.show()
+
+        # checkbox_plt = plt.figure()
+        # labels = checkbox_df.columns
+        # vals = checkbox_df.iloc[0]
+        # plt.bar(labels, vals)
+        # plt.xlabel("Categories")
+        # plt.ylabel("values")
+        # plt.show()
         # plot chart for checkboxes chart here label= parent   x-axis=parent.keys()  y-axis=parent.values()
 
-        radio_plt = plt.figure()
-        labels = radio_df.columns
-        vals = radio_df.iloc[0]
-        plt.bar(labels, vals)
-        plt.xlabel("Categories")
-        plt.ylabel("values")
-        plt.show()
+        # radio_plt = plt.figure()
+        # labels = radio_df.columns
+        # vals = radio_df.iloc[0]
+        # plt.bar(labels, vals)
+        # plt.xlabel("Categories")
+        # plt.ylabel("values")
+        # plt.show()
 
     # plot chart for labels label=ratings x-axis=database['radios'].keys() y-axis=database['radios'].values()
 
 
 pf = ProcessForm()
-pf.processForm('k4.jpg'
-    , os.path.join(os.getcwd(), "data/k4/"))
+for i in range(4):
+    if i!=2:
+        pf.processForm('k'+str(i+1)+'.jpg' , os.path.join(os.getcwd(), 'data/k'+str(i+1)+'/'),i+1)
+
 # pf.generate_analytics()
+
+
+# ===================================================================
+# using SendGrid's Python Library
+# https://github.com/sendgrid/sendgrid-python
+# import os
+# from sendgrid import SendGridAPIClient
+# from sendgrid.helpers.mail import Mail
+#
+# message = Mail(
+#     from_email='from_email@example.com',
+#     to_emails='to@example.com',
+#     subject='Sending with Twilio SendGrid is Fun',
+#     html_content='<strong>and easy to do anywhere, even with Python</strong>')
+# try:
+#     sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+#     response = sg.send(message)
+#     print(response.status_code)
+#     print(response.body)
+#     print(response.headers)
+# except Exception as e:
+#     print(e.message)

@@ -19,9 +19,8 @@
                     <a href="{{ project.csv_file.url}}" class="btn btn-primary btn-sm" target="_blank">Download </a>
                 {%  else %}
                     <h1> Still Processing </h1>
+                    <a href="{% url 'generate' project.project_name %}" class="btn btn-primary btn-sm">Generate Analytics</a>
                 {% endif %}
-
-
             </div>
         </div>
 

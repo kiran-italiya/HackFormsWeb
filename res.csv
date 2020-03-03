@@ -1,0 +1,40 @@
+,left,top,height,width,type,value,group
+0,534,94,38,204,field,,23
+23,462,97,35,45,label,Date,NaN
+1,135,152,55,407,field,,24
+24,64,169,35,51,label,Nae,NaN
+2,417,212,55,334,field,,26
+3,133,213,55,211,field,,25
+26,355,226,35,50,label,Email,NaN
+25,55,234,38,62,label,Phone,NaN
+27,65,290,35,394,label,Ratethequalityofeventfrommanagementaspet,NaN
+5,114,333,23,23,radio,,"[27, -1]"
+6,166,333,23,23,radio,,"[27, -2]"
+7,308,333,23,23,radio,,"[27, -5]"
+9,450,333,23,23,radio,,"[27, -8]"
+10,503,333,23,23,radio,,"[27, -9]"
+11,552,333,23,23,radio,,"[27, -10]"
+8,402,333,23,23,radio,,"[27, -7]"
+12,212,334,23,23,radio,,"[27, -3]"
+13,354,334,23,23,radio,,"[27, -6]"
+14,261,335,23,23,radio,,"[27, -4]"
+28,58,427,36,334,label,Ratecontentbyhowmuchuseulforyou,NaN
+29,73,454,35,77,label,Notatol,NaN
+32,485,456,35,113,label,ltwaspertect,NaN
+31,340,460,35,91,label,Verymuch,NaN
+15,610,460,23,23,radio,,"[28, 32]"
+17,304,461,23,23,radio,,"[28, 30]"
+16,167,461,23,23,radio,,"[28, 29]"
+18,440,461,23,23,radio,,"[28, 31]"
+30,192,465,37,105,label,Somwhat,NaN
+33,63,551,35,226,label,Thingsthatcanbeimproed,NaN
+34,125,601,35,58,label,Venue,NaN
+19,68,603,31,47,checkbox,,"[28, 34]"
+20,219,604,31,47,checkbox,,"[28, 35]"
+35,281,604,35,71,label,Speaker,NaN
+37,279,662,35,111,label,Managemnt,NaN
+21,68,665,30,47,checkbox,,"[28, 36]"
+22,219,665,30,48,checkbox,,"[28, 37]"
+36,115,673,35,71,label,Timing,NaN
+38,63,718,22,137,label,MoreCommnts,NaN
+4,74,770,297,619,field,,NaN
