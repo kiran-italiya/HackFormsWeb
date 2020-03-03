@@ -12,6 +12,7 @@ urlpatterns = [
     path('project/<str:pk>', views.open_project, name='projects'),
     path('new_project/upload/', views.upload, name='upload'),
     path('admin/', admin.site.urls),
+    path('project/<str:pk>/generate_analytics',views.generate,name='generate')
 ]
 
 if settings.DEBUG:

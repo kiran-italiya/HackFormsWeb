@@ -3,7 +3,7 @@ import cv2
 import pandas as pd
 import imutils
 import pytesseract
-import nlp2
+import HackForms.Processing.nlp2 as nlp2
 # from spellchecker import SpellChecker
 from spellchecker import SpellChecker
 def radio_identification(img, df, df_final, length):

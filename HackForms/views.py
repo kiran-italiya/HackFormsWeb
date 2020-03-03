@@ -4,7 +4,8 @@ import os
 from django.shortcuts import render,redirect
 # from django.views.generic import TemplateView
 from django.core.files.storage import FileSystemStorage
-from HackFormsWeb import settings
+from HackForms.Processing import main as hk
+from HackFormsWeb import *
 from django.shortcuts import render,get_object_or_404
 from django.views.generic import UpdateView, ListView
 
@@ -82,3 +83,12 @@ def upload(request):
 def open_project(request,pk):
     project = get_object_or_404(Project, pk=pk)
     return render(request,'project.html',{'project':project})
+#
+def generate(request,pk):
+    project = get_object_or_404(Project,pk=pk)
+    pf = hk.ProcessForm()
+    df_final = pf.processForm(os.path.join(settings.BASE_DIR,'HackForms/Processing/k4.jpg') ,os.path.join(settings.BASE_DIR,"HackForms/Processing/data/k4/"))
+    df_final.to_csv('media/'+project.project_name+'/data.csv')
+    project.csv_file=project.project_name+'/data.csv'
+    project.save()
+    return render(request, 'project.html', {'project': project})

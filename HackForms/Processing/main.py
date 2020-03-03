@@ -1,14 +1,18 @@
-import detection
-import hackForm
-import extraction
+# from . import *
+
+
+import HackForms.Processing.extraction as extraction
+import HackForms.Processing.detection as detection
+import HackForms.Processing.hackForm as hackForm
+# import extraction
+# import detection
+
 import cv2, os
 import pytesseract
 import imutils, copy, csv
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
-
 
 class ProcessForm:
     def __init__(self):
@@ -25,12 +29,11 @@ class ProcessForm:
 
     def process_empty_form(self, img_name):
         img = cv2.imread(img_name)
+
         img = imutils.resize(img, width=self.width)
         cv2.imshow("crop", img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-
-
 
         # """Label Detection and Processing"""
 
@@ -155,9 +158,13 @@ class ProcessForm:
             writer = csv.writer(file)
             writer.writerows(label_box)
         df = hackForm.hackForm(self.datacsv)
+        img_new = img.copy()
+        for _,row in df.iterrows():
+            cv2.rectangle(img_new, (row['left'], row['top']), (row['left'] + row['width'], row['top'] + row['height']),(0, 0, 255), 2)
+        cv2.imwrite('image_lines.jpg',img_new)
         return df, aspect
 
-    def process_filled_form(self, df, img_name, df_final, aspect,overall_semantics):
+    def process_filled_form(self, df, img_name, df_final, aspect,overall_semantics,ix):
 
         # """INSERT LOOP FOR PROCESSING IMAGES IN BULK"""
         # img = cv2.imread("kiran2.png")
@@ -173,7 +180,7 @@ class ProcessForm:
         print(img.shape)
         img1 = img.copy()
         # for i, row in df.iterrows():
-        #     cv2.rectangle(img1, (row['left'],row['top']),(row['left']+row['width'], row['top']+row['height']), (0,0,255),2)
+        #     cv2.rectangle(img1, (row['```left'],row['top']),(row['left']+row['width'], row['top']+row['height']), (0,0,255),2)
         # cv2.imwrite("boxeonimage.jpg",img1)
         dummy = [0] * len(df_final.columns)
 
@@ -186,13 +193,12 @@ class ProcessForm:
 
         df_final,semantic = extraction.perform_OCR(img, df, df_final, length-1)
         overall_semantics+=semantic
-        df_final.to_csv('final.csv')
+        df_final.to_csv('final'+str(i)+'.csv')
 
         # dict = hackForm.data_dict(df, df_final)
         return df_final,overall_semantics  # , dict
 
-    def processForm(self, img, path):
-
+    def processForm(self, img, path,i):
         df, aspect = self.process_empty_form(img_name=img)
         label = []
         label.clear()
@@ -207,9 +213,10 @@ class ProcessForm:
         for file in os.listdir(path):
             if file.endswith(".jpg"):
                 tmp_df = df
-                df_final,overall_form_semantics = self.process_filled_form(df=tmp_df, img_name=path + "/" + file, df_final=df_final, aspect=aspect,overall_semantics=overall_form_semantics)
+                df_final,overall_form_semantics = self.process_filled_form(df=tmp_df, img_name=path + "/" + file, df_final=df_final, aspect=aspect,overall_semantics=overall_form_semantics,ix=i)
                 print('~|||||||||||The overall semantics of this type of form is ||||||||||||||',overall_form_semantics)
             # self.database[file] = dict
+        return df_final
 
     def generate_analytics(self):
         database = {
@@ -300,5 +307,30 @@ class ProcessForm:
 
 
 pf = ProcessForm()
-pf.processForm('k2.jpg' , os.path.join(os.getcwd(), "data/k4/"))
+for i in range(4):
+    if i!=2:
+        pf.processForm('k'+str(i+1)+'.jpg' , os.path.join(os.getcwd(), 'data/k'+str(i+1)+'/'),i+1)
+
 # pf.generate_analytics()
+
+
+# ===================================================================
+# using SendGrid's Python Library
+# https://github.com/sendgrid/sendgrid-python
+# import os
+# from sendgrid import SendGridAPIClient
+# from sendgrid.helpers.mail import Mail
+#
+# message = Mail(
+#     from_email='from_email@example.com',
+#     to_emails='to@example.com',
+#     subject='Sending with Twilio SendGrid is Fun',
+#     html_content='<strong>and easy to do anywhere, even with Python</strong>')
+# try:
+#     sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+#     response = sg.send(message)
+#     print(response.status_code)
+#     print(response.body)
+#     print(response.headers)
+# except Exception as e:
+#     print(e.message)
