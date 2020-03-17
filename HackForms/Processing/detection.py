@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import pandas as pd
-import extraction
+import HackForms.Processing.extraction as extraction
 import copy
 
 def contour(image):
@@ -29,7 +29,7 @@ def findCircle(cnts, img1):
                             [int(x) - int(radius), int(y) - int(radius), int(2 * radius), int(2 * radius), "radio",
                              np.nan, 0])
                         cv2.circle(img, (int(x), int(y)), int(radius), (0, 0, 255), 1)
-        cv2.imshow("contour", img)
+        #cv2.imshow("contour", img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         cv2.imwrite("circle.png", img)
@@ -37,11 +37,11 @@ def findCircle(cnts, img1):
 def eliminate_duplicate_circle(circles,diff,img):
     df_circle = pd.DataFrame(circles, columns=['X1', 'Y1', 'R1', 'R2',"type", "value", "group"])
     df_circle = df_circle.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
-    print(df_circle)
+    # print(df_circle)
     index_curr, x, y, r = 0, 0, 0, 0
     for index_r,row in df_circle.iterrows():
         index_v = index_r
-        print(row['X1'], index_r)
+        # print(row['X1'], index_r)
         if abs(x-row['X1'])<diff and abs(y- row['Y1'])<diff:
             df_circle = df_circle.drop(index_r)
         while index_v in df_circle.index and abs(y - df_circle.loc[index_v][1]) < 10:
@@ -395,7 +395,7 @@ def generate_label_box(data, height, img):
                 value = ""
                 value += text[i][0]
     label_box.append([X1, Y1, Y2 - Y1, X2 - X1, "label", value, "0"])
-    print(data)
+    # print(data)
     df = pd.DataFrame(label_box, columns=['X1', 'Y1', 'X2', 'Y2', 'Type', 'value', 'group'])
     return df
 def reformation(img, rec_coordinate):
@@ -429,7 +429,7 @@ def reformation(img, rec_coordinate):
         src_img = [[vertical[0][0], vertical[0][1]], [vertical[2][0], vertical[2][1]], [vertical[1][0], vertical[1][1]]]
         dst_img = [[vertical[0][0], vertical[2][1]], [vertical[2][0], vertical[2][1]], [vertical[0][0], vertical[1][1]]]
     img = extraction.transformation(img, src_img,dst_img)
-    cv2.imshow('transformed',img)
+    #cv2.imshow('transformed',img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     return start, img, aspect
@@ -444,7 +444,7 @@ def detect_rectangles_eight(image):
     img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # _, threshold = cv2.threshold(img, 240, 255, cv2.THRESH_BINARY)
     threshold = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 2)
-    cv2.imshow("thr",threshold)
+    #cv2.imshow("thr",threshold)
     cv2.waitKey(0)
     _,contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     coordinate = []
@@ -560,7 +560,7 @@ def reformation_filled_form(img, rec_coordinate, aspect):
         src_img = [[vertical[0][0], vertical[0][1]], [vertical[2][0], vertical[2][1]], [vertical[1][0], vertical[1][1]]]
         dst_img = [[vertical[0][0], vertical[2][1]], [vertical[2][0], vertical[2][1]], [vertical[0][0], vertical[1][1]]]
     img = extraction.transformation(img, src_img,dst_img)
-    cv2.imshow('transformed',img)
+    #cv2.imshow('transformed',img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     return start, img

@@ -8,7 +8,8 @@ import re
 # nltk.download('stopwords')
 # nltk.download('punkt')
 # nltk.download('averaged_perceptron_tagger')
-def do_nlp(sentence):
+
+def do_nlp(sentence,compound):
     print(sentence + '\n')
     sid = SentimentIntensityAnalyzer()
     stop_words = set(stopwords.words('english'))
@@ -16,4 +17,5 @@ def do_nlp(sentence):
     ss = sid.polarity_scores(sentence)
     for k in sorted(ss):
         print('{0}: {1}, '.format(k, ss[k]), end='')
-    return ss['compound']
+    compound+=ss['compound']
+    return ss['compound'],compound
