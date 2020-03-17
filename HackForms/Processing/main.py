@@ -4,6 +4,8 @@
 import HackForms.Processing.extraction as extraction
 import HackForms.Processing.detection as detection
 import HackForms.Processing.hackForm as hackForm
+import HackForms.Processing.hackForm2 as hackForm2
+
 # import extraction
 # import detection
 
@@ -31,7 +33,7 @@ class ProcessForm:
         img = cv2.imread(img_name)
 
         img = imutils.resize(img, width=self.width)
-        cv2.imshow("crop", img)
+        # cv2.imshow("crop", img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
@@ -71,19 +73,13 @@ class ProcessForm:
 
         df, df_box = detection.eliminate_duplicate_entry(df, df_box)
         img1 = img.copy()
-        print(df_box)
+        # print(df_box)
 
         for i, row in df.iterrows():
             cv2.rectangle(img1, (row['X1'], row['Y1']), (row['X2'], row['Y2']), (0, 255, 0), 2)
         cv2.imwrite("boxes.jpg", img1)
         #    """CHECKBOX DETECTION"""
         df_box, checkbox = detection.get_checkbox(df_box)
-        # print('get checkbox  ==\n', df_box)
-        # print("XXx", df_box)
-        #    """FORM BOX """
-        # start = df_box.iloc[0]
-        # print(start)
-        #    """CONVERSION TO H,W FROM X2,Y2"""
         df['Y1'] = df['Y1'] - self.height
         df['Y2'] = df['Y2'] + 5
 
@@ -122,17 +118,15 @@ class ProcessForm:
 
         pad = 10
         df = pd.read_csv(self.datacsv)
-        # print(df)
         # if (start[3]-start[1])>h/2:
         # 	threshold = threshold[start[1]:start[3],start[0]:start[2]]
         x, y = threshold[0:df.iloc[0]['top'] - 10, :].shape[:2]
-        # print("=-=-===--==-=-=-=-=-=-=-=-=-=++",df.iloc[0]['top'])
         threshold[0:df.iloc[0]['top'] - 10, :] = np.ones((x, y)) * 255
         for row in df.itertuples():
             x, y = threshold[row[2] - pad:row[2] + row[3] + pad, row[1] - pad:row[1] + pad + row[4]].shape
             threshold[row[2] - pad:row[2] + row[3] + pad, row[1] - pad:row[1] + pad + row[4]] = np.ones((x, y)) * 255
 
-        cv2.imshow("img", threshold)
+        # cv2.imshow("img", threshold)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         text = pytesseract.image_to_boxes(threshold, lang='eng', config='--psm 4')
@@ -157,7 +151,7 @@ class ProcessForm:
         with open(self.datacsv, 'a', newline='') as file:
             writer = csv.writer(file)
             writer.writerows(label_box)
-        df = hackForm.hackForm(self.datacsv)
+        df = hackForm2.hackForm(self.datacsv)
         img_new = img.copy()
         for _,row in df.iterrows():
             cv2.rectangle(img_new, (row['left'], row['top']), (row['left'] + row['width'], row['top'] + row['height']),(0, 0, 255), 2)
@@ -177,7 +171,7 @@ class ProcessForm:
         dst_img, img = detection.reformation_filled_form(img, rec_coordinate, aspect)
         img = imutils.resize(img, width=800 )
         cv2.imwrite("croppedfilled.jpg",img)
-        print(img.shape)
+        # print(img.shape)
         img1 = img.copy()
         # for i, row in df.iterrows():
         #     cv2.rectangle(img1, (row['```left'],row['top']),(row['left']+row['width'], row['top']+row['height']), (0,0,255),2)
@@ -214,7 +208,7 @@ class ProcessForm:
             if file.endswith(".jpg"):
                 tmp_df = df
                 df_final,overall_form_semantics = self.process_filled_form(df=tmp_df, img_name=path + "/" + file, df_final=df_final, aspect=aspect,overall_semantics=overall_form_semantics,ix=i)
-                print('~|||||||||||The overall semantics of this type of form is ||||||||||||||',overall_form_semantics)
+                print('The overall semantics of this type of form is :',overall_form_semantics)
             # self.database[file] = dict
         return df_final
 
@@ -273,8 +267,8 @@ class ProcessForm:
                     if checkbox_df is None:
                         dummy = [0] * (len(dictionary))
                         checkbox_df = pd.DataFrame([dummy], columns=dictionary.keys(), dtype=int)
-                    print("cb_df::", checkbox_df)
-                    print("dictionary:::",dictionary)
+                    # print("cb_df::", checkbox_df)
+                    # print("dictionary:::",dictionary)
                     for parent, val in dictionary.items():
                         if val == 't':
                             checkbox_df.at[0, parent] += 1
@@ -307,7 +301,7 @@ class ProcessForm:
 
 
 pf = ProcessForm()
-for i in range(4):
+for i in range( 4):
     if i!=2:
         pf.processForm('k'+str(i+1)+'.jpg' , os.path.join(os.getcwd(), 'data/k'+str(i+1)+'/'),i+1)
 

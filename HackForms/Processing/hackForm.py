@@ -445,7 +445,7 @@ def hackForm(csvfile):
 
 
 
-        if labels > 0 and checkboxes > 0:
+        if labels > 0 and checkboxes > 0:              # Me
             if fields>0 or radios>0:
                 print("Form is inappropriate")
             else:
