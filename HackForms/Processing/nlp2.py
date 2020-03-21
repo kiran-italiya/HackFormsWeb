@@ -10,7 +10,7 @@ import re
 # nltk.download('averaged_perceptron_tagger')
 
 def do_nlp(sentence,compound):
-    print(sentence + '\n')
+    print('==Sentence from do nlp==\n'+sentence + '\n')
     sid = SentimentIntensityAnalyzer()
     stop_words = set(stopwords.words('english'))
     stop_words.update(['mrs.', 'ms.', 'mr.', '``', '.', ',', '"', "''", "'", '?', '!', ':', ';', '(', ')', '[', ']', '{', '}'])

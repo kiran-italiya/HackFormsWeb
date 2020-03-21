@@ -83,9 +83,9 @@ def checkbox_identification(img, df, df_final, length):
                     arr = threshold[y + int(0.25 * h):y + h - int(0.25 * h), x + int(0.25 * w):x + w - int(0.25 * w)]
                     df_temp = df_temp.append({'sum': np.sum(arr), 'no': abs(curr_group[1]), 'group': curr_group[0]},
                                              ignore_index=True)
-                    cv2.imshow("crop", threshold[y + int(0.25 * h):y + h - int(0.25 * h),
-                                       x + int(0.25 * w):x + w - int(0.25 * w)])
-                    cv2.waitKey(0)
+                    # cv2.imshow("crop", threshold[y + int(0.25 * h):y + h - int(0.25 * h),
+                    #                    x + int(0.25 * w):x + w - int(0.25 * w)])
+                    # cv2.waitKey(0)
                     cv2.destroyAllWindows()
 
                 else:
@@ -93,9 +93,9 @@ def checkbox_identification(img, df, df_final, length):
                     arr = threshold[y + int(0.25 * h):y + h - int(0.25 * h), x + int(0.25 * w):x + w - int(0.25 * w)]
                     df_temp = df_temp.append({'sum': np.sum(arr), 'no': curr_group[1], 'group': abs(curr_group[0])},
                                              ignore_index=True)
-                    cv2.imshow("crop", threshold[y + int(0.25 * h):y + h - int(0.25 * h),
-                                       x + int(0.25 * w):x + w - int(0.25 * w)])
-                    cv2.waitKey(0)
+                    # cv2.imshow("crop", threshold[y + int(0.25 * h):y + h - int(0.25 * h),
+                    #                    x + int(0.25 * w):x + w - int(0.25 * w)])
+                    # cv2.waitKey(0)
                     cv2.destroyAllWindows()
             except Exception as e:
                 print("Exception in checkbox identification", e)
@@ -123,10 +123,10 @@ def transformation(img, src_img, dst_img):
 
     try:
         img_output = img_output[dst_img[0][1]:dst_img[2][1], dst_img[0][0]:dst_img[1][0]]
-        cv2.imshow('Input', img)
-        cv2.waitKey(0)
-        cv2.imshow('Output', img_output)
-        cv2.waitKey(0)
+        # cv2.imshow('Input', img)
+        # cv2.waitKey(0)
+        # cv2.imshow('Output', img_output)
+        # cv2.waitKey(0)
         cv2.destroyAllWindows()
     except Exception as e:
         print(e)
@@ -156,13 +156,13 @@ def perform_OCR(img, df, df_final, length):
         # img = cv2.imread(img)
         cropped_img = img[t+3:t+h-6,l+5:l+w-5]
         cropped_img = cv2.medianBlur(cropped_img,3)
-        cv2.imshow('cropped img',cropped_img)
-        cv2.waitKey(0)
+        # cv2.imshow('cropped img',cropped_img)
+        # cv2.waitKey(0)
 
         threshed= cv2.adaptiveThreshold(cropped_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
-        cv2.imshow('thresholded img',threshed)
-        cv2.waitKey(0)
-        result = pytesseract.image_to_string(cropped_img,config='--psm 6')
+        # cv2.imshow('thresholded img',threshed)
+        # cv2.waitKey(0)
+        result = pytesseract.image_to_string(threshed,config='--psm 6')
         print("from tess:",result)
         try:
             int(row.group)
@@ -175,30 +175,34 @@ def perform_OCR(img, df, df_final, length):
                 flag=1
                 temp_group_result = group_result
                 group_result = result
-                group = int(row.group)
-            if flag==1:
+                # group = int(row.group)
+            # if flag==1:
                 # if df.loc[int(row.group)].value == 'Date' or df.loc[int(row.group)].value == 'date' or df.loc[int(row.group)].value == 'Name' or df.loc[int(row.group)].value == 'name' or df.loc[int(row.group)].value == 'Email' or df.loc[int(row.group)].value == 'email' or df.loc[int(row.group)].value == 'Phone' or df.loc[int(row.group)].value == 'phone':
-                if df.loc[group].value == 'Date' or df.loc[group].value == 'date' or df.loc[
-                    group].value == 'Name' or df.loc[group].value == 'name' or df.loc[
-                    group].value == 'Email' or df.loc[group].value == 'email' or df.loc[
-                    group].value == 'Phone' or df.loc[group].value == 'phone':
+                # flag=-1
+                if df.loc[int(row.group)].value == 'Date' or df.loc[int(row.group)].value == 'date' or df.loc[
+                    int(row.group)].value == 'Name' or df.loc[int(row.group)].value == 'name' or df.loc[
+                    int(row.group)].value == 'Email' or df.loc[int(row.group)].value == 'email' or df.loc[
+                    int(row.group)].value == 'Phone' or df.loc[int(row.group)].value == 'phone':
                     pass
                 else:
                     _,cmpd = nlp2.do_nlp(temp_group_result,cmpd)
                     print(' Result  ======',temp_group_result,'=========Semantic value ========',_)
-            result= list(filter(bool, result.splitlines()))
-            print(result)
-            tmp_str=''
-            # [tmp_str+x for x in result]
-            for x in result:
-                tmp_str+=' '+x
-            print('tmpp string  ',tmp_str)
-            df_final.at[length, df.loc[int(row.group)].value]=tmp_str
+            # tmp_str=group_result
+
+                # temp_group_result= list(filter(bool, temp_group_result.splitlines()))
+                # print(temp_group_result)
+                # tmp_str=''
+                # # [tmp_str+x for x in result]
+                # for x in temp_group_result:
+                #     tmp_str+=' '+x
+                # print('tmpp string  ',tmp_str)
+            # if flag==1:
+                if group!=0:
+                    df_final.at[length, df.loc[group].value]=temp_group_result
+                group = int(row.group)
         except Exception as e:
             print('There\'s an exception in perform_ocr \n')
-
             print(e)
-
             if result.isnumeric():
                 df_final.at[length,'Unassigned'] = result
                 print('result ====',df_final.at[length,'Unassigned'] )

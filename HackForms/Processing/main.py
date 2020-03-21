@@ -132,8 +132,8 @@ class ProcessForm:
             x, y = threshold[row[2] - pad:row[2] + row[3] + pad, row[1] - pad:row[1] + pad + row[4]].shape
             threshold[row[2] - pad:row[2] + row[3] + pad, row[1] - pad:row[1] + pad + row[4]] = np.ones((x, y)) * 255
 
-        cv2.imshow("img", threshold)
-        cv2.waitKey(0)
+        # cv2.imshow("img", threshold)
+        # cv2.waitKey(0)
         cv2.destroyAllWindows()
         text = pytesseract.image_to_boxes(threshold, lang='eng', config='--psm 4')
         data = text.split('\n')
