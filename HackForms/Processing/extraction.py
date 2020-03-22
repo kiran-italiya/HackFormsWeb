@@ -162,9 +162,13 @@ def perform_OCR(img, df, df_final, length):
         threshed= cv2.adaptiveThreshold(cropped_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
         # cv2.imshow('thresholded img',threshed)
         # cv2.waitKey(0)
-        result = pytesseract.image_to_string(threshed,config='--psm 6')
+        result = pytesseract.image_to_string(cropped_img,config='--psm 6')
         print("from tess:",result)
         try:
+            if row.group == 'NaN' or int(row.group)== -1000:        #TODO Set this correct
+                final_result += ' ' + result
+                df_final.at[length, 'Unassigned'] = final_result
+                continue
             int(row.group)
             # print(int(row.group))
             if group == int(row.group):
@@ -187,7 +191,7 @@ def perform_OCR(img, df, df_final, length):
                 else:
                     _,cmpd = nlp2.do_nlp(temp_group_result,cmpd)
                     print(' Result  ======',temp_group_result,'=========Semantic value ========',_)
-            # tmp_str=group_result
+                #tmp_str=group_result
 
                 # temp_group_result= list(filter(bool, temp_group_result.splitlines()))
                 # print(temp_group_result)
@@ -198,21 +202,40 @@ def perform_OCR(img, df, df_final, length):
                 # print('tmpp string  ',tmp_str)
             # if flag==1:
                 if group!=0:
-                    df_final.at[length, df.loc[group].value]=temp_group_result
+                    # tmp_str = group_result
+                    temp_group_result= list(filter(bool, temp_group_result.splitlines()))
+                    print(temp_group_result)
+                    tmp_str=''
+                    # [tmp_str+x for x in result]
+                    for x in temp_group_result:
+                        tmp_str+=' '+x
+                    print('tmpp string  ',tmp_str)
+                    df_final.at[length, df.loc[group].value]=tmp_str
                 group = int(row.group)
         except Exception as e:
             print('There\'s an exception in perform_ocr \n')
             print(e)
-            if result.isnumeric():
-                df_final.at[length,'Unassigned'] = result
-                print('result ====',df_final.at[length,'Unassigned'] )
-            else:
-                final_result += ' ' + result
-                df_final.at[length, 'Unassigned'] = final_result
-                print('result ====', df_final.at[length, 'Unassigned'])
+            # if result.isnumeric():
+            #     df_final.at[length,'Unassigned'] = result
+            #     print('result ====',df_final.at[length,'Unassigned'] )
+            # else:
+            #     final_result += ' ' + result
+            #     df_final.at[length, 'Unassigned'] = final_result
+            #     print('result ====', df_final.at[length, 'Unassigned'])
+
     _,cmpd = nlp2.do_nlp(group_result, cmpd)
     #
     print(' Result  ======', group_result, '=========Semantic value ========', _)
+
+    group_result = list(filter(bool, group_result.splitlines()))
+    # print(group_result)
+    tmp_str = ''
+    # [tmp_str+x for x in result]
+    for x in group_result:
+        tmp_str += ' ' + x
+    print('tmpp string  ', tmp_str)
+    df_final.at[length, df.loc[group].value] = tmp_str
+
     _,cmpd = nlp2.do_nlp(final_result, cmpd)
     print(' final Result  ======', final_result, '=========Semantic value ========', _)
     print('=========HOLA the final semantic o/p is ',cmpd)

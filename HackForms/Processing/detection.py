@@ -22,7 +22,7 @@ def findCircle(cnts, img1):
             ((x, y), radius) = cv2.minEnclosingCircle(c)
             c_area = cv2.contourArea(c)
             c_area = c_area / ((3.14) * radius * radius)
-            if radius > 10:
+            if radius >8:
                 if radius < 50:
                     if c_area > 0.8:
                         circles.append(
@@ -78,10 +78,15 @@ def detect_rectangles(image):
     contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     coordinate = []
     for cnt in contours:
-        approx = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
-        if len(approx) == 4 and cv2.contourArea(cnt) > 50:
-            # if abs(approx[0][0][0]-approx[1][0][0])<10 or abs(approx[0][0][0]-approx[3][0][0])<10:
-            coordinate.append((approx[0][0], approx[2][0]))
+        c_area = cv2.contourArea(cnt)
+        x, y, w, h = cv2.boundingRect(cnt)
+        area = w * h
+        if c_area / area > 0.9:
+            coordinate.append(([x, y], [x + w, y + h]))
+        # approx = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
+        # if len(approx) == 4 and cv2.contourArea(cnt) > 50:
+        #     # if abs(approx[0][0][0]-approx[1][0][0])<10 or abs(approx[0][0][0]-approx[3][0][0])<10:
+        #     coordinate.append((approx[0][0], approx[2][0]))
         #			'''if 2000+co > cv2.contourArea(cnt) > co:
         #				continue
         #				co=cv2.contourArea(cnt)'''# try changing the value in place of 2000 to get outer rectangles
@@ -103,7 +108,7 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
     df_box = df_box.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
     index_curr, x1, y1, x2, y2 = 0, 0, 0, 0, 0
     for i,row in df_box.iterrows():
-        index_v = i
+
         if row['X1']<row['X2']:
             if row['Y1']<row['Y2']:
                 pass
@@ -135,7 +140,8 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
             else:
                 print("unforeseen Condition")
         # print('after   ', row)
-
+    for i, row in df_box.iterrows():
+        index_v = i
         if row['X1'] < 10 and row['Y1'] < 10:         # or (row['X1']>w and row['Y1']<10)
             df_box = df_box.drop(i)
         try:
@@ -424,13 +430,14 @@ def reformation(img, rec_coordinate):
     vertical = df_vertical.values.tolist()
     print("LOOK AT THIS#############",vertical)
     # if abs(vertical[0][1]-vertical[2][1])<15
-    if vertical[0][1] > vertical[1][1]:
+    if vertical[0][1] >= vertical[1][1]:
         y = abs(vertical[1][1] - vertical[0][1])
         x = abs(vertical[0][0] - vertical[2][0])
         aspect = y/x
         src_img = [[vertical[1][0], vertical[1][1]], [vertical[3][0], vertical[3][1]], [vertical[0][0], vertical[0][1]]]
         dst_img = [[vertical[0][0], vertical[1][1]], [vertical[2][0], vertical[1][1]], [vertical[0][0], vertical[0][1]]]
     else:
+
         src_img = [[vertical[0][0], vertical[0][1]], [vertical[2][0], vertical[2][1]], [vertical[1][0], vertical[1][1]]]
         dst_img = [[vertical[0][0], vertical[2][1]], [vertical[2][0], vertical[2][1]], [vertical[0][0], vertical[1][1]]]
     img = extraction.transformation(img, src_img,dst_img)
@@ -466,6 +473,7 @@ def detect_rectangles_eight(image):
         #     cv2.rectangle(img, tuple(coordinate[i][0]), tuple(coordinate[i][1]), (0, 0, 255), 1)
         # cv2.circle(img, tuple(coordinate[i][0]), 5, (0, 255, 0), 5)
         # cv2.circle(img, tuple(coordinate[i][1]), 5, (0, 255, 0), 5)
+    print('coordinates ====',coordinate)
     return img, coordinate
 
 def eliminate_duplicate_box_eight(rec_coordinate, diff,img):

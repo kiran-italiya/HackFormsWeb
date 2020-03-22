@@ -4,6 +4,7 @@
 import HackForms.Processing.extraction as extraction
 import HackForms.Processing.detection as detection
 import HackForms.Processing.hackForm as hackForm
+import HackForms.Processing.hackForm2 as hackForm2
 # import extraction
 # import detection
 
@@ -157,7 +158,8 @@ class ProcessForm:
         with open(self.datacsv, 'a', newline='') as file:
             writer = csv.writer(file)
             writer.writerows(label_box)
-        df = hackForm.hackForm(self.datacsv)
+        # df = hackForm.hackForm(self.datacsv)
+        df = hackForm2.hackForm(self.datacsv)
         img_new = img.copy()
         for _,row in df.iterrows():
             cv2.rectangle(img_new, (row['left'], row['top']), (row['left'] + row['width'], row['top'] + row['height']),(0, 0, 255), 2)
@@ -307,8 +309,8 @@ class ProcessForm:
 
 
 pf = ProcessForm()
-for i in range(4):
-    if i!=2:
+for i in range(8):
+    if i==4:
         pf.processForm('k'+str(i+1)+'.jpg' , os.path.join(os.getcwd(), 'data/k'+str(i+1)+'/'),i+1)
 
 # pf.generate_analytics()
