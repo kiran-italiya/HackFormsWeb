@@ -57,5 +57,3 @@ for sentence in tricky_sentences:
     for k in sorted(ss):
         print('{0}: {1}, '.format(k, ss[k]), end='')
     print('\n')
-
-

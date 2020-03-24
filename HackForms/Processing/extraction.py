@@ -6,7 +6,8 @@ import pytesseract
 import HackForms.Processing.nlp2 as nlp2
 # from spellchecker import SpellChecker
 from spellchecker import SpellChecker
-def radio_identification(img, df, df_final, length):
+def radio_identification(img, df, df_final, length,data_dict,inx,count_dict):
+
     group = None
     x, y, h, w = 0, 0, 0, 0
     df_temp = pd.DataFrame(columns=['sum', 'no', 'group'])
@@ -20,10 +21,28 @@ def radio_identification(img, df, df_final, length):
                 if group != curr_group[0]:
                     df_temp = df_temp.sort_values(by=['sum'])
                     try:
+                        if str(group) in data_dict["radio"]:
+                            pass
+                        else:
+                            data_dict["radio"][str(group)] = {}
                         if df_temp.iloc[0]['no'] < 0:
                             df_final.at[length, df.loc[group]['value']] = abs(df_temp.iloc[0]['no'])
+                                # if str(abs(df_temp.iloc[0]['no'])) in data_dict["labels"][str(group)]:
+                                #     data_dict["labels"][str('group')][str(abs(df_temp.iloc[0]['no']))]={}
+                            try:
+                                data_dict["radio"][str(group)][str(abs(df_temp.iloc[0]['no']))]+=1
+                            except:
+                                data_dict["radio"][str(group)][str(abs(df_temp.iloc[0]['no']))]=1
+
                         else:
-                            df_final.at[length, df.loc[group]['value']] = df.loc[df_temp.iloc[0]['no']]['value']
+                            df_final.at[length, df.loc[group]['value']]= df.loc[df_temp.iloc[0]['no']]['value']
+
+                            df_final.at[length, df.loc[df_temp.iloc[0]['no']]['value']] = 1#df.loc[df_temp.iloc[0]['no']]['value']
+                            try:
+                                data_dict["radio"][str(group)][str(df.loc[df_temp.iloc[0]['no']]['value'])]+=1
+                            except:
+                                data_dict["radio"][str(group)][str(df.loc[df_temp.iloc[0]['no']]['value'])]=1
+
 
                     except Exception as e:
                         print("Exception in radio identification(group is list):",e)
@@ -42,17 +61,35 @@ def radio_identification(img, df, df_final, length):
             print("Exception in radio identification:", e)
     try:
         df_temp = df_temp.sort_values(by=['sum'])
+        if str(group) in data_dict["radio"]:
+            pass
+        else:
+            data_dict["radio"][str(group)] = {}
         if df_temp.iloc[0]['no'] < 0:
             df_final.at[length, df.loc[group]['value']] = abs(df_temp.iloc[0]['no'])
+            try:
+                data_dict["radio"][str(group)][str(abs(df_temp.iloc[0]['no']))] += 1
+            except:
+                data_dict["radio"][str(group)][str(abs(df_temp.iloc[0]['no']))] = 1
         else:
+            df_final.at[length, df.loc[df_temp.iloc[0]['no']]['value']] = 1
             df_final.at[length, df.loc[group]['value']] = df.loc[df_temp.iloc[0]['no']]['value']
+            try:
+                data_dict["radio"][str(group)][str(df.loc[df_temp.iloc[0]['no']]['value'])] += 1
+            except:
+                data_dict["radio"][str(group)][str(df.loc[df_temp.iloc[0]['no']]['value'])] = 1
+
     except Exception as e:
         print("Exception in filled radio identification:",e)
     # print(df_final)
-    return df_final
+    print('\n===============\n',data_dict)
+    if 'None' in data_dict['radio']:
+        del data_dict['radio']['None']
+    return df_final,data_dict
 
 
-def checkbox_identification(img, df, df_final, length):
+def checkbox_identification(img, df, df_final, length,data_dict):
+
     _, threshold = cv2.threshold(img, 200, 255, cv2.THRESH_BINARY_INV)
     group = None
     x, y, h, w = 0, 0, 0, 0
@@ -70,9 +107,21 @@ def checkbox_identification(img, df, df_final, length):
                     try:
                         max = df_temp.iloc[0]['sum']
                         max = max / 2
+
+                        if str(group) in data_dict["checkbox"]:
+                            pass
+                        else:
+                            data_dict["checkbox"][str(group)] = {}
+
                         for _, rows in df_temp.iterrows():
                             if rows['sum'] > max:
                                 df_final.at[length, df.loc[rows['no']]['value']] = 't'
+
+                                try:
+                                    data_dict["checkbox"][str(group)][str(df.loc[rows['no']]['value'])] += 1
+                                except:
+                                    data_dict["checkbox"][str(group)][str(df.loc[rows['no']]['value'])] = 1
+
                             else:
                                 df_final.at[length, df.loc[rows['no']]['value']] = 'f'
                     except Exception as e:
@@ -103,15 +152,26 @@ def checkbox_identification(img, df, df_final, length):
         df_temp = df_temp.sort_values(by=['sum'], ascending=False)
         max = df_temp.iloc[0]['sum']
         max = max / 2
+        if str(group) in data_dict["checkbox"]:
+            pass
+        else:
+            data_dict["checkbox"][str(group)] = {}
         for _, rows in df_temp.iterrows():
             if rows['sum'] > max:
                 df_final.at[length, df.loc[rows['no']]['value']] = 't'
+                try:
+                    data_dict["checkbox"][str(group)][str(df.loc[rows['no']]['value'])] += 1
+                except:
+                    data_dict["checkbox"][str(group)][str(df.loc[rows['no']]['value'])] = 1
             else:
                 df_final.at[length, df.loc[rows['no']]['value']] = 'f'
     except Exception as e:
         print("Exception in filled checkbox identification", e)
     # print(df_final)
-    return df_final
+    print('\n===============\n', data_dict)
+    if 'None' in data_dict['checkbox']:
+        del data_dict['checkbox']['None']
+    return df_final,data_dict
 def transformation(img, src_img, dst_img):
     rows, cols = img.shape[:2]
     src_points = np.float32(
@@ -159,7 +219,7 @@ def perform_OCR(img, df, df_final, length):
         # cv2.imshow('cropped img',cropped_img)
         # cv2.waitKey(0)
 
-        threshed= cv2.adaptiveThreshold(cropped_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+        # threshed= cv2.adaptiveThreshold(cropped_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
         # cv2.imshow('thresholded img',threshed)
         # cv2.waitKey(0)
         result = pytesseract.image_to_string(cropped_img,config='--psm 6')
@@ -172,11 +232,9 @@ def perform_OCR(img, df, df_final, length):
             int(row.group)
             # print(int(row.group))
             if group == int(row.group):
-                flag=0
                 group_result += ' '+ result
                 # df_final.at[length, df.loc[int(row.group)].value] = group_result
             else:
-                flag=1
                 temp_group_result = group_result
                 group_result = result
                 # group = int(row.group)
