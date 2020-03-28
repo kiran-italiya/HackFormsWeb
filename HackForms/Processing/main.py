@@ -142,7 +142,7 @@ class ProcessForm:
         df = detection.generate_label_box(data, label_height, img)
 
         y, x = threshold.shape
-        df['Y1'] = y - 25 - df['Y1']
+        df['Y1'] = y  - df['Y1'] - 5
         df['X1'] = df['X1'] - 5
         df['X2'] = df['X2'] + 10
         df['Y2'] = df['Y2'] + 10
@@ -396,8 +396,8 @@ class ProcessForm:
 
 
 pf = ProcessForm()
-for i in range(4):
-    if i!=2:
+for i in range(5):
+    if (i+1)==5:
         pf.processForm('k'+str(i+1)+'.jpg' , os.path.join(os.getcwd(), 'data/k'+str(i+1)+'/'),i+1)
         # hackForm.data_dict()
 

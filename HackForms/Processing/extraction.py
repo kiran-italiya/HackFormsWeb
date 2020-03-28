@@ -5,7 +5,7 @@ import imutils
 import pytesseract
 import HackForms.Processing.nlp2 as nlp2
 # from spellchecker import SpellChecker
-from spellchecker import SpellChecker
+
 def radio_identification(img, df, df_final, length,data_dict,inx,count_dict):
 
     group = None

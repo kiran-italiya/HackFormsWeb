@@ -1,40 +1,42 @@
 left,top,height,width,type,value,group
-534,93,41,205,field,nan,0
-135,152,55,407,field,nan,0
-417,212,55,334,field,nan,0
-133,213,55,211,field,nan,0
-74,770,299,621,field,nan,0
-114,333,23,23,radio,nan,0
-166,333,23,23,radio,nan,0
-308,333,23,23,radio,nan,0
-402,333,23,23,radio,nan,0
-450,333,23,23,radio,nan,0
-503,333,23,23,radio,nan,0
-552,333,23,23,radio,nan,0
-212,334,23,23,radio,nan,0
-354,334,23,23,radio,nan,0
-261,335,23,23,radio,nan,0
-610,460,23,23,radio,nan,0
-167,461,23,23,radio,nan,0
-304,461,23,23,radio,nan,0
-440,461,23,23,radio,nan,0
-68,603,32,48,checkbox,nan,0
-219,604,32,48,checkbox,nan,0
-68,664,32,48,checkbox,nan,0
-219,665,32,49,checkbox,nan,0
-462,84,23,45,label,Date,0
-64,156,23,51,label,Name:,0
-55,206,38,62,label,Phone,0
-355,212,24,50,label,Email:,0
-65,278,22,394,label,Rate the quality of event from management aspect.,0
-58,401,36,334,label,Rate content by how much useful for you.,0
-73,440,24,77,label,Not at all,0
-192,438,37,105,label,} Somewhat,0
-340,443,27,91,label,Very much,0
-485,443,23,113,label,It was perfect,0
-63,534,27,226,label,Things that can be improved,0
-125,591,20,58,label,Venue,0
-281,593,21,71,label,Speaker,0
-115,654,29,71,label,Timing,0
-279,650,22,111,label,Management,0
-63,706,22,137,label,More Comments,0
+540,105,41,213,field,nan,0
+119,182,42,213,field,nan,0
+352,182,41,214,field,nan,0
+117,249,43,241,field,nan,0
+463,250,42,240,field,nan,0
+490,399,42,213,field,nan,0
+655,474,42,119,field,nan,0
+56,601,312,647,field,nan,0
+118,338,29,29,radio,nan,0
+210,339,29,29,radio,nan,0
+118,399,29,29,radio,nan,0
+210,399,29,29,radio,nan,0
+102,482,28,28,radio,nan,0
+171,483,29,29,radio,nan,0
+428,335,35,35,checkbox,nan,0
+542,335,35,36,checkbox,nan,0
+672,335,34,36,checkbox,nan,0
+432,475,35,36,checkbox,nan,0
+331,476,35,35,checkbox,nan,0
+50,194,21,56,label,Name:,0
+50,260,25,52,label,Email:,0
+27,338,39,76,label,Gender:,0
+152,342,25,46,label,Male,0
+42,408,28,66,label,Status:,0
+152,404,28,52,label,Single,0
+50,482,29,35,label,Like,0
+135,490,21,31,label,Yes,0
+49,554,22,154,label,Other Suggestions,0
+205,490,20,31,label,No,0
+465,118,21,46,label,Date,0
+389,260,24,58,label,Phone:,0
+244,342,20,64,label,Female,0
+331,341,27,92,label,Age: 0-18,0
+235,399,39,81,label,) Married,0
+383,403,25,90,label,Profession:,0
+262,490,20,53,label,Extent,0
+371,488,22,54,label,Worst,0
+483,340,24,54,label,18-40,0
+482,487,23,44,label,Best,0
+579,336,38,90,label,40 above,0
+556,485,25,87,label,One word:,0

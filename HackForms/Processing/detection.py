@@ -8,7 +8,7 @@ import pytesseract
 def contour(image):
     img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     _, threshold = cv2.threshold(img, 200, 255, cv2.THRESH_BINARY)
-    contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    _,contours,_ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     return contours
 
 
@@ -35,6 +35,7 @@ def findCircle(cnts, img1):
         cv2.destroyAllWindows()
         cv2.imwrite("circle.png", img)
         return circles
+
 def eliminate_duplicate_circle(circles,diff,img):
     df_circle = pd.DataFrame(circles, columns=['X1', 'Y1', 'R1', 'R2',"type", "value", "group"])
     df_circle = df_circle.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
@@ -76,7 +77,7 @@ def detect_rectangles(image):
     img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # _, threshold = cv2.threshold(img, 215, 255, cv2.THRESH_BINARY)
     threshold = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 2)
-    contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    _,contours,_ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     coordinate = []
     image1 = image.copy()
     cv2.drawContours(image1, contours,-1,(0,0,255),2)
@@ -428,6 +429,7 @@ def generate_label_box(data, height, img):
     # print(data)
     df = pd.DataFrame(label_box, columns=['X1', 'Y1', 'X2', 'Y2', 'Type', 'value', 'group'])
     return df
+
 def reformation(img, rec_coordinate):
     coordinates = []
     for p,q,r,s in rec_coordinate:
@@ -476,7 +478,7 @@ def detect_rectangles_eight(image):
     threshold = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 2)
     #cv2.imshow("thr",threshold)
     cv2.waitKey(0)
-    contours,_ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    _,contours,_ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     coordinate = []
     # cnt = imutils.grab_contours(contours)
     # cnt = sorted(cnt, key=cv2.contourArea)

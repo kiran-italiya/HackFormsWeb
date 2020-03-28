@@ -1,40 +1,42 @@
 ,left,top,height,width,type,value,group,visited
-23,462,84,23,45,label,Date,NaN,1
-0,534,93,41,205,field,,23,1
-1,135,152,55,407,field,,24,1
-24,64,156,23,51,label,Name:,NaN,1
-25,55,206,38,62,label,Phone,NaN,1
-26,355,212,24,50,label,Email:,NaN,1
-2,417,212,55,334,field,,26,1
-3,133,213,55,211,field,,25,1
-27,65,278,22,394,label,Rate the quality of event from management aspect.,NaN,1
-5,114,333,23,23,radio,,"[27, -1]",1
-6,166,333,23,23,radio,,"[27, -2]",1
-7,308,333,23,23,radio,,"[27, -5]",1
-8,402,333,23,23,radio,,"[27, -7]",1
-9,450,333,23,23,radio,,"[27, -8]",1
-10,503,333,23,23,radio,,"[27, -9]",1
-11,552,333,23,23,radio,,"[27, -10]",1
-12,212,334,23,23,radio,,"[27, -3]",1
-13,354,334,23,23,radio,,"[27, -6]",1
-14,261,335,23,23,radio,,"[27, -4]",1
-28,58,401,36,334,label,Rate content by how much useful for you.,NaN,1
-30,192,438,37,105,label,} Somewhat,NaN,1
-29,73,440,24,77,label,Not at all,NaN,1
-31,340,443,27,91,label,Very much,NaN,1
-32,485,443,23,113,label,It was perfect,NaN,1
-15,610,460,23,23,radio,,"[28, 32]",1
-16,167,461,23,23,radio,,"[28, 29]",1
-17,304,461,23,23,radio,,"[28, 30]",1
-18,440,461,23,23,radio,,"[28, 31]",1
-33,63,534,27,226,label,Things that can be improved,NaN,1
-34,125,591,20,58,label,Venue,NaN,1
-35,281,593,21,71,label,Speaker,NaN,1
-19,68,603,32,48,checkbox,,"[33, 34]",1
-20,219,604,32,48,checkbox,,"[33, 35]",1
-37,279,650,22,111,label,Management,NaN,1
-36,115,654,29,71,label,Timing,NaN,1
-21,68,664,32,48,checkbox,,"[33, 36]",1
-22,219,665,32,49,checkbox,,"[33, 37]",1
-38,63,706,22,137,label,More Comments,NaN,1
-4,74,770,299,621,field,,38,1
+0,540,105,41,213,field,,29,1
+29,465,118,21,46,label,Date,NaN,1
+1,119,182,42,213,field,,19,1
+2,352,182,41,214,field,,19,1
+19,50,194,21,56,label,Name:,NaN,1
+3,117,249,43,241,field,,20,1
+4,463,250,42,240,field,,30,1
+30,389,260,24,58,label,Phone:,NaN,1
+20,50,260,25,52,label,Email:,NaN,1
+14,428,335,35,35,checkbox,,NaN,1
+15,542,335,35,36,checkbox,,NaN,1
+16,672,335,34,36,checkbox,,NaN,1
+39,579,336,38,90,label,40 above,NaN,1
+21,27,338,39,76,label,Gender:,NaN,1
+8,118,338,29,29,radio,,"[21, 22]",1
+9,210,339,29,29,radio,,"[21, 31]",1
+37,483,340,24,54,label,18-40,NaN,1
+32,331,341,27,92,label,Age: 0-18,NaN,1
+31,244,342,20,64,label,Female,NaN,1
+22,152,342,25,46,label,Male,NaN,1
+10,118,399,29,29,radio,,"[23, 24]",1
+11,210,399,29,29,radio,,"[23, 33]",1
+33,235,399,39,81,label,) Married,NaN,1
+5,490,399,42,213,field,,34,1
+34,383,403,25,90,label,Profession:,NaN,1
+24,152,404,28,52,label,Single,NaN,1
+23,42,408,28,66,label,Status:,NaN,1
+6,655,474,42,119,field,,40,1
+17,432,475,35,36,checkbox,,"[25, 36]",1
+18,331,476,35,35,checkbox,,"[25, 35]",1
+12,102,482,28,28,radio,,"[25, 25]",1
+25,50,482,29,35,label,Like,NaN,1
+13,171,483,29,29,radio,,"[25, 26]",1
+40,556,485,25,87,label,One word:,NaN,1
+38,482,487,23,44,label,Best,NaN,1
+36,371,488,22,54,label,Worst,NaN,1
+26,135,490,21,31,label,Yes,NaN,1
+28,205,490,20,31,label,No,NaN,1
+35,262,490,20,53,label,Extent,NaN,1
+27,49,554,22,154,label,Other Suggestions,NaN,1
+7,56,601,312,647,field,,27,1
