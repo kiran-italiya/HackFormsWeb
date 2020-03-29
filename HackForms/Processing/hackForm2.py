@@ -309,26 +309,237 @@ def hackForm(csvfile):
                         pass                # handle missing_something
 
                 else:
-                    prevLabel = None
-                    for index, row in curr_df.iterrows():
-                        if row.type == "label":
-                            prevLabel = index
-                            if parent_group is None:
-                                parent_group = prevLabel
-                                # prevLabel = index
-                        elif row.type == "radio" or row.type == "checkbox":
-                            if prevLabel is not None: #is_valid_parent_group(df, topy, bottomy, parent_group) and
-                                df.at[index, "group"] = [parent_group, prevLabel]
-                        elif row.type == "field":
-                            if prevLabel is not None:
-                                df.at[index, "group"] = prevLabel
-                                prevLabel = None
+                    parent_group = None;prevLabel = None;prevIndex = None
+                    size = curr_df.shape[0]
+                    if curr_df.iloc[0].type == "label":
+                        parent_group = curr_df.index[0]
+
+                        if curr_df.iloc[1].type == "label":
+
+                            flag = 1;lal = 1;last_rd = None;change = 0
+                            prevLabel = curr_df.index[1]
+
+                            for index, row in curr_df.iloc[2:].iterrows():
+                                if row.type == "radio":
+
+                                    if last_rd is None:
+                                        last_rd = 1
+
+                                    if last_rd != 1:
+                                        change = 1
+                                    else:
+                                        change = 0
+
+                                    if flag == 1 and change == 1:
+                                        lal = 0
+                                        parent_group = prevLabel
+
+                                    if prevLabel is not None and lal == 1 and change == 0:
+                                        df.at[index, "group"] = [parent_group, prevLabel]
+                                    elif lal == 0:
+                                        prevIndex = index
+
+                                    flag -= 1
+
+                                elif row.type == "checkbox":
+
+                                    if last_rd is None:
+                                        last_rd = 0
+
+                                    if last_rd != 0:
+                                        change = 1
+                                    else:
+                                        change = 0
+
+                                    if flag == 1 and change == 1:
+                                        lal = 0
+                                        parent_group = prevLabel
+
+                                    if prevLabel is not None and lal == 1 and change == 0:
+                                        df.at[index, "group"] = [parent_group, prevLabel]
+                                    elif lal == 0:
+                                        prevIndex = index
+
+                                    flag -= 1
+
+                                elif row.type == "label":
+                                    flag += 1
+                                    if flag == 2:
+                                        parent_group = prevLabel
+                                        prevLabel = index
+                                        lal = 1
+                                    else:
+                                        if lal == 0:
+                                            if prevIndex is not None and parent_group is not None:
+                                                df.at[prevIndex, "group"] = [parent_group, index]
+                                        else:
+                                            prevLabel = index
+
+                                elif row.type == "field":
+
+                                    if flag == 1 and prevLabel is not None:
+                                        df.at[index,"group"] = prevLabel
+                                        parent_group = None
+                                        last_rd = -1; lal=1
+
+                                    flag -= 1
+
+                        elif curr_df.iloc[1].type == "checkbox" or curr_df.iloc[1].type == "radio":
+
+                            flag = 0;lal = 0;last_rd = None;change = 0
+                            prevIndex = curr_df.index[1]
+
+                            for index, row in curr_df.iloc[2:].iterrows():
+                                if row.type == "radio":
+
+                                    if last_rd is None:
+                                        last_rd = 1
+
+                                    if last_rd != 1:
+                                        last_rd = 1
+                                        change = 1
+                                    else:
+                                        change = 0
+
+                                    if flag == 2 and change == 1:
+                                        lal = 0
+                                        parent_group = prevLabel
+
+                                    if prevLabel is not None and lal == 1 and change == 0:
+                                        df.at[index, "group"] = [parent_group, prevLabel]
+                                    elif lal == 0:
+                                        prevIndex = index
+
+                                    flag -= 1
+
+                                elif row.type == "checkbox":
+
+                                    if last_rd is None:
+                                        last_rd = 0
+
+                                    if last_rd != 0:
+                                        last_rd = 0
+                                        change = 1
+                                    else:
+                                        change = 0
+
+                                    if flag == 2 and change == 1:
+                                        lal = 0
+                                        parent_group = prevLabel
+
+                                    if prevLabel is not None and lal == 1 and change == 0:
+                                        df.at[index, "group"] = [parent_group, prevLabel]
+                                    elif lal == 0:
+                                        prevIndex = index
+
+                                    flag -= 1
+
+                                elif row.type == "label":
+                                    flag += 1
+
+                                    if flag == 2:
+                                        parent_group = index
+                                        flag=0;lal = 0
+                                    elif flag == 3:
+                                        parent_group = prevLabel
+                                        lal = 1
+
+                                    else:
+                                        if lal == 0 and df.loc[prevIndex].group=="NaN":
+                                            if prevIndex is not None and parent_group is not None:
+                                                df.at[prevIndex, "group"] = [parent_group, index]
+
+                                    prevLabel = index
+
+                                elif row.type == "field":
+
+                                    if flag == 1 and prevLabel is not None:
+                                        df.at[index, "group"] = prevLabel
+                                        parent_group = None
+                                        last_rd = -1;lal = 1
+
+                                    flag -= 1
+
+                        if curr_df.iloc[1].type == "field":
+                            df.at[index,"group"] = parent_group
+                            parent_group = None
+
+                            flag = 1;lal = 1;last_rd = -1;change = 0
+
+                            for index, row in curr_df.iloc[2:].iterrows():
+                                if row.type == "label":
+                                    flag += 1
+
+                                    if parent_group is None:
+                                        parent_group = index
+
+                                    if flag==2:
+                                        parent_group = prevLabel
+                                        lal=1
+                                    else:
+                                        if lal == 0 and prevIndex is not None:
+                                            if prevIndex is not None and parent_group is not None:
+                                                df.at[prevIndex, "group"] = [parent_group, index]
+                                        elif lal == 1:
+                                            prevLabel = index
+
+                                elif row.type == "checkbox":
+
+                                    if last_rd != 0:
+                                        change = 1
+                                    else:
+                                        change = 0
+
+                                    if flag == 1 and change == 1:
+                                        lal = 0
+                                        parent_group = prevLabel
+
+                                    if prevLabel is not None and lal == 1 and change == 0:
+                                        df.at[index, "group"] = [parent_group, prevLabel]
+                                    elif lal == 0 and prevIndex is not None:
+                                        prevIndex = index
+
+                                    flag -= 1
+
+                                elif row.type == "radio":
+
+                                    if last_rd != 1:
+                                        change = 1
+                                    else:
+                                        change = 0
+
+                                    if flag == 1 and change == 1:
+                                        lal = 0
+                                        parent_group = prevLabel
+
+                                    if prevLabel is not None and lal == 1 and change == 0:
+                                        df.at[index, "group"] = [parent_group, prevLabel]
+                                    elif lal == 0 and prevIndex is not None:
+                                        prevIndex = index
+
+                                    flag -= 1
+
+                                elif row.type == "field":
+
+                                    if last_rd != -1:
+                                        change = 1
+                                    else:
+                                        change = 0
+
+                                    if flag == 1 and change == 1:
+                                        lal = 1
+
+                                    if prevLabel is not None:
+                                        df.at[index, "group"] = prevLabel
+                                        parent_group = None
+                                    flag -= 1
+
 
                 parent_group = None    # if field present then end of the strip set parent_group None
 
 
             elif checkboxes > 0:
-                
+
                 if radios == 0:
                     if parent_group is not None: #is_valid_parent_group(df, topy, bottomy, parent_group):
                         if labels == checkboxes:
@@ -500,7 +711,7 @@ def hackForm(csvfile):
                                 if prevLabel is not None:  # is_valid_parent_group(df, topy, bottomy, parent_group) and
                                     df.at[index, "group"] = [parent_group, prevLabel]
 
-                    parent_group = None
+                parent_group = None
 
 
             elif radios > 0:

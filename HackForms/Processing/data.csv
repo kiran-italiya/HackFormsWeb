@@ -1,42 +1,42 @@
 left,top,height,width,type,value,group
-540,105,41,213,field,nan,0
-119,182,42,213,field,nan,0
-352,182,41,214,field,nan,0
-117,249,43,241,field,nan,0
+540,105,42,213,field,nan,0
+119,182,42,214,field,nan,0
+353,182,42,213,field,nan,0
+118,250,41,240,field,nan,0
 463,250,42,240,field,nan,0
-490,399,42,213,field,nan,0
-655,474,42,119,field,nan,0
-56,601,312,647,field,nan,0
+490,399,42,212,field,nan,0
+655,475,41,118,field,nan,0
+57,601,311,646,field,nan,0
 118,338,29,29,radio,nan,0
-210,339,29,29,radio,nan,0
-118,399,29,29,radio,nan,0
-210,399,29,29,radio,nan,0
-102,482,28,28,radio,nan,0
-171,483,29,29,radio,nan,0
-428,335,35,35,checkbox,nan,0
-542,335,35,36,checkbox,nan,0
-672,335,34,36,checkbox,nan,0
+210,338,29,29,radio,nan,0
+119,398,28,28,radio,nan,0
+210,398,29,29,radio,nan,0
+102,482,29,29,radio,nan,0
+172,483,29,29,radio,nan,0
+571,331,44,45,checkbox,nan,0
+704,334,35,35,checkbox,nan,0
+465,336,35,36,checkbox,nan,0
+326,472,44,45,checkbox,nan,0
 432,475,35,36,checkbox,nan,0
-331,476,35,35,checkbox,nan,0
-50,194,21,56,label,Name:,0
-50,260,25,52,label,Email:,0
-27,338,39,76,label,Gender:,0
-152,342,25,46,label,Male,0
-42,408,28,66,label,Status:,0
-152,404,28,52,label,Single,0
-50,482,29,35,label,Like,0
-135,490,21,31,label,Yes,0
-49,554,22,154,label,Other Suggestions,0
-205,490,20,31,label,No,0
-465,118,21,46,label,Date,0
-389,260,24,58,label,Phone:,0
-244,342,20,64,label,Female,0
-331,341,27,92,label,Age: 0-18,0
-235,399,39,81,label,) Married,0
+466,119,21,46,label,Date,0
+51,194,20,55,label,Name:,0
+42,260,35,60,label,Email:,0
+389,263,22,59,label,Phone:,0
+26,346,29,72,label,Gender,0
+143,342,33,56,label,) Male,0
+235,342,33,73,label,) Female,0
+362,342,27,92,label,Age: 0-1,0
+523,336,29,42,label,18-41,0
+625,340,24,74,label,40 above,0
+39,400,37,69,label,Status:,0
+148,404,33,56,label,Single,0
+233,404,32,84,label,) Married,0
 383,403,25,90,label,Profession:,0
-262,490,20,53,label,Extent,0
-371,488,22,54,label,Worst,0
-483,340,24,54,label,18-40,0
-482,487,23,44,label,Best,0
-579,336,38,90,label,40 above,0
-556,485,25,87,label,One word:,0
+42,486,35,39,label,Like,0
+134,490,31,32,label,Yes,0
+206,490,20,31,label,No,0
+263,488,23,58,label,Extent:,0
+365,482,38,64,label,Worst,0
+482,488,23,44,label,Best,0
+550,486,34,93,label,One word:,0
+49,555,20,154,label,Other Suggestions,0
