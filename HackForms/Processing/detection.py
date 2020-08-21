@@ -3,11 +3,12 @@ import numpy as np
 import pandas as pd
 import HackForms.Processing.extraction as extraction
 import copy
+import pytesseract
 
 def contour(image):
     img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     _, threshold = cv2.threshold(img, 200, 255, cv2.THRESH_BINARY)
-    _,contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     return contours
 
 
@@ -75,13 +76,24 @@ def detect_rectangles(image):
     img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # _, threshold = cv2.threshold(img, 215, 255, cv2.THRESH_BINARY)
     threshold = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 2)
-    _,contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     coordinate = []
+    image1 = image.copy()
+    cv2.drawContours(image1, contours,-1,(0,0,255),2)
+    # cv2.imshow("contours", image1)
+    # cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
     for cnt in contours:
-        approx = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
-        if len(approx) == 4 and cv2.contourArea(cnt) > 50:
-            # if abs(approx[0][0][0]-approx[1][0][0])<10 or abs(approx[0][0][0]-approx[3][0][0])<10:
-            coordinate.append((approx[0][0], approx[2][0]))
+        c_area = cv2.contourArea(cnt)
+        x,y,w,h = cv2.boundingRect(cnt)
+        area = w*h
+        if c_area/area>0.9:
+            coordinate.append(([x,y], [x+w,y+h]))
+        # approx = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
+        # if len(approx) == 4 and cv2.contourArea(cnt) > 50:
+        #     # if abs(approx[0][0][0]-approx[1][0][0])<10 or abs(approx[0][0][0]-approx[3][0][0])<10:
+        #     coordinate.append((approx[0][0], approx[2][0]))
         #			'''if 2000+co > cv2.contourArea(cnt) > co:
         #				continue
         #				co=cv2.contourArea(cnt)'''# try changing the value in place of 2000 to get outer rectangles
@@ -90,6 +102,7 @@ def detect_rectangles(image):
             cv2.rectangle(img, tuple(coordinate[i][0]), tuple(coordinate[i][1]), (0, 0, 255), 1)
             cv2.circle(img, tuple(coordinate[i][0]), 5, (0, 255, 0), 5)
             cv2.circle(img, tuple(coordinate[i][1]), 5, (0, 255, 0), 5)
+        # cv2.imshow("rectangle", img)
     return img, coordinate
 
 
@@ -103,7 +116,7 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
     df_box = df_box.sort_values(by=['Y1', 'X1']).reset_index(drop=True)
     index_curr, x1, y1, x2, y2 = 0, 0, 0, 0, 0
     for i,row in df_box.iterrows():
-        index_v = i
+
 
         if row['X1']<row['X2']:
             if row['Y1']<row['Y2']:
@@ -133,7 +146,8 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
                 df_box.at[i, 'X2'] = temp
             else:
                 print("unforeseen Condition")
-
+    for i, row in df_box.iterrows():
+        index_v = i
         if row['X1'] < 10 and row['Y1'] < 10:         # or (row['X1']>w and row['Y1']<10)
             df_box = df_box.drop(i)
         try:
@@ -150,6 +164,7 @@ def eliminate_duplicate_box(rec_coordinate, diff,img):
                     index_v += 1
         except Exception as e:
             print(e)
+            print("Something wrong")
         try:
             index_curr = i
             x1 = copy.deepcopy(df_box.loc[i][0])
@@ -204,7 +219,7 @@ def line_processing(line, diff, height, img1):
                         df = df.drop(index_v)
                     elif abs(y1 - df.loc[index_v][1]) < diff and (
                             x1 <= df.loc[index_v][0] and x2 >= df.loc[index_v][2]):
-                        df = df.drop(index_v)
+                        df = df.drop(index_v)           #TODO same line occurs twice
                     elif abs(y1 - df.loc[index_v][1]) < diff and (
                             x1 <= df.loc[index_v][0] and x2 >= df.loc[index_v][0]):
                         field_box.pop()
@@ -366,35 +381,50 @@ def generate_label_box(data, height, img):
     text = []
     label_box = []
     value = ""
-
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    h,_ = img.shape[:2]
+    # print(img.shape)
     for j in range(len(data)):
         text.append(data[j].split(" "))
     data = ""
     X1, Y1 = int(text[0][1]), int(text[0][2])
     X2, Y2 = int(text[0][3]), int(text[0][4])
+
     for i in range(len(text)):
         data += text[i][0]
         w = int(text[i][3]) - int(text[i][1])
         y_dist = abs(Y2 - int(text[i][4]))
         x_dist = abs(X2 - int(text[i][1]))
+        # print(text[i][0],text[i][1],text[i][2],text[i][3],text[i][4])
         if w < 40:
-            if not text[i][0].isalpha():
+            if not (text[i][0].isalpha() or text[i][0].isdigit()):
                 continue
             if y_dist < height and x_dist < height:
                 X2, Y2 = int(text[i][3]), int(text[i][4])
                 value += text[i][0]
             else:
                 if len(value) > 1:
-                    # if abs(X2-X1)>10:
-                    if (Y2 - Y1) < 25:
-                        label_box.append([X1, Y1, 25, X2 - X1, "label", value, "0"])
-                    else:
-                        label_box.append([X1, Y1, Y2 - Y1, X2 - X1, "label", value, "0"])
+                    # print(value)
+                    crop = img[h - Y2 - 5:h - Y1 + 5, X1 - 5:X2 + 5]
+                    text1 = pytesseract.image_to_string(crop, lang='eng', config='--psm 7')
+                    if not text1.isdigit():
+                        # value = ""
+                        # value +=text[i][0]
+                        # continue
+                        label_box.append([X1, Y2, abs(Y2 - Y1), abs(X2 - X1), "label", text1, "0"])
+                        # cv2.imshow("crop", crop)
+                        # cv2.waitKey(0)
+                        # print(text1)
+
                 X1, Y1 = int(text[i][1]), int(text[i][2])
                 X2, Y2 = int(text[i][3]), int(text[i][4])
                 value = ""
                 value += text[i][0]
-    label_box.append([X1, Y1, Y2 - Y1, X2 - X1, "label", value, "0"])
+    crop = img[h - Y2 - 5:h - Y1 + 5, X1 - 5:X2 + 5]
+    # cv2.imshow("crop", crop)
+    # cv2.waitKey(0)
+    text1 = pytesseract.image_to_string(crop, lang='eng', config='--psm 7')
+    label_box.append([X1, Y2, abs(Y2 - Y1), abs(X2 - X1), "label", text1, "0"])
     # print(data)
     df = pd.DataFrame(label_box, columns=['X1', 'Y1', 'X2', 'Y2', 'Type', 'value', 'group'])
     return df
@@ -446,8 +476,26 @@ def detect_rectangles_eight(image):
     threshold = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 2)
     #cv2.imshow("thr",threshold)
     cv2.waitKey(0)
-    _,contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    contours,_ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     coordinate = []
+    # cnt = imutils.grab_contours(contours)
+    # cnt = sorted(cnt, key=cv2.contourArea)
+    # cnt.pop(0)
+    # c = max(cnt, key=cv2.contourArea)
+    # image1 = image.copy()
+    # cv2.drawContours(image1, c,-1,(0,0,255),2)
+    # cv2.imshow("contours", image1)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    #
+    # for cnt in contours:
+    #     c_area = cv2.contourArea(cnt)
+    #     x,y,w,h = cv2.boundingRect(cnt)
+    #     area = w*h
+    #     if c_area/area>0.9:
+    #         coordinate.append(([x,y+h],[x,y], [x+w,y+h],[x+w,y]))
+
+
     for cnt in contours:
         approx = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
         if len(approx) == 4 and cv2.contourArea(cnt) > 50:
@@ -484,6 +532,12 @@ def eliminate_duplicate_box_eight(rec_coordinate, diff,img):
                 df_box.at[index_r,'Y1'] = copy.deepcopy(row['Y3'])
                 # row['Y2']=temp
                 df_box.at[index_r, 'Y3'] = temp
+
+                temp = copy.deepcopy(row['X2'])
+                # row['Y1'] = row['Y2']
+                df_box.at[index_r, 'X2'] = copy.deepcopy(row['X4'])
+                # row['Y2']=temp
+                df_box.at[index_r, 'X4'] = temp
             else:
                 print("unforeseen Condition")
         elif row['X1']>row['X3']:
@@ -492,6 +546,11 @@ def eliminate_duplicate_box_eight(rec_coordinate, diff,img):
                 row['X3'] = copy.deepcopy(row['X1'])
                 df_box.at[index_r,'X3']= copy.deepcopy(row['X1'])
                 df_box.at[index_r, 'X1'] = temp
+
+                temp = copy.deepcopy(row['Y4'])
+                row['Y4'] = copy.deepcopy(row['Y2'])
+                df_box.at[index_r, 'Y4'] = copy.deepcopy(row['Y2'])
+                df_box.at[index_r, 'Y2'] = temp
             elif row['Y1']>row['Y3']:
                 temp = copy.deepcopy(row['X3'])
                 df_box.at[index_r, 'X3'] = copy.deepcopy(row['X1'])
@@ -561,6 +620,6 @@ def reformation_filled_form(img, rec_coordinate, aspect):
         dst_img = [[vertical[0][0], vertical[2][1]], [vertical[2][0], vertical[2][1]], [vertical[0][0], vertical[1][1]]]
     img = extraction.transformation(img, src_img,dst_img)
     #cv2.imshow('transformed',img)
-    cv2.waitKey(0)
+    # cv2.waitKey(0)
     cv2.destroyAllWindows()
     return start, img
