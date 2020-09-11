@@ -1,0 +1,75 @@
+,left,top,height,width,type,value,group,visited
+40,469,83,23,49,label,"Date
+",NaN,0
+0,548,90,44,225,field,,NaN,0
+41,34,159,21,46,label,"Nam
+",NaN,0
+1,106,163,50,664,field,,NaN,0
+43,405,220,24,49,label,"Email
+",NaN,0
+42,34,225,22,122,label,"Enrollment no
+",NaN,0
+2,169,230,44,225,field,,NaN,0
+3,476,231,43,295,field,,NaN,0
+44,32,279,25,246,label,"What did you like very muchâ
+",NaN,0
+47,584,326,21,195,label,"Attitude of employees
+",NaN,0
+45,96,326,24,117,label,"Environment
+",NaN,0
+46,337,328,28,144,label,"Administration
+",NaN,0
+35,521,338,34,52,checkbox,,NaN,0
+36,34,339,35,52,checkbox,,NaN,0
+37,278,341,35,52,checkbox,,NaN,0
+49,345,375,21,192,label,"Talent and Innovation
+",NaN,0
+48,92,377,31,129,label,"Infrastructure
+",NaN,0
+38,34,386,35,52,checkbox,,NaN,0
+39,278,386,34,52,checkbox,,NaN,0
+50,30,448,25,292,label,"Rate supportiveness of employees.
+",NaN,0
+14,754,465,22,22,radio,,NaN,0
+13,688,465,23,23,radio,,NaN,0
+12,620,465,23,23,radio,,NaN,0
+11,553,465,23,23,radio,,NaN,0
+10,477,465,23,23,radio,,NaN,0
+51,25,504,26,384,label,"Rate the impact of projects company is doing.
+",NaN,0
+19,750,522,23,23,radio,,NaN,0
+17,616,522,23,23,radio,,NaN,0
+15,473,522,23,23,radio,,NaN,0
+18,683,522,23,23,radio,,NaN,0
+16,548,522,23,23,radio,,NaN,0
+52,25,568,25,322,label,"Rate the overall experience of the visit
+",NaN,0
+20,684,584,23,23,radio,,NaN,0
+24,751,585,23,23,radio,,NaN,0
+23,616,585,23,23,radio,,NaN,0
+22,548,585,23,23,radio,,NaN,0
+21,474,585,23,23,radio,,NaN,0
+53,26,637,22,285,label,"Rate quality of provided resource:
+",NaN,0
+26,683,650,23,23,radio,,NaN,0
+25,616,650,23,23,radio,,NaN,0
+27,751,650,23,23,radio,,NaN,0
+28,474,651,23,23,radio,,NaN,0
+29,549,651,23,23,radio,,NaN,0
+54,26,694,21,569,label,"How much likely do you recommend the company for their services.
+",NaN,0
+31,751,761,23,23,radio,,NaN,0
+30,683,761,23,23,radio,,NaN,0
+33,549,762,23,23,radio,,NaN,0
+32,474,762,23,23,radio,,NaN,0
+34,617,762,23,23,radio,,NaN,0
+55,33,799,15,249,label,"Any constructive suggestions
+",NaN,0
+4,22,839,55,688,field,,NaN,0
+5,21,889,55,758,field,,NaN,0
+6,21,940,55,758,field,,NaN,0
+8,37,988,55,741,field,,NaN,0
+7,36,988,55,742,field,,NaN,0
+56,624,1046,20,88,label,"Sign Here
+",NaN,0
+9,600,1091,60,166,field,,NaN,0

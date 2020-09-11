@@ -383,15 +383,18 @@ def generate_label_box(data, height, img):
     value = ""
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     h,_ = img.shape[:2]
-    # print(img.shape)
+    print(data)
     for j in range(len(data)):
-        text.append(data[j].split(" "))
+        cols = data[j].strip().split(" ")
+        if len(cols)>=4:
+            text.append(cols)
     data = ""
     X1, Y1 = int(text[0][1]), int(text[0][2])
     X2, Y2 = int(text[0][3]), int(text[0][4])
 
     for i in range(len(text)):
         data += text[i][0]
+        print("==>",i)
         w = int(text[i][3]) - int(text[i][1])
         y_dist = abs(Y2 - int(text[i][4]))
         x_dist = abs(X2 - int(text[i][1]))

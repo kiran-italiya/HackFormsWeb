@@ -1,58 +1,58 @@
 left,top,height,width,type,value,group
-543,88,45,225,field,nan,0
-556,158,55,88,field,nan,0
-246,161,55,270,field,nan,0
-621,222,55,101,field,nan,0
-524,223,55,56,field,nan,0
-468,224,55,304,field,nan,0
-269,229,55,56,field,nan,0
-167,233,55,56,field,nan,0
-35,854,199,737,field,nan,0
-602,1091,61,166,field,nan,0
-618,464,23,23,radio,nan,0
-685,464,23,23,radio,nan,0
-476,465,23,23,radio,nan,0
-551,465,23,23,radio,nan,0
-682,520,23,23,radio,nan,0
-749,520,22,22,radio,nan,0
-547,521,23,23,radio,nan,0
-614,521,23,23,radio,nan,0
-472,522,23,23,radio,nan,0
-682,583,23,23,radio,nan,0
-749,583,22,22,radio,nan,0
-615,584,23,23,radio,nan,0
-472,585,23,23,radio,nan,0
-547,585,23,23,radio,nan,0
-749,649,23,23,radio,nan,0
-615,650,23,23,radio,nan,0
-683,650,23,23,radio,nan,0
-473,651,23,23,radio,nan,0
-548,651,23,23,radio,nan,0
-683,761,23,23,radio,nan,0
-750,761,23,23,radio,nan,0
-548,762,23,23,radio,nan,0
-616,762,23,23,radio,nan,0
-474,763,23,23,radio,nan,0
-518,338,35,53,checkbox,nan,0
-32,342,35,52,checkbox,nan,0
-276,342,35,52,checkbox,nan,0
-276,387,35,52,checkbox,nan,0
-33,389,35,51,checkbox,nan,0
-466,82,24,47,label,Date,0
-30,161,21,58,label,Name:,0
-31,227,22,126,label,Enrollment no:,0
-402,219,25,52,label,Email,0
-30,280,27,245,label,What did you like very much’,0
-94,329,23,117,label,Environment,0
-345,328,22,133,label,Administration,0
-582,321,26,193,label,Attitude of employees,0
-95,379,22,124,label,Infrastructure,0
-343,375,22,192,label,Talent and Innovation,0
-29,449,28,293,label,Rate supportiveness of employees.,0
-25,506,27,380,label,Rate the impact of projects company is doing,0
-16,573,33,66,label,Rate tl,0
-66,569,37,287,label,the overall experience of the visit.,0
-26,639,23,294,label,Rate quality of provided resources.,0
-26,694,25,570,label,How much likely do you recommend the company for their services:,0
-33,801,26,250,label,Any constructive suggestions,0
-625,1044,22,89,label,Sign Here,0
+534,93,41,205,field,nan,0
+135,152,55,407,field,nan,0
+417,212,55,334,field,nan,0
+133,213,55,211,field,nan,0
+74,770,299,621,field,nan,0
+114,333,23,23,radio,nan,0
+166,333,23,23,radio,nan,0
+308,333,23,23,radio,nan,0
+402,333,23,23,radio,nan,0
+450,333,23,23,radio,nan,0
+503,333,23,23,radio,nan,0
+552,333,23,23,radio,nan,0
+212,334,23,23,radio,nan,0
+354,334,23,23,radio,nan,0
+261,335,23,23,radio,nan,0
+610,460,23,23,radio,nan,0
+167,461,23,23,radio,nan,0
+304,461,23,23,radio,nan,0
+440,461,23,23,radio,nan,0
+68,603,32,48,checkbox,nan,0
+219,604,32,48,checkbox,nan,0
+68,664,32,48,checkbox,nan,0
+219,665,32,49,checkbox,nan,0
+462,84,23,45,label,"Date
+",0
+64,156,23,51,label,"Name:
+",0
+55,206,38,62,label,"Phone
+",0
+355,212,24,50,label,"Email:
+",0
+65,278,22,394,label,"Rate the quality of event from management aspect.
+",0
+551,353,24,28,label,"10
+",0
+58,401,36,334,label,"Rate content by how much useful for you.
+",0
+73,440,24,77,label,"Not at all
+",0
+192,438,37,105,label,"} Somewhat
+",0
+340,443,27,91,label,"Very much
+",0
+485,443,23,113,label,"It was perfect
+",0
+63,534,27,226,label,"Things that can be improved
+",0
+125,591,20,58,label,"Venue
+",0
+281,593,21,71,label,"Speaker
+",0
+115,654,29,71,label,"Timing
+",0
+279,650,22,111,label,"Management
+",0
+63,706,22,137,label,"More Comments
+",0

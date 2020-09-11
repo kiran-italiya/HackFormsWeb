@@ -1,4 +1,5 @@
 import pandas as pd
+import HackForms.MyUtils as MyUtils
 
 UNREACHABLE = -1000
 
@@ -7,64 +8,65 @@ def hackForm(csvfile, height):
     df = pd.read_csv(csvfile, encoding = "ISO-8859-1")
     df['group']='NaN'
 
-    df = df.sort_values(by=['top']) #.reset_index(drop=True)
+    df = df.sort_values(by=['top'])  # .reset_index(drop=True)
     df['group'] = df['group'].astype(object)
-    # print("Original:\n ",df)
 
 
-    min_field_height = df['height'].min()
     max_field_height = df['height'].max()
-    avg_field_height = df['height'].mean()
 
-
-
-
-    element=-1
-    parent_group=None
+    element = -1
+    parent_group = None
     ind = -1
-    # vis_dict={}
-    # for x in df.i
+
     df['visited'] = 0
-    while ind!=df.index[-1]:          #element < df.shape[0]-1:
+
+    while len(df[df['visited']==0])>0:          #element < df.shape[0]-1:
         element+=1;labels=0;fields=0;checkboxes=0;radios=0
         in_strip_elements=0
 
 
-        local_min_top = 0
-        local_max_height = 0
-        local_max_bottom = 0
-        ERROR = (max_field_height - df.iloc[element].height )/2 #, 0.25*df.iloc[element].height)
-        topy=df.iloc[element].top - ERROR
-        bottomy=df.iloc[element].height+df.iloc[element].top + ERROR
-
-        curr_df = df[(df.top>=topy) & (df.top+df.height<=bottomy)].copy()
-        curr_df=curr_df.sort_values(by='left') # .reset_index(drop=True)
-
-        print("\nOld ERROR: ",ERROR)
-
-        for i in range(curr_df.shape[0]):
-            local_min_top = min(local_min_top, curr_df.iloc[i].top)
-            local_max_height = max(local_max_height, curr_df.iloc[i].height)
-            local_max_bottom = max(local_max_bottom, curr_df.iloc[i].top+curr_df.iloc[i].height)
-
-        ERROR = max(local_min_top - df.iloc[element].top, height*(0.0225)) # (max_field_height - df.iloc[element].height )/2
-
-        # ERROR1 = max(local_min_top - df.iloc[element].top,45/2)
-        # ERROR2 = max(local_max_bottom - (df.iloc[element].height+df.iloc[element].top), 45/2)
+        # local_min_top = 0
+        # local_max_height = 0
+        # local_max_bottom = 0
+        # ERROR = (max_field_height - df.iloc[element].height )/2 #, 0.25*df.iloc[element].height)
+        # topy=df.iloc[element].top - ERROR
+        # bottomy=df.iloc[element].height+df.iloc[element].top + ERROR
         #
-        # ERROR = max(ERROR1,ERROR2)
-        # print("ERROR1: ", ERROR1," ERROR2:",ERROR2)
+        # curr_df = df[(df.top>=topy) & (df.top+df.height<=bottomy)].copy()
+        # curr_df=curr_df.sort_values(by='left') # .reset_index(drop=True)
+        #
+        # print("\nOld ERROR: ",ERROR)
+        #
+        # for i in range(curr_df.shape[0]):
+        #     local_min_top = min(local_min_top, curr_df.iloc[i].top)
+        #     local_max_height = max(local_max_height, curr_df.iloc[i].height)
+        #     local_max_bottom = max(local_max_bottom, curr_df.iloc[i].top+curr_df.iloc[i].height)
+        #
+        # ERROR = max(local_min_top - df.iloc[element].top, height*(0.0225)) # (max_field_height - df.iloc[element].height )/2
+        #
+        # # ERROR1 = max(local_min_top - df.iloc[element].top,45/2)
+        # # ERROR2 = max(local_max_bottom - (df.iloc[element].height+df.iloc[element].top), 45/2)
+        # #
+        # # ERROR = max(ERROR1,ERROR2)
+        # # print("ERROR1: ", ERROR1," ERROR2:",ERROR2)
+        #
+        # print("New ERROR: ",ERROR)
+        # print("Height:",height)
+        #
+        # topy = df.iloc[element].top - ERROR
+        # bottomy = df.iloc[element].height + df.iloc[element].top + ERROR
 
-        print("New ERROR: ",ERROR)
-        print("Height:",height)
+        visIndex = df[df['visited']==0].index[0]
+        curr_row = df.iloc[visIndex]
 
-        topy = df.iloc[element].top - ERROR
-        bottomy = df.iloc[element].height + df.iloc[element].top + ERROR
-
-        curr_df = df[(df.top >= topy) & (df.top + df.height <= bottomy)].copy()
+        curr_df = MyUtils.allInline(curr_row[1], curr_row[1]+curr_row[2], df)
         curr_df = curr_df.sort_values(by='left')  # .reset_index(drop=True)
 
-        print("topy:",topy," bottomy:",bottomy)
+        if len(curr_df)==0:
+            df.at[visIndex, 'visited']=1
+            continue
+
+        # print("topy:",topy," bottomy:",bottomy)
         if parent_group is None:
             print("parent_group: None")
         else:
@@ -736,9 +738,6 @@ def hackForm(csvfile, height):
                 parent_group = None
 
 
-        ind = curr_df.index[-1]
-
-    # print('new DF:\n', df)   #df[df.type!='label'])
     df.to_csv('res.csv')
     return df
 
@@ -892,3 +891,25 @@ def RLRLRL(df, curr_df, parent_group):
                 df.at[prevIndex, 'group'] = index
         if row.type == 'radio':
             prevIndex = index
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

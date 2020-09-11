@@ -3,8 +3,8 @@
 
 import HackForms.Processing.extraction as extraction
 import HackForms.Processing.detection as detection
-import HackForms.Processing.hackForm as hackForm
-import HackForms.Processing.hackForm2 as hackForm2
+import HackForms.Processing.hackForm4 as hackForm
+
 # import extraction
 # import detection
 
@@ -32,7 +32,7 @@ class ProcessForm:
         img = cv2.imread(img_name)
 
         img = imutils.resize(img, width=self.width)
-        # cv2.imshow("crop", img)
+        cv2.imshow("crop", img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
@@ -44,7 +44,9 @@ class ProcessForm:
         cv2.imwrite("cropped.jpg", img)
 
 
+
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        height, width = gray.shape
         gray = cv2.medianBlur(gray, 3)
         threshold = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 2)
 
@@ -159,7 +161,7 @@ class ProcessForm:
             writer = csv.writer(file)
             writer.writerows(label_box)
         # df = hackForm.hackForm(self.datacsv)
-        df = hackForm2.hackForm(self.datacsv)
+        df = hackForm.hackForm(self.datacsv, height)
 
         img_new = img.copy()
         for _,row in df.iterrows():
@@ -173,8 +175,8 @@ class ProcessForm:
         # img = cv2.imread("kiran2.png")
         img = cv2.imread(img_name)
         img = imutils.resize(img, width=1000)
-        # cv2.imshow("Test image", img)
-        # cv2.waitKey(0)
+        cv2.imshow("Test image", img)
+        cv2.waitKey(0)
         cv2.destroyAllWindows()
         rectangle_image, rec_coordinate = detection.detect_rectangles_eight(img)
         dst_img, img = detection.reformation_filled_form(img, rec_coordinate, aspect)
@@ -397,7 +399,7 @@ class ProcessForm:
 
 pf = ProcessForm()
 for i in range(4):
-    if i+1==3:
+    if i+1==4:
         pf.processForm('k'+str(i+1)+'.jpg' , os.path.join(os.getcwd(), 'data/k'+str(i+1)+'/'),i+1)
         # hackForm.data_dict()
 
